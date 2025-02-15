@@ -1,0 +1,1 @@
+Định nghĩa Model (User, Product...)

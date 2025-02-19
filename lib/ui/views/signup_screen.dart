@@ -178,6 +178,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     ));
   }
 }
+
 Widget _buildDivider() {
   return Divider(thickness: 1, color: Colors.grey.shade300);
 }

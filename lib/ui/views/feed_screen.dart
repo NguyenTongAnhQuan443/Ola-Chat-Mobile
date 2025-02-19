@@ -27,7 +27,7 @@ class _FeedScreenState extends State<FeedScreen> {
             child: Container(
               height: 10,
               color: Colors.grey.shade100, // Set màu nền cho Container
-              child: SizedBox(height: 10), // Nội dung của bạn
+              child: const SizedBox(height: 10), // Nội dung của bạn
             ),
           ),
 
@@ -106,7 +106,7 @@ class _FeedScreenState extends State<FeedScreen> {
             child: Container(
               height: 10,
               color: Colors.grey.shade100, // Set màu nền cho Container
-              child: SizedBox(height: 10), // Nội dung của bạn
+              child: const SizedBox(height: 10), // Nội dung của bạn
             ),
           ),
 
@@ -149,12 +149,12 @@ class _FeedScreenState extends State<FeedScreen> {
                             ],
                           ),
                         ),
-                        SizedBox(height: 8),
+                        const SizedBox(height: 8),
                         Text(
                           posts[index],
                           style: TextStyle(fontSize: 14),
                         ),
-                        SizedBox(height: 12),
+                        const SizedBox(height: 12),
                         Divider(),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -170,7 +170,7 @@ class _FeedScreenState extends State<FeedScreen> {
                               children: [
                                 Text("270 Likes",
                                     style: TextStyle(color: Colors.grey)),
-                                SizedBox(width: 8),
+                                const SizedBox(width: 8),
                                 Icon(Icons.thumb_up_alt_outlined,
                                     size: 20, color: Colors.grey),
                               ],

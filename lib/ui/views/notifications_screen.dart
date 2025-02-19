@@ -45,7 +45,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
             child: Container(
               height: 10,
               color: Colors.grey.shade100, // Set màu nền cho Container
-              child: SizedBox(height: 10), // Nội dung của bạn
+              child: const SizedBox(height: 10), // Nội dung của bạn
             ),
           ),
 

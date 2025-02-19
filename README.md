@@ -22,3 +22,5 @@ samples, guidance on mobile development, and a full API reference.
 ![signup_screen.png](assets%2Fdemo%2Fsignup_screen.png)
 3. Feed_Screen
 ![feed_screen.png](assets%2Fdemo%2Ffeed_screen.png)
+4. Search_Screen
+![search_screen.png](assets%2Fdemo%2Fsearch_screen.png)

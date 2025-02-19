@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:olachat_mobile/ui/views/feed_screen.dart';
+import 'package:olachat_mobile/ui/views/notifications_screen.dart';
 import 'package:olachat_mobile/ui/views/search_screen.dart';
 import 'package:olachat_mobile/ui/views/signup_screen.dart';
 
@@ -15,10 +16,8 @@ class _BottomNavigationbarScreenState extends State<BottomNavigationbarScreen> {
   int currentTab = 0;
   final List<Widget> screens = [
     FeedScreen(),
-    SearchScreen()
-    // SignUpScreen(),
-    // SignUpScreen(),
-    // SignUpScreen(),
+    SearchScreen(),
+    NotificationsScreen(),
   ];
 
   final PageStorageBucket bucket = PageStorageBucket();

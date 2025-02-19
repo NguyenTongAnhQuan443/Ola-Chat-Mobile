@@ -16,11 +16,13 @@ For help getting started with Flutter development, view the
 samples, guidance on mobile development, and a full API reference.
 
 ## Demo UI
-1.Login Screen
+### 1.Login Screen
 ![login_screen.png](assets%2Fdemo%2Flogin_screen.png)
-2. SignUp Screen
+### 2. SignUp Screen
 ![signup_screen.png](assets%2Fdemo%2Fsignup_screen.png)
-3. Feed_Screen
+### 3. Feed_Screen
 ![feed_screen.png](assets%2Fdemo%2Ffeed_screen.png)
-4. Search_Screen
+### 4. Search_Screen
 ![search_screen.png](assets%2Fdemo%2Fsearch_screen.png)
+### 5. Notifications_Screen
+![notifications_screen.png](assets%2Fdemo%2Fnotifications_screen.png)

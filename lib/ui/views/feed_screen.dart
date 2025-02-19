@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:olachat_mobile/core/utils/constants.dart';
+import 'package:olachat_mobile/ui/widgets/social_header.dart';
 
 class FeedScreen extends StatefulWidget {
   const FeedScreen({super.key});
@@ -21,43 +22,7 @@ class _FeedScreenState extends State<FeedScreen> {
       body: CustomScrollView(
         slivers: [
           // View 1 - Header
-          SliverToBoxAdapter(
-            child: Container(
-              height: 72,
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              color: Colors.white,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  InkWell(
-                    child: Row(
-                      children: [
-                        Image.asset('assets/icons/LogoApp.png',
-                            width: AppStyles.logoIconSize,
-                            height: AppStyles.logoIconSize),
-                        const SizedBox(width: 18),
-                        const Text("Social", style: AppStyles.socialTextStyle),
-                      ],
-                    ),
-                    onTap: () {
-                      print("Send icon clicked SOCIAL!");
-                    },
-                  ),
-                  InkWell(
-                    onTap: () {
-                      print("Send icon clicked!");
-                    },
-                    child: Image.asset(
-                      'assets/icons/Send.png',
-                      width: 20,
-                      height: 20,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
+          SocialHeader(),
           SliverToBoxAdapter(
             child: Container(
               height: 10,

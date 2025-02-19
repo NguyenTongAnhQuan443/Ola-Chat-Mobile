@@ -8,7 +8,6 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> {
-
   final List<Map<String, String>> notifications = [
     {
       "name": "Song Jong Ki",
@@ -43,6 +42,8 @@ class _SearchScreenState extends State<SearchScreen> {
         backgroundColor: Colors.white,
         elevation: 0,
         automaticallyImplyLeading: false,
+
+        // View 1 - TextField
         title: SizedBox(
           height: 44,
           child: TextField(
@@ -68,6 +69,8 @@ class _SearchScreenState extends State<SearchScreen> {
           ),
         ),
       ),
+
+      // View 2 - Search Results
       body: ListView.builder(
         itemCount: notifications.length,
         itemBuilder: (context, index) {

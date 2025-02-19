@@ -11,25 +11,25 @@ class NotificationsScreen extends StatefulWidget {
 class _NotificationsScreenState extends State<NotificationsScreen> {
   final List<Map<String, String>> notifications = [
     {
-      "name": "Song Jong Ki",
+      "name": "Lee Min Ho",
       "description": "Start following you.",
       "time": "1m",
       "image":
-          "https://images.lifestyleasia.com/wp-content/uploads/sites/7/2025/02/05095531/Untitled-design-2025-02-05T095444.669-1600x900.jpg"
+          "https://kenh14cdn.com/2016/4-1480306785639.png"
     },
     {
-      "name": "Song Hye Kyo",
+      "name": "kim soo-hyun ",
       "description": "Liked your post.",
       "time": "2d",
       "image":
-          "https://icdn.24h.com.vn/upload/1-2025/images/2025-02-13//1739410199-song-hye-kyo-di-lam-mac-kin-dao-bao-nhieu-la-o-nha-phong-khoang-bay-nhieu-_0_5_n-5204-441-width780height975.jpg"
+          "https://cdn.shopify.com/s/files/1/0469/3927/5428/files/adba30abc41c147e29a634078c8762e1.jpg?v=1723635440"
     },
     {
-      "name": "Jeon Yeo-been",
+      "name": "Kim Ji Won ",
       "description": "Commented on your post.",
       "time": "10w",
       "image":
-          "https://static.wikia.nocookie.net/the-dramas/images/6/63/Yeobeen_-_Profile.jpg/revision/latest?cb=20240426014548"
+          "https://media-cdn-v2.laodong.vn/storage/newsportal/2024/4/30/1334046/Kim-Ji-Won-1B15.jpg?w=800&h=496&crop=auto&scale=both"
     },
   ];
 

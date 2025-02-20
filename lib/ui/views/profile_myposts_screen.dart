@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../widgets/custom_sliver_to_box_adapter.dart';
 import '../widgets/social_header.dart';
 
 class ProfileMyPostsScreen extends StatefulWidget {
@@ -20,13 +21,7 @@ class _ProfileMyPostsScreenState extends State<ProfileMyPostsScreen> {
         slivers: [
           // View 1 - Header
           SocialHeader(),
-          SliverToBoxAdapter(
-            child: Container(
-              height: 10,
-              color: Colors.grey.shade100, // Set màu nền cho Container
-              child: SizedBox(height: 10), // Nội dung của bạn
-            ),
-          ),
+          CustomSliverToBoxAdapter(),
 
           //   View 2 - User
           SliverToBoxAdapter(
@@ -128,13 +123,7 @@ class _ProfileMyPostsScreenState extends State<ProfileMyPostsScreen> {
               ),
             ),
           ),
-          SliverToBoxAdapter(
-            child: Container(
-              height: 10,
-              color: Colors.grey.shade100,
-              child: SizedBox(height: 10),
-            ),
-          ),
+          CustomSliverToBoxAdapter(),
 
           // View 3 - List Post
           SliverToBoxAdapter(

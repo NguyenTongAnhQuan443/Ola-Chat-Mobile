@@ -1,17 +1,22 @@
 import 'package:flutter/material.dart';
 
 import '../../data/models/post.dart';
+import '../views/comments_screen.dart';
 
-class PostWidget extends StatefulWidget {
+class ListPost extends StatefulWidget {
   final List<Post> posts;
+  final bool showCommentButton;
 
-  PostWidget({required this.posts});
+  const ListPost(
+      {super.key,
+      required this.posts,
+      required this.showCommentButton});
 
   @override
-  _PostWidgetState createState() => _PostWidgetState();
+  _ListPostState createState() => _ListPostState();
 }
 
-class _PostWidgetState extends State<PostWidget> {
+class _ListPostState extends State<ListPost> {
   void _incrementLike(Post post) {
     setState(() {
       post.likeCount++;
@@ -68,35 +73,38 @@ class _PostWidgetState extends State<PostWidget> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      TextButton.icon(
-                        onPressed: () {
-                          // Tạo trang chi tiết bình luận
-                          // Navigator.push(context, MaterialPageRoute(builder: (context) => CommentsScreen()));
-                        },
-                        icon: Icon(Icons.mode_comment_outlined,
-                            size: 20, color: Colors.grey),
-                        label: Text("Comment",
-                            style: TextStyle(color: Colors.grey)),
-                      ),
+                      // Ẩn/hiện button comment dựa trên tham số showCommentButton
+                      if (widget.showCommentButton)
+                        TextButton.icon(
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => CommentsScreen()));
+                          },
+                          icon: Icon(Icons.mode_comment_outlined,
+                              size: 20, color: Colors.grey),
+                          label: Text("Comment",
+                              style: TextStyle(color: Colors.grey)),
+                        ),
                       Row(
                         children: [
-                          Text("${post.likeCount} Likes",
-                              style: TextStyle(color: Colors.grey)),
-                          const SizedBox(width: 8),
                           IconButton(
                             icon: Icon(Icons.thumb_up_alt_outlined,
                                 size: 20, color: Colors.grey),
                             onPressed: () => _incrementLike(post),
                           ),
-                          const SizedBox(width: 12),
-                          Text("${post.dislikeCount} Dislikes",
+                          Text("${post.likeCount} Likes",
                               style: TextStyle(color: Colors.grey)),
-                          const SizedBox(width: 8),
+                          const SizedBox(width: 10),
                           IconButton(
                             icon: Icon(Icons.thumb_down_alt_outlined,
                                 size: 20, color: Colors.grey),
                             onPressed: () => _incrementDislike(post),
                           ),
+                          Text("${post.dislikeCount} Dislikes",
+                              style: TextStyle(color: Colors.grey)),
+                          const SizedBox(width: 10),
                         ],
                       )
                     ],

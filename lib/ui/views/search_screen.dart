@@ -24,7 +24,7 @@ class _SearchScreenState extends State<SearchScreen> {
           "https://icdn.24h.com.vn/upload/1-2025/images/2025-02-13//1739410199-song-hye-kyo-di-lam-mac-kin-dao-bao-nhieu-la-o-nha-phong-khoang-bay-nhieu-_0_5_n-5204-441-width780height975.jpg"
     },
     {
-      "name": "Jeon Yeo-been",
+      "name": "Jeon Yeo-Been",
       "description": "Bạn bè",
       "time": "10w",
       "image":

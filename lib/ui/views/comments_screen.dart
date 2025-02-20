@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:olachat_mobile/ui/widgets/custom_sliver_to_box_adapter.dart';
 import 'package:olachat_mobile/ui/widgets/social_header.dart';
 
+import '../../data/models/post.dart';
+import '../../data/models/user.dart';
+import '../widgets/list_post.dart';
+
 class CommentsScreen extends StatefulWidget {
   const CommentsScreen({super.key});
 
@@ -10,22 +14,46 @@ class CommentsScreen extends StatefulWidget {
 }
 
 class _CommentsScreenState extends State<CommentsScreen> {
+  List<Post> posts = [
+    Post(
+      user: User(
+        avatarUrl:
+            "https://netizenturkey.net/wp-content/uploads/2023/12/1703066681-20231220-gdragon.jpg",
+        userName: "G-Dragon",
+        nickName: "Anh Long !!!",
+      ),
+      postTime: "7 hours ago",
+      postContent:
+          "À, cái hôm đó mà bảo mình rap dis MAMA, thật ra là mình chỉ muốn nói: ‘Chắc các bạn không hiểu đâu, nhưng tôi chỉ đang... cho các bạn thấy một chút 'tình yêu' thôi mà!’ 사실, 나는 그냥 사랑을 보여주고 싶었어 😎🎤",
+      likeCount: 270,
+      dislikeCount: 15,
+    ),
+  ];
+
   final List<Map<String, String>> comments = [
     {
-      "name": "Nguyễn Anh Khoa",
-      "comment": "Bạn có bán khóa học giải thuật không?",
+      "name": "Sơn Tùng - MTP",
+      "comment": "MAMA gọi anh bằng điện thoại :v",
+      "avatarUrl":
+          "https://cdn-media.sforum.vn/storage/app/media/thanhhuyen/%E1%BA%A3nh%20s%C6%A1n%20t%C3%B9ng%20mtp/anh-son-tung-mtp-thumb.jpg"
     },
     {
-      "name": "Hoàng Nguyễn",
-      "comment": "Bán j khai mau 🐧",
+      "name": "Sobin Hoàng Sơn",
+      "comment": "Anh Long mãi đỉnhhhh 🐧",
+      "avatarUrl":
+          "https://photo.znews.vn/w660/Uploaded/qfssu/2024_08_09/449848825_1045702913582606_2575891357318997780_n.jpg"
     },
     {
-      "name": "Nguyễn Thương",
-      "comment": "không dám lộ diện sợ bị chửi .",
+      "name": "Chi Dân",
+      "comment": "Comback đi anh ơiiii .",
+      "avatarUrl":
+          "https://media-cdn-v2.laodong.vn/storage/newsportal/2024/11/10/1419511/Chidan.jpg"
     },
     {
-      "name": "Lư Hậu",
-      "comment": "Xin cái địa chỉ",
+      "name": "Lê Dương Bảo Lâm",
+      "comment": "Quá đãaaaa",
+      "avatarUrl":
+          "https://cdn.tuoitre.vn/thumb_w/480/471584752817336320/2023/2/14/le-duong-bao-lam-16763797843941535506737.jpg"
     },
   ];
 
@@ -36,21 +64,30 @@ class _CommentsScreenState extends State<CommentsScreen> {
       backgroundColor: Colors.white,
       body: CustomScrollView(
         slivers: [
+          // View - Header
           SocialHeader(),
           CustomSliverToBoxAdapter(),
+
+          // View - Post
+          ListPost(posts: posts, showCommentButton: false,),
+          CustomSliverToBoxAdapter(),
+
+          // View - Comment
           SliverList(
             delegate: SliverChildBuilderDelegate(
               (BuildContext context, int index) {
                 return Padding(
                   padding: const EdgeInsets.symmetric(
-                      vertical: 10.0, horizontal: 16.0),
+                      vertical: 2.0, horizontal: 10.0),
                   child: Card(
+                    color: Color(0xFFF1F4F9),
                     elevation: 3,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 5, horizontal: 24),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -58,11 +95,10 @@ class _CommentsScreenState extends State<CommentsScreen> {
                             children: [
                               CircleAvatar(
                                 radius: 18,
-                                backgroundColor: Colors.grey[300],
-                                child: Icon(
-                                  Icons.person,
-                                  color: Colors.white,
+                                backgroundImage: NetworkImage(
+                                  comments[index]["avatarUrl"]!,
                                 ),
+                                onBackgroundImageError: (_, __) => Icon(Icons.error),
                               ),
                               SizedBox(width: 10),
                               Text(

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:olachat_mobile/ui/widgets/custom_sliver_to_box_adapter.dart';
-import 'package:olachat_mobile/ui/widgets/post_widget.dart';
+import 'package:olachat_mobile/ui/widgets/list_post.dart';
 import 'package:olachat_mobile/ui/widgets/social_header.dart';
 
 import '../../data/models/post.dart';
@@ -161,7 +161,7 @@ class _FeedScreenState extends State<FeedScreen> {
           CustomSliverToBoxAdapter(),
 
           // View 3 - List Post
-          PostWidget(posts: posts)
+          ListPost(posts: posts, showCommentButton: true,)
         ],
       ),
     );

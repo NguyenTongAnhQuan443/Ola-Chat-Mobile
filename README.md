@@ -26,3 +26,5 @@ samples, guidance on mobile development, and a full API reference.
 ![search_screen.png](assets%2Fdemo%2Fsearch_screen.png)
 ### 5. Notifications_Screen
 ![notifications_screen.png](assets%2Fdemo%2Fnotifications_screen.png)
+### 6. Comments_Screen
+![comments_screen.png](assets%2Fdemo%2Fcomments_screen.png)

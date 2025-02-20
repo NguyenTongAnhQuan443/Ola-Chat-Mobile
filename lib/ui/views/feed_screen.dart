@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:olachat_mobile/ui/views/comments_screen.dart';
 import 'package:olachat_mobile/ui/widgets/custom_sliver_to_box_adapter.dart';
+import 'package:olachat_mobile/ui/widgets/post_widget.dart';
 import 'package:olachat_mobile/ui/widgets/social_header.dart';
+
+import '../../data/models/post.dart';
+import '../../data/models/user.dart';
 
 class FeedScreen extends StatefulWidget {
   const FeedScreen({super.key});
@@ -11,10 +14,68 @@ class FeedScreen extends StatefulWidget {
 }
 
 class _FeedScreenState extends State<FeedScreen> {
-  List<String> posts = List.generate(
-      20,
-      (index) =>
-          "In today's fast-paced, digitally driven world, digital marketing is not just a strategy; it's a necessity for businesses of all sizes. - $index");
+  List<Post> posts = [
+    Post(
+      user: User(
+        avatarUrl:
+            "https://netizenturkey.net/wp-content/uploads/2023/12/1703066681-20231220-gdragon.jpg",
+        userName: "G-Dragon",
+        nickName: "Anh Long !!!",
+      ),
+      postTime: "7 hours ago",
+      postContent: "Bài viết của G-Dragon về âm nhạc!",
+      likeCount: 270,
+      dislikeCount: 15,
+    ),
+    Post(
+      user: User(
+        avatarUrl:
+        "https://netizenturkey.net/wp-content/uploads/2023/12/1703066681-20231220-gdragon.jpg",
+        userName: "G-Dragon",
+        nickName: "Anh Long !!!",
+      ),
+      postTime: "7 hours ago",
+      postContent: "Bài viết của G-Dragon về âm nhạc!",
+      likeCount: 270,
+      dislikeCount: 15,
+    ),
+    Post(
+      user: User(
+        avatarUrl:
+        "https://netizenturkey.net/wp-content/uploads/2023/12/1703066681-20231220-gdragon.jpg",
+        userName: "G-Dragon",
+        nickName: "Anh Long !!!",
+      ),
+      postTime: "7 hours ago",
+      postContent: "Bài viết của G-Dragon về âm nhạc!",
+      likeCount: 270,
+      dislikeCount: 15,
+    ),
+    Post(
+      user: User(
+        avatarUrl:
+        "https://netizenturkey.net/wp-content/uploads/2023/12/1703066681-20231220-gdragon.jpg",
+        userName: "G-Dragon",
+        nickName: "Anh Long !!!",
+      ),
+      postTime: "7 hours ago",
+      postContent: "Bài viết của G-Dragon về âm nhạc!",
+      likeCount: 270,
+      dislikeCount: 15,
+    ),
+    Post(
+      user: User(
+        avatarUrl:
+        "https://netizenturkey.net/wp-content/uploads/2023/12/1703066681-20231220-gdragon.jpg",
+        userName: "G-Dragon",
+        nickName: "Anh Long !!!",
+      ),
+      postTime: "7 hours ago",
+      postContent: "Bài viết của G-Dragon về âm nhạc!",
+      likeCount: 270,
+      dislikeCount: 15,
+    ),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -100,86 +161,7 @@ class _FeedScreenState extends State<FeedScreen> {
           CustomSliverToBoxAdapter(),
 
           // View 3 - List Post
-          SliverList(
-            delegate: SliverChildBuilderDelegate(
-              (context, index) {
-                return Card(
-                  color: Colors.white,
-                  margin: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-                  child: Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        ListTile(
-                          leading: CircleAvatar(
-                            backgroundImage: NetworkImage(
-                              "https://netizenturkey.net/wp-content/uploads/2023/12/1703066681-20231220-gdragon.jpg",
-                            ),
-                            onBackgroundImageError: (_, __) =>
-                                Icon(Icons.error),
-                          ),
-                          title: Text(
-                            "G-Dragon",
-                            style: TextStyle(
-                                fontSize: 14, fontWeight: FontWeight.bold),
-                          ),
-                          subtitle: Text("Anh Long !!!",
-                              style:
-                                  TextStyle(fontSize: 12, color: Colors.grey)),
-                          trailing: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Icon(Icons.more_horiz, size: 20),
-                              Text("7 hours ago",
-                                  style: TextStyle(
-                                      fontSize: 12, color: Colors.grey)),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          posts[index],
-                          style: TextStyle(fontSize: 14),
-                        ),
-                        const SizedBox(height: 12),
-                        Divider(),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            TextButton.icon(
-                              onPressed: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            CommentsScreen()));
-                              },
-                              icon: Icon(Icons.mode_comment_outlined,
-                                  size: 20, color: Colors.grey),
-                              label: Text("Comment",
-                                  style: TextStyle(color: Colors.grey)),
-                            ),
-                            Row(
-                              children: [
-                                Text("270 Likes",
-                                    style: TextStyle(color: Colors.grey)),
-                                const SizedBox(width: 8),
-                                Icon(Icons.thumb_up_alt_outlined,
-                                    size: 20, color: Colors.grey),
-                              ],
-                            )
-                          ],
-                        )
-                      ],
-                    ),
-                  ),
-                );
-              },
-              childCount: posts.length,
-            ),
-          ),
+          PostWidget(posts: posts)
         ],
       ),
     );

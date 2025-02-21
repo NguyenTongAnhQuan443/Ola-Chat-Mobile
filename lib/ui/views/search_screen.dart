@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:olachat_mobile/ui/widgets/custom_sliver_to_box_adapter.dart';
+import 'package:olachat_mobile/ui/widgets/social_header.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
@@ -38,67 +40,77 @@ class _SearchScreenState extends State<SearchScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        automaticallyImplyLeading: false,
+      body: CustomScrollView(
+        slivers: [
+          // View 1 - Header
+          SocialHeader(),
+          CustomSliverToBoxAdapter(),
 
-        // View 1 - TextField
-        title: SizedBox(
-          height: 44,
-          child: TextField(
-            controller: _controller,
-            decoration: InputDecoration(
-                prefixIcon: Icon(
-                  Icons.search,
-                  color: Colors.grey,
-                  size: 20,
+          //   View 2 - TextField Search
+          SliverToBoxAdapter(
+            child: SizedBox(
+              height: 44,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: TextField(
+                  controller: _controller,
+                  decoration: InputDecoration(
+                      prefixIcon: Icon(
+                        Icons.search,
+                        color: Colors.grey,
+                        size: 20,
+                      ),
+                      hintText: "Search",
+                      hintStyle: TextStyle(color: Colors.grey, fontSize: 14),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide(color: Colors.grey),
+                      ),
+                      filled: true,
+                      fillColor: Colors.white,
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.grey, width: 2.0),
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.grey, width: 2.0),
+                        borderRadius: BorderRadius.circular(10.0),
+                      )),
                 ),
-                hintText: "Search",
-                hintStyle: TextStyle(color: Colors.grey, fontSize: 14),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: BorderSide(color: Colors.grey),
-                ),
-                filled: true,
-                fillColor: Colors.grey[200],
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.grey, width: 2.0),
-                  borderRadius: BorderRadius.circular(10.0),
-                )),
-          ),
-        ),
-      ),
-
-      // View 2 - Search Results
-      body: ListView.builder(
-        itemCount: notifications.length,
-        itemBuilder: (context, index) {
-          var notification = notifications[index];
-          return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: Card(
-              color: Colors.white,
-              child: ListTile(
-                leading: CircleAvatar(
-                  radius: 20,
-                  backgroundImage: NetworkImage(notification["image"]!),
-                ),
-                title: Text(
-                  notification["name"]!,
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-                ),
-                subtitle: Text(notification["description"]!),
-                trailing: 
-                // Text(
-                //   notification["time"]!,
-                //   style: TextStyle(color: Colors.grey),
-                // ),
-                Icon(Icons.arrow_forward_outlined)
               ),
             ),
-          );
-        },
+          ),
+          CustomSliverToBoxAdapter(),
+
+          // View 3 - List Notification
+          SliverList(
+            delegate: SliverChildBuilderDelegate(
+              (context, index) {
+                var notification = notifications[index];
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: Card(
+                    color: Colors.white,
+                    child: ListTile(
+                      leading: CircleAvatar(
+                        radius: 20,
+                        backgroundImage: NetworkImage(notification["image"]!),
+                      ),
+                      title: Text(
+                        notification["name"]!,
+                        style: TextStyle(
+                            fontSize: 14, fontWeight: FontWeight.bold),
+                      ),
+                      subtitle: Text(notification["description"]!),
+                      trailing: Icon(Icons.arrow_forward_outlined),
+                    ),
+                  ),
+                );
+              },
+              childCount: notifications.length,
+            ),
+          ),
+        ],
       ),
     );
   }

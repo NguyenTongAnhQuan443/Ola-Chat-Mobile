@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 import '../widgets/custom_sliver_to_box_adapter.dart';
 import '../widgets/social_header.dart';
 
-class ProfileMyPostsScreen extends StatefulWidget {
-  const ProfileMyPostsScreen({super.key});
+class ProfileScreen extends StatefulWidget {
+  const ProfileScreen({super.key});
 
   @override
-  State<ProfileMyPostsScreen> createState() => _ProfileMyPostsScreenState();
+  State<ProfileScreen> createState() => _ProfileState();
 }
 
-class _ProfileMyPostsScreenState extends State<ProfileMyPostsScreen> {
+class _ProfileState extends State<ProfileScreen> {
   int selectedIndex = 0;
 
   @override

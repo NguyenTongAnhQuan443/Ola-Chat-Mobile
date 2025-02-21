@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:olachat_mobile/data/models/post.dart';
+import 'package:olachat_mobile/ui/views/settings_screen.dart';
 
 import '../../data/models/user.dart';
 import '../widgets/custom_sliver_to_box_adapter.dart';
@@ -302,12 +303,9 @@ Widget buildView_3(int selectedIndex, List<Post> myPosts, savePosts) {
         showCommentButton: true,
       );
     case 2:
-      return Center(
-        child: Text(
-          "Cài đặt tài khoản",
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-        ),
-      );
+     return SliverToBoxAdapter(
+       child: SettingsScreen(),
+     );
     default:
       return SizedBox.shrink(); // Nếu không khớp case nào, ẩn đi
   }

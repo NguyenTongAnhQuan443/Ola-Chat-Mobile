@@ -31,4 +31,10 @@ samples, guidance on mobile development, and a full API reference.
 ### 7.1 Profile - My Posts
 ![profile_my_posts_screen.png](assets%2Fdemo%2Fprofile_my_posts_screen.png)
 ### 7.2 Profile - Save Posts Screen
-![profile_save_post_screen.png](assets%2Fdemo%2Fprofile_save_post_screen.png)
+![profile_save_posts_screen.png](assets%2Fdemo%2Fprofile_save_posts_screen.png)
+### 7.3 Profile - Settings - Genneral
+![profile_settings_general_screen.png](assets%2Fdemo%2Fprofile_settings_general_screen.png)
+### 7.4 Profile - Settings - Account
+![profile_settings_account_screen.png](assets%2Fdemo%2Fprofile_settings_account_screen.png)
+### 7.4 Profile - Settings - Logout
+![profile_settings_logout_screen.png](assets%2Fdemo%2Fprofile_settings_logout_screen.png)

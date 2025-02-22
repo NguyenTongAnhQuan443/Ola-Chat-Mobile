@@ -38,3 +38,5 @@ samples, guidance on mobile development, and a full API reference.
 ![profile_settings_account_screen.png](assets%2Fdemo%2Fprofile_settings_account_screen.png)
 ### 7.4 Profile - Settings - Logout
 ![profile_settings_logout_screen.png](assets%2Fdemo%2Fprofile_settings_logout_screen.png)
+### 8 Message List Screen
+![message_list_screen.png](assets%2Fdemo%2Fmessage_list_screen.png)

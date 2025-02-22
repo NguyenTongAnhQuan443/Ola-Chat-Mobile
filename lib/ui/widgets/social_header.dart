@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:olachat_mobile/ui/views/message_list_screen.dart';
 
 import '../../core/utils/constants.dart';
 
@@ -32,7 +33,10 @@ class SocialHeader extends StatelessWidget {
             ),
             InkWell(
               onTap: () {
-                print("Send icon clicked!");
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => MessageListScreen()));
               },
               child: Image.asset(
                 'assets/icons/Send.png',

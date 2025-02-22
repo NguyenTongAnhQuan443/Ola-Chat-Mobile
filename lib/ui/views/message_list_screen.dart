@@ -65,13 +65,14 @@ class _MessageListScreenState extends State<MessageListScreen> {
                         Icon(
                           Icons.create_outlined,
                           size: 20,
+                          color: Colors.black54,
                         ),
                         SizedBox(width: 10),
                         Text(
                           'New Message',
                           style: TextStyle(
                             fontSize: 14,
-                            color: Colors.black54, // Chữ màu đen
+                            color: Colors.black54,
                           ),
                         ),
                       ],
@@ -89,6 +90,7 @@ class _MessageListScreenState extends State<MessageListScreen> {
                     padding: const EdgeInsets.symmetric(vertical: 6),
                     child: ListTile(
                       leading: CircleAvatar(
+                        radius: 24,
                         backgroundImage: NetworkImage(message['avatarUrl']!),
                       ),
                       title: Text(

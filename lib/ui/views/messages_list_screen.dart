@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:olachat_mobile/ui/widgets/custom_sliver_to_box_adapter.dart';
 import 'package:olachat_mobile/ui/widgets/social_header.dart';
 
-class MessageListScreen extends StatefulWidget {
-  const MessageListScreen({super.key});
+class MessagesListScreen extends StatefulWidget {
+  const MessagesListScreen({super.key});
 
   @override
-  State<MessageListScreen> createState() => _MessageListScreenState();
+  State<MessagesListScreen> createState() => _MessageListScreenState();
 }
 
-class _MessageListScreenState extends State<MessageListScreen> {
+class _MessageListScreenState extends State<MessagesListScreen> {
   final List<Map<String, String>> messages = [
     {
       'name': 'Kim Taehyung (V)',
@@ -17,6 +17,7 @@ class _MessageListScreenState extends State<MessageListScreen> {
           'Chào bạn! Mình vừa xem ảnh mới nhất của bạn. Bạn trông đẹp trai quá! Chúng ta gặp nhau sớm nhé!',
       'avatarUrl':
           'https://media-cdn-v2.laodong.vn/Storage/NewsPortal/2022/4/15/1034501/BTS-V-6.jpg',
+      "status": "online"
     },
     {
       'name': 'Jennie Kim',
@@ -24,6 +25,7 @@ class _MessageListScreenState extends State<MessageListScreen> {
           'Oppa ơi, bạn ngày càng đẹp trai! Cuối tuần này đi chơi cùng mình nhé!',
       'avatarUrl':
           'https://kenh14cdn.com/203336854389633024/2023/10/10/photo-14-16969313895451646555065.jpg',
+      "status": "online"
     },
     {
       'name': 'Park Jimin',
@@ -31,6 +33,7 @@ class _MessageListScreenState extends State<MessageListScreen> {
           'Wow, bạn trông thật rạng rỡ! Chúng ta gặp nhau đi, mình nhớ bạn lắm!',
       'avatarUrl':
           'https://kenh14cdn.com/2019/8/30/jimin-156714084317619046715.jpg',
+      "status": "offline"
     },
     {
       'name': 'IU (Lee Ji-eun)',
@@ -38,6 +41,7 @@ class _MessageListScreenState extends State<MessageListScreen> {
           'Bạn trông thật tuyệt vời! Đi uống cà phê và trò chuyện một chút nhé!',
       'avatarUrl':
           'https://photo.znews.vn/w660/Uploaded/qfssu/2022_12_31/IU_CNP_Laboratory_.jpeg',
+      "status": "online"
     },
   ];
 
@@ -89,9 +93,24 @@ class _MessageListScreenState extends State<MessageListScreen> {
                   return Padding(
                     padding: const EdgeInsets.symmetric(vertical: 6),
                     child: ListTile(
-                      leading: CircleAvatar(
-                        radius: 24,
-                        backgroundImage: NetworkImage(message['avatarUrl']!),
+                      leading: Stack(
+                        children: [
+                          CircleAvatar(
+                            radius: 24,
+                            backgroundImage:
+                                NetworkImage(message['avatarUrl']!),
+                          ),
+                          Positioned(
+                            bottom: 0,
+                            right: 0,
+                            child: CircleAvatar(
+                              radius: 6,
+                              backgroundColor: message['status'] == 'online'
+                                  ? Colors.green
+                                  : Colors.grey,
+                            ),
+                          ),
+                        ],
                       ),
                       title: Text(
                         message['name']!,

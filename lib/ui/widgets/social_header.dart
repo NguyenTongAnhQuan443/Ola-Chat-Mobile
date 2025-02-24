@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:olachat_mobile/ui/views/message_list_screen.dart';
+import 'package:olachat_mobile/ui/views/messages_list_screen.dart';
 
 import '../../core/utils/constants.dart';
 
@@ -36,7 +36,7 @@ class SocialHeader extends StatelessWidget {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => MessageListScreen()));
+                        builder: (context) => MessagesListScreen()));
               },
               child: Image.asset(
                 'assets/icons/Send.png',

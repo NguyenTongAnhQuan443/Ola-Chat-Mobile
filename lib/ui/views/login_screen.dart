@@ -3,6 +3,7 @@ import 'package:olachat_mobile/core/utils/constants.dart';
 import 'package:olachat_mobile/ui/views/signup_screen.dart';
 import 'package:olachat_mobile/ui/widgets/custom_social_button.dart';
 import '../widgets/custom_textfield.dart';
+import 'bottom_navigationbar_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -125,7 +126,13 @@ class _LoginScreenState extends State<LoginScreen> {
                           width: double.infinity,
                           height: 44,
                           child: ElevatedButton.icon(
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          BottomNavigationbarScreen()));
+                            },
                             label:
                                 Text("Log in", style: TextStyle(fontSize: 14)),
                             style: ElevatedButton.styleFrom(

@@ -10,9 +10,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-# Icons
+  # Icons
   cupertino_icons: ^1.0.8
-#  Provider
+  #  Provider
   provider: ^6.1.2
   dotted_border: ^2.1.0
 
@@ -21,7 +21,13 @@ dev_dependencies:
     sdk: flutter
 
   flutter_lints: ^5.0.0
+  # Lib Logo APP
+  flutter_launcher_icons: ^0.14.3
 
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/icons/app_icon.png"  # Logo APP
 flutter:
 
   uses-material-design: true

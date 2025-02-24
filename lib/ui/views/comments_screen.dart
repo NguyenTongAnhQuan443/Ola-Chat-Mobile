@@ -57,88 +57,144 @@ class _CommentsScreenState extends State<CommentsScreen> {
     },
   ];
 
+  final TextEditingController _commentController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
       backgroundColor: Colors.white,
-      body: CustomScrollView(
-        slivers: [
-          // View - Header
-          SocialHeader(),
-          CustomSliverToBoxAdapter(),
+      body: Column(
+        children: [
+          Expanded(
+            child: CustomScrollView(
+              slivers: [
+                // View - Header
+                SocialHeader(),
+                CustomSliverToBoxAdapter(),
 
-          // View - Post
-          ListPost(posts: posts, showCommentButton: false,),
-          CustomSliverToBoxAdapter(),
+                // View - Post
+                ListPost(posts: posts, showCommentButton: false),
+                CustomSliverToBoxAdapter(),
 
-          // View - Comment
-          SliverList(
-            delegate: SliverChildBuilderDelegate(
-              (BuildContext context, int index) {
-                return Padding(
-                  padding: const EdgeInsets.symmetric(
-                      vertical: 2.0, horizontal: 10.0),
-                  child: Card(
-                    color: Color(0xFFF1F4F9),
-                    elevation: 3,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 5, horizontal: 24),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              CircleAvatar(
-                                radius: 18,
-                                backgroundImage: NetworkImage(
-                                  comments[index]["avatarUrl"]!,
+                // View - Comment
+                SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (BuildContext context, int index) {
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 2.0, horizontal: 10.0),
+                        child: Card(
+                          color: Color(0xFFF1F4F9),
+                          elevation: 3,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 5, horizontal: 24),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    CircleAvatar(
+                                      radius: 18,
+                                      backgroundImage: NetworkImage(
+                                        comments[index]["avatarUrl"]!,
+                                      ),
+                                      onBackgroundImageError: (_, __) =>
+                                          Icon(Icons.error),
+                                    ),
+                                    SizedBox(width: 10),
+                                    Text(
+                                      comments[index]["name"]!,
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                                onBackgroundImageError: (_, __) => Icon(Icons.error),
-                              ),
-                              SizedBox(width: 10),
-                              Text(
-                                comments[index]["name"]!,
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16,
+                                SizedBox(height: 8),
+                                Text(
+                                  comments[index]["comment"]!,
+                                  style: TextStyle(
+                                      fontSize: 14, color: Colors.black87),
                                 ),
-                              ),
-                            ],
+                                SizedBox(height: 8),
+                                Row(
+                                  children: [
+                                    IconButton(
+                                      icon: Icon(Icons.thumb_up_alt_outlined),
+                                      onPressed: () {},
+                                    ),
+                                    Text("39"),
+                                    SizedBox(width: 10),
+                                    IconButton(
+                                      icon: Icon(Icons.comment_outlined),
+                                      onPressed: () {},
+                                    ),
+                                    Text("1"),
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
-                          SizedBox(height: 8),
-                          Text(
-                            comments[index]["comment"]!,
-                            style:
-                                TextStyle(fontSize: 14, color: Colors.black87),
-                          ),
-                          SizedBox(height: 8),
-                          Row(
-                            children: [
-                              IconButton(
-                                icon: Icon(Icons.thumb_up_alt_outlined),
-                                onPressed: () {},
-                              ),
-                              Text("39"),
-                              SizedBox(width: 10),
-                              IconButton(
-                                icon: Icon(Icons.comment_outlined),
-                                onPressed: () {},
-                              ),
-                              Text("1"),
-                            ],
-                          ),
-                        ],
-                      ),
+                        ),
+                      );
+                    },
+                    childCount: comments.length,
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          // View Comment Input Section
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Row(
+              children: [
+                CircleAvatar(
+                  radius: 20,
+                  backgroundImage: NetworkImage(
+                    "https://kalbaronline.com/wp-content/uploads/2024/10/GD.jpg",
+                  ),
+                  onBackgroundImageError: (_, __) => Icon(Icons.error),
+                ),
+                SizedBox(width: 18),
+                Expanded(
+                  child: TextField(
+                    controller: _commentController,
+                    decoration: InputDecoration(
+                      hintText: "Write a comment...",
+                      hintStyle: TextStyle(color: Colors.grey),
+                      border: InputBorder.none,
+                      isDense: true,
+                      contentPadding: EdgeInsets.symmetric(
+                          vertical: 10.0, horizontal: 20.0),
                     ),
                   ),
-                );
-              },
-              childCount: comments.length,
+                ),
+                IconButton(
+                  icon: Icon(Icons.send),
+                  onPressed: () {
+                    // Handle the comment submission
+                    String comment = _commentController.text;
+                    if (comment.isNotEmpty) {
+                      setState(() {
+                        comments.add({
+                          "name": "Your Name",
+                          "comment": comment,
+                          "avatarUrl": "your_avatar_url"
+                        });
+                        _commentController.clear();
+                      });
+                    }
+                  },
+                ),
+              ],
             ),
           ),
         ],

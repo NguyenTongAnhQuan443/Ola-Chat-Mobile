@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:olachat_mobile/ui/widgets/custom_sliver_to_box_adapter.dart';
 import 'package:olachat_mobile/ui/widgets/social_header.dart';
 
+import 'messages_conversation_screen.dart';
+
 class MessagesListScreen extends StatefulWidget {
   const MessagesListScreen({super.key});
 
@@ -91,40 +93,49 @@ class _MessageListScreenState extends State<MessagesListScreen> {
                 (context, index) {
                   final message = messages[index];
                   return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 6),
-                    child: ListTile(
-                      leading: Stack(
-                        children: [
-                          CircleAvatar(
-                            radius: 24,
-                            backgroundImage:
-                                NetworkImage(message['avatarUrl']!),
+                      padding: const EdgeInsets.symmetric(vertical: 6),
+                      child: InkWell(
+                        child: ListTile(
+                          leading: Stack(
+                            children: [
+                              CircleAvatar(
+                                radius: 24,
+                                backgroundImage:
+                                    NetworkImage(message['avatarUrl']!),
+                              ),
+                              Positioned(
+                                bottom: 0,
+                                right: 0,
+                                child: CircleAvatar(
+                                  radius: 6,
+                                  backgroundColor: message['status'] == 'online'
+                                      ? Colors.green
+                                      : Colors.grey,
+                                ),
+                              ),
+                            ],
                           ),
-                          Positioned(
-                            bottom: 0,
-                            right: 0,
-                            child: CircleAvatar(
-                              radius: 6,
-                              backgroundColor: message['status'] == 'online'
-                                  ? Colors.green
-                                  : Colors.grey,
-                            ),
+                          title: Text(
+                            message['name']!,
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 14),
                           ),
-                        ],
-                      ),
-                      title: Text(
-                        message['name']!,
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 14),
-                      ),
-                      subtitle: Text(
-                        message['message']!,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      onTap: () {},
-                    ),
-                  );
+                          subtitle: Text(
+                            message['message']!,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    MessagesConversationScreen(),
+                              ),
+                            );
+                          },
+                        ),
+                      ));
                 },
                 childCount: messages.length,
               ),

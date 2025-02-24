@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:olachat_mobile/ui/views/messages_conversation_screen.dart';
 import 'package:olachat_mobile/ui/views/messages_list_screen.dart';
 
 import '../../core/utils/constants.dart';
@@ -28,7 +29,12 @@ class SocialHeader extends StatelessWidget {
                 ],
               ),
               onTap: () {
-                print("Send icon clicked SOCIAL!");
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => MessagesConversationScreen(),
+                  ),
+                );
               },
             ),
             InkWell(

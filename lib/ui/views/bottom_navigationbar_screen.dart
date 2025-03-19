@@ -4,15 +4,15 @@ import 'package:olachat_mobile/ui/views/notifications_screen.dart';
 import 'package:olachat_mobile/ui/views/profile_screen.dart';
 import 'package:olachat_mobile/ui/views/search_screen.dart';
 
-class BottomNavigationbarScreen extends StatefulWidget {
-  const BottomNavigationbarScreen({super.key});
+class BottomNavigationBarScreen extends StatefulWidget {
+  const BottomNavigationBarScreen({super.key});
 
   @override
-  State<BottomNavigationbarScreen> createState() =>
-      _BottomNavigationbarScreenState();
+  State<BottomNavigationBarScreen> createState() =>
+      _BottomNavigationBarScreenState();
 }
 
-class _BottomNavigationbarScreenState extends State<BottomNavigationbarScreen> {
+class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen> {
   int currentTab = 0;
   final List<Widget> screens = [
     FeedScreen(),

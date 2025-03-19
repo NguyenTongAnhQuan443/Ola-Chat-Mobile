@@ -127,11 +127,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           height: 44,
                           child: ElevatedButton(
                             onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          BottomNavigationbarScreen()));
+
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.black,

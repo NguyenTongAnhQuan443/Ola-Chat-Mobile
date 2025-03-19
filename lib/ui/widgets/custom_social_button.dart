@@ -3,9 +3,14 @@ import 'package:flutter/material.dart';
 class CustomSocialButton extends StatelessWidget {
   final String iconPath;
   final String nameButton;
+  final VoidCallback? onPressed;
 
-  const CustomSocialButton(
-      {super.key, required this.iconPath, required this.nameButton});
+  const CustomSocialButton({
+    required this.iconPath,
+    required this.nameButton,
+    this.onPressed,
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +18,7 @@ class CustomSocialButton extends StatelessWidget {
       width: double.infinity,
       height: 44,
       child: ElevatedButton.icon(
-        onPressed: () {},
+        onPressed: onPressed,
         icon: Image.asset(
           iconPath,
           errorBuilder: (context, error, stackTrace) => Icon(

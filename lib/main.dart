@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:olachat_mobile/ui/views/login_screen.dart';
-import 'package:olachat_mobile/viewmodels/auth_viewmodel.dart';
+import 'package:olachat_mobile/viewmodels/auth_view_model.dart';
 import 'package:provider/provider.dart';
+import 'ui/views/login_screen.dart';
 
 void main() {
   runApp(
-    ChangeNotifierProvider(
-      create: (context) => AuthViewModel(),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => AuthViewModel()),
+      ],
       child: MyApp(),
     ),
   );

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Olachat</string>
+    <string name="facebook_app_id">1305964487147806</string>
+    <string name="facebook_client_token">5ad644e714421ad2008b2caa1d0859d3</string>
+    <string name="fb_login_protocol_scheme">fb1305964487147806</string>
+</resources>

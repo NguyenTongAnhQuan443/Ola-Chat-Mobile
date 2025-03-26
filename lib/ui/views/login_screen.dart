@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:olachat_mobile/core/utils/constants.dart';
 import 'package:olachat_mobile/ui/views/signup_screen.dart';
 import 'package:olachat_mobile/ui/widgets/custom_social_button.dart';
-import '../../viewmodels/auth_view_model.dart';
-import '../widgets/custom_textfield.dart';
-import 'bottom_navigationbar_screen.dart';
 import 'package:provider/provider.dart';
+import '../../view_models/login_view_model.dart';
+import '../widgets/custom_textfield.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -25,10 +24,23 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
-  void _showLoginErrorDialog(BuildContext context, String message) {
+  Future<void> _handleSocialLogin(
+      BuildContext context, Future<void> Function() loginMethod) async {
+    final viewModel = Provider.of<LoginViewModel>(context, listen: false);
+    await loginMethod();
+
+    if (viewModel.authResponse != null) {
+      print("Đăng nhập thành công! Token: ${viewModel.authResponse!.token}");
+      // TODO: chuyển trang hoặc lưu token
+    } else {
+      _showLoginErrorDialog(context, viewModel.errorMessage ?? "Có lỗi xảy ra");
+    }
+  }
+
+  _showLoginErrorDialog(BuildContext context, String message) {
     showDialog(
       context: context,
-      builder: (BuildContext context) {
+      builder: (context) {
         return Dialog(
           backgroundColor: Colors.white,
           shape: RoundedRectangleBorder(
@@ -40,31 +52,18 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Text(
-                  "Đăng nhập thất bại",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                  textAlign: TextAlign.center,
-                ),
+                const Text("Đăng nhập thất bại",
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                    textAlign: TextAlign.center),
                 const SizedBox(height: 10),
-                Text(
-                  message,
-                  style: const TextStyle(fontSize: 14, color: Colors.black54),
-                  textAlign: TextAlign.center,
-                ),
+                Text(message,
+                    style: const TextStyle(fontSize: 14, color: Colors.black54),
+                    textAlign: TextAlign.center),
                 const SizedBox(height: 20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    TextButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: const Text(
-                        "Thử lại",
-                        style: TextStyle(color: Colors.blue, fontSize: 16),
-                      ),
-                    ),
-                  ],
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: const Text("Thử lại",
+                      style: TextStyle(color: Colors.blue, fontSize: 16)),
                 ),
               ],
             ),
@@ -72,34 +71,6 @@ class _LoginScreenState extends State<LoginScreen> {
         );
       },
     );
-  }
-
-  void _handleLogin(BuildContext context) async {
-    final authViewModel = Provider.of<AuthViewModel>(context, listen: false);
-    final phone = phoneController.text.trim();
-    final password = passwordController.text.trim();
-
-    if (phone.isEmpty || password.isEmpty) {
-      _showLoginErrorDialog(context, "Vui lòng nhập đầy đủ thông tin!");
-      return;
-    }
-
-    try {
-      final response =
-          await authViewModel.loginWithPhoneNumber(phone, password);
-
-      if (response != null) {
-        // Thành công
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => BottomNavigationBarScreen()),
-        );
-      }
-    } catch (e) {
-      // Hiển thị popup khi đăng nhập thất bại
-      _showLoginErrorDialog(
-          context, e.toString().replaceFirst("Exception: Exception:", ""));
-    }
   }
 
   @override
@@ -138,13 +109,23 @@ class _LoginScreenState extends State<LoginScreen> {
                           const SizedBox(height: 5),
                           CustomSocialButton(
                             iconPath: "assets/icons/Google.png",
-                            nameButton: "Log in with Google",
-                            onPressed: () {},
+                            nameButton: "Đăng nhập với Google",
+                            onPressed: () =>
+                                _handleSocialLogin(context, () async {
+                              await Provider.of<LoginViewModel>(context,
+                                      listen: false)
+                                  .loginWithGoogle();
+                            }),
                           ),
                           CustomSocialButton(
-                            iconPath: "assets/icons/Email.png",
-                            nameButton: "Login with Email",
-                            onPressed: () {},
+                            iconPath: "assets/icons/Facebook.png",
+                            nameButton: "Đăng nhập với Facebook",
+                            onPressed: () =>
+                                _handleSocialLogin(context, () async {
+                              await Provider.of<LoginViewModel>(context,
+                                      listen: false)
+                                  .loginWithFacebook();
+                            }),
                           ),
                           const SizedBox(height: 5),
                           Row(
@@ -188,7 +169,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             alignment: Alignment.centerRight,
                             child: InkWell(
                               onTap: () {},
-                              child: const Text("Forget Password?",
+                              child: const Text("Quên mật khẩu?",
                                   style: TextStyle(
                                       color: Colors.grey, fontSize: 12)),
                             ),
@@ -206,11 +187,26 @@ class _LoginScreenState extends State<LoginScreen> {
                             width: double.infinity,
                             height: 44,
                             child: ElevatedButton.icon(
-                              // onPressed: () {
-                              //   print("ĐĂNG NHẬP BẰNG PHONE NUMBER");
-                              //
-                              // },
-                              onPressed: () => _handleLogin(context),
+                              onPressed: () async {
+                                final viewModel = Provider.of<LoginViewModel>(
+                                    context,
+                                    listen: false);
+                                await viewModel.loginWithPhone(
+                                  phoneController.text.trim(),
+                                  passwordController.text.trim(),
+                                );
+
+                                if (viewModel.authResponse != null) {
+                                  print(
+                                      'Đăng nhập số điện thoại thành công: ${viewModel.authResponse!.token}');
+                                  // TODO: Chuyển trang chính hoặc lưu token
+                                } else {
+                                  _showLoginErrorDialog(
+                                      context,
+                                      viewModel.errorMessage ??
+                                          'Có lỗi xảy ra');
+                                }
+                              },
                               label: const Text("Đăng nhập",
                                   style: TextStyle(fontSize: 14)),
                               style: ElevatedButton.styleFrom(
@@ -229,7 +225,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              const Text("Don't have an account?",
+                              const Text("Bạn chưa có tài khoản?",
                                   style: TextStyle(fontSize: 14)),
                               const SizedBox(width: 5),
                               InkWell(
@@ -240,7 +236,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                         builder: (context) => SignUpScreen()),
                                   );
                                 },
-                                child: const Text("Sign up",
+                                child: const Text("Đăng ký",
                                     style: TextStyle(
                                         fontSize: 14,
                                         fontWeight: FontWeight.bold,

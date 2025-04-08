@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:olachat_mobile/ui/views/SplashScreen.dart';
 import 'package:olachat_mobile/view_models/login_view_model.dart';
 import 'package:provider/provider.dart';
 import 'ui/views/login_screen.dart';
@@ -20,7 +21,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'OlaChat',
       debugShowCheckedModeBanner: false,
-      home: LoginScreen(),
+      home: const SplashScreen(),
     );
   }
 }

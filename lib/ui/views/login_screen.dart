@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:olachat_mobile/core/utils/constants.dart';
+import 'package:olachat_mobile/ui/views/feed_screen.dart';
 import 'package:olachat_mobile/ui/views/signup_screen.dart';
 import 'package:olachat_mobile/ui/widgets/custom_social_button.dart';
 import 'package:provider/provider.dart';
@@ -31,7 +32,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
     if (viewModel.authResponse != null) {
       print("Đăng nhập thành công! Token: ${viewModel.authResponse!.token}");
-      // TODO: chuyển trang hoặc lưu token
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const FeedScreen()),
+      );
     } else {
       _showLoginErrorDialog(context, viewModel.errorMessage ?? "Có lỗi xảy ra");
     }
@@ -188,25 +192,24 @@ class _LoginScreenState extends State<LoginScreen> {
                             height: 44,
                             child: ElevatedButton.icon(
                               onPressed: () async {
-                                final viewModel = Provider.of<LoginViewModel>(
-                                    context,
-                                    listen: false);
+                                final viewModel = Provider.of<LoginViewModel>(context, listen: false);
                                 await viewModel.loginWithPhone(
                                   phoneController.text.trim(),
                                   passwordController.text.trim(),
                                 );
 
                                 if (viewModel.authResponse != null) {
-                                  print(
-                                      'Đăng nhập số điện thoại thành công: ${viewModel.authResponse!.token}');
-                                  // TODO: Chuyển trang chính hoặc lưu token
+                                  print('Đăng nhập số điện thoại thành công: ${viewModel.authResponse!.token}');
+
+                                  Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => const FeedScreen()),
+                                  );
                                 } else {
-                                  _showLoginErrorDialog(
-                                      context,
-                                      viewModel.errorMessage ??
-                                          'Có lỗi xảy ra');
+                                  _showLoginErrorDialog(context, viewModel.errorMessage ?? 'Có lỗi xảy ra');
                                 }
                               },
+
                               label: const Text("Đăng nhập",
                                   style: TextStyle(fontSize: 14)),
                               style: ElevatedButton.styleFrom(

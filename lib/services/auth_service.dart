@@ -5,28 +5,30 @@ import '../data/models/auth_model.dart';
 class AuthService {
   final String _baseUrl = 'http://10.0.2.2:8080/ola-chat/auth';
 
-  Future<AuthResponse> loginWithFacebook(String accessToken) async {
+  Future<AuthResponse> loginWithGoogle(String idToken, String deviceId) async {
     return await _postRequest(
-      endpoint: '/login/facebook',
-      body: {'accessToken': accessToken},
-      defaultError: 'Đăng nhập Facebook thất bại',
-    );
-  }
-
-  Future<AuthResponse> loginWithGoogle(String idToken) async {
-    return await _postRequest(
-      endpoint: '/login/google',
+      endpoint: '/login/google?deviceId=$deviceId',
       body: {'idToken': idToken},
       defaultError: 'Đăng nhập Google thất bại',
     );
   }
 
-  Future<AuthResponse> loginWithPhone(String username, String password) async {
+  Future<AuthResponse> loginWithFacebook(String accessToken, String deviceId) async {
+    return await _postRequest(
+      endpoint: '/login/facebook?deviceId=$deviceId',
+      body: {'accessToken': accessToken},
+      defaultError: 'Đăng nhập Facebook thất bại',
+    );
+  }
+
+
+  Future<AuthResponse> loginWithPhone(String username, String password, String deviceId) async {
     return await _postRequest(
       endpoint: '/login',
       body: {
         'username': username,
         'password': password,
+        'deviceId': deviceId,
       },
       defaultError: 'Đăng nhập thất bại',
     );
@@ -47,12 +49,15 @@ class AuthService {
 
       final responseBody = utf8.decode(response.bodyBytes);
       final data = jsonDecode(responseBody);
+      print('🔥 TOKEN FORMAT CHECK: ${data['data']['token']}');
 
       if (response.statusCode == 200 && data['data'] != null) {
-        return AuthResponse.fromJson(data['data']);
+        final auth = AuthResponse.fromJson(data['data']);
+        return auth;
       } else {
         throw Exception(data['message'] ?? defaultError);
       }
+
     } catch (e) {
       rethrow;
     }

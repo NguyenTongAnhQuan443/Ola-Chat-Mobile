@@ -24,9 +24,10 @@ dependencies:
   #  SharedPreferences
   shared_preferences: ^2.5.2
   #  device_info_plus
-  device_info_plus: ^10.0.1
+  device_info_plus: ^10.1.2
   # Login Facebook
   flutter_facebook_auth: ^7.1.1
+
 
   awesome_dialog: ^3.2.1
 

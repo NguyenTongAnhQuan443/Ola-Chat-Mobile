@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:olachat_mobile/core/utils/constants.dart';
-import 'package:olachat_mobile/ui/views/feed_screen.dart';
 import 'package:olachat_mobile/ui/views/signup_screen.dart';
 import 'package:olachat_mobile/ui/widgets/custom_social_button.dart';
 import 'package:provider/provider.dart';
 import '../../view_models/login_view_model.dart';
 import '../widgets/custom_textfield.dart';
+import 'bottom_navigationbar_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -34,7 +34,7 @@ class _LoginScreenState extends State<LoginScreen> {
       print("Đăng nhập thành công! Token: ${viewModel.authResponse!.token}");
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (_) => const FeedScreen()),
+        MaterialPageRoute(builder: (_) => const BottomNavigationBarScreen()),
       );
     } else {
       _showLoginErrorDialog(context, viewModel.errorMessage ?? "Có lỗi xảy ra");
@@ -203,7 +203,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                                   Navigator.pushReplacement(
                                     context,
-                                    MaterialPageRoute(builder: (context) => const FeedScreen()),
+                                    MaterialPageRoute(builder: (context) => const BottomNavigationBarScreen()),
                                   );
                                 } else {
                                   _showLoginErrorDialog(context, viewModel.errorMessage ?? 'Có lỗi xảy ra');

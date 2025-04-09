@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:olachat_mobile/ui/views/feed_screen.dart';
 import 'package:olachat_mobile/ui/views/login_screen.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+
+import 'bottom_navigationbar_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -40,7 +41,7 @@ class _SplashScreenState extends State<SplashScreen> {
     final isValid = body['success'] == true;
 
     if (res.statusCode == 200 && isValid) {
-      _goToFeed();
+      _goToBottomNavigationBarScreen();
     } else {
       _goToLogin();
     }
@@ -53,10 +54,10 @@ class _SplashScreenState extends State<SplashScreen> {
     );
   }
 
-  void _goToFeed() {
+  void _goToBottomNavigationBarScreen() {
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (_) => const FeedScreen()),
+      MaterialPageRoute(builder: (_) => const BottomNavigationBarScreen()),
     );
   }
 

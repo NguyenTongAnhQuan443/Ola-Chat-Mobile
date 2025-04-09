@@ -18,6 +18,8 @@ samples, guidance on mobile development, and a full API reference.
 ## Demo UI
 ### 1.Login Screen
 ![login_screen.png](assets%2Fdemo%2Flogin_screen.png)
+### 2.1 PhoneVerificationScreen 
+![PhoneVerificationScreen.png](assets%2Fdemo%2FPhoneVerificationScreen.png)
 ### 2. SignUp Screen
 ![signup_screen.png](assets%2Fdemo%2Fsignup_screen.png)
 ### 3. Feed_Screen

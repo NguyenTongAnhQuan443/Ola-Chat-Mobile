@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:olachat_mobile/core/utils/constants.dart';
-import 'package:olachat_mobile/ui/views/signup_screen.dart';
+import 'package:olachat_mobile/ui/views/PhoneVerificationScreen.dart';
 import 'package:olachat_mobile/ui/widgets/custom_social_button.dart';
 import 'package:provider/provider.dart';
 import '../../view_models/login_view_model.dart';
@@ -236,7 +236,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => SignUpScreen()),
+                                        builder: (context) => PhoneVerificationScreen()),
                                   );
                                 },
                                 child: const Text("Đăng ký",

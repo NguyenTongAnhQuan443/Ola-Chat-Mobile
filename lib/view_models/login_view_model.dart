@@ -6,7 +6,7 @@ import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../data/models/auth_model.dart';
+import '../data/models/auth_response.dart';
 import '../services/auth_service.dart';
 
 class LoginViewModel extends ChangeNotifier {
@@ -15,7 +15,7 @@ class LoginViewModel extends ChangeNotifier {
 
   LoginViewModel({AuthService? authService})
       : _authService = authService ?? AuthService() {
-    _initDeviceId(); // gọi khi khởi tạo ViewModel
+    _initDeviceId();
   }
 
   Future<void> _initDeviceId() async {
@@ -53,7 +53,10 @@ class LoginViewModel extends ChangeNotifier {
       // 🔐 Lưu token
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString('access_token', _authResponse!.token);
-      print('✅ Token đã lưu: ${_authResponse!.token}');
+      await prefs.setString('refresh_token', _authResponse!.refreshToken);
+      print('   🔐 access: ${_authResponse!.token}');
+      print('   ♻️ refresh: ${_authResponse!.refreshToken}');
+
     } catch (e, stack) {
       print('❌ Lỗi đăng nhập: $e');
       _errorMessage = e.toString();
@@ -106,4 +109,32 @@ class LoginViewModel extends ChangeNotifier {
   Future<void> loginWithPhone(String username, String password) async {
     await _handleLogin(() => _authService.loginWithPhone(username, password, deviceId));
   }
+
+  Future<void> logout() async {
+    final prefs = await SharedPreferences.getInstance();
+    final accessToken = prefs.getString('access_token');
+    final refreshToken = prefs.getString('refresh_token');
+
+    print('🧾 accessToken: $accessToken');
+    print('🧾 refreshToken: $refreshToken');
+
+    if (accessToken == null || refreshToken == null) {
+      _errorMessage = 'Không tìm thấy accessToken hoặc refreshToken';
+      notifyListeners();
+      return;
+    }
+
+    try {
+      await _authService.logout(accessToken, refreshToken);
+      await prefs.remove('access_token');
+      await prefs.remove('refresh_token');
+
+      print('✅ Logout thành công');
+    } catch (e) {
+      _errorMessage = 'Lỗi khi gọi API logout: $e';
+      notifyListeners();
+      rethrow;
+    }
+  }
+
 }

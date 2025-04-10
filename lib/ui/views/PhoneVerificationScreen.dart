@@ -6,6 +6,8 @@ import 'package:olachat_mobile/core/utils/constants.dart';
 import 'package:olachat_mobile/ui/views/signup_screen.dart';
 import 'package:olachat_mobile/ui/widgets/custom_textfield.dart';
 
+import '../../core/config/api_config.dart';
+
 class PhoneVerificationScreen extends StatefulWidget {
   const PhoneVerificationScreen({super.key});
 
@@ -18,7 +20,6 @@ class _PhoneVerificationScreenState extends State<PhoneVerificationScreen> {
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController otpController = TextEditingController();
   bool isOtpSent = false;
-  final String baseUrl = "http://localhost:8080/ola-chat";
 
   void _showSnack(String message) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
@@ -26,43 +27,55 @@ class _PhoneVerificationScreenState extends State<PhoneVerificationScreen> {
 
   Future<void> sendOtp() async {
     final phone = phoneController.text.trim();
-    if (phone.isEmpty) return;
+    if (phone.isEmpty) {
+      _showSnack("Vui lòng nhập số điện thoại");
+      return;
+    }
 
-    final res = await http.post(
-      Uri.parse('$baseUrl/auth/request-otp'),
-      headers: {"Content-Type": "application/json"},
-      body: jsonEncode({"phoneNumber": phone}),
-    );
+    try {
+      final res = await http.post(
+        Uri.parse(ApiConfig.sendOtp),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({"phone": phone}),
+      );
 
-    if (res.statusCode == 200) {
-      setState(() => isOtpSent = true);
-      _showSnack("Mã OTP đã gửi về số điện thoại");
-    } else {
-      _showSnack("Không thể gửi OTP");
+      if (res.statusCode == 200) {
+        setState(() => isOtpSent = true);
+        _showSnack("Mã OTP đã gửi về số điện thoại");
+      } else {
+        _showSnack("Không thể gửi OTP. Mã lỗi: ${res.statusCode}");
+      }
+    } catch (e) {
+      _showSnack("Lỗi gửi OTP: $e");
     }
   }
 
   Future<void> verifyOtp() async {
     final phone = phoneController.text.trim();
     final otp = otpController.text.trim();
-    if (phone.isEmpty || otp.isEmpty) return;
+    if (phone.isEmpty || otp.isEmpty) {
+      _showSnack("Vui lòng nhập đầy đủ số điện thoại và mã OTP");
+      return;
+    }
 
-    final res = await http.post(
-      Uri.parse('$baseUrl/auth/verify-otp'),
-      headers: {"Content-Type": "application/json"},
-      body: jsonEncode({"phoneNumber": phone, "otp": otp}),
-    );
-
-    if (res.statusCode == 200) {
-      _showSnack("Xác thực thành công");
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (_) => SignUpScreen(phoneNumber: phone),
-        ),
+    try {
+      final res = await http.post(
+        Uri.parse(ApiConfig.verifyOtp),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({"phone": phone, "otp": otp}),
       );
-    } else {
-      _showSnack("OTP không hợp lệ hoặc đã hết hạn");
+
+      if (res.statusCode == 200) {
+        _showSnack("Xác thực thành công");
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => SignUpScreen(phoneNumber: phone)),
+        );
+      } else {
+        _showSnack("OTP không hợp lệ hoặc đã hết hạn. Mã lỗi: ${res.statusCode}");
+      }
+    } catch (e) {
+      _showSnack("Lỗi xác thực OTP: $e");
     }
   }
 
@@ -76,7 +89,7 @@ class _PhoneVerificationScreenState extends State<PhoneVerificationScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              // Header: Logo + Social
+              // Header
               Expanded(
                 flex: 1,
                 child: Row(
@@ -92,7 +105,7 @@ class _PhoneVerificationScreenState extends State<PhoneVerificationScreen> {
                 ),
               ),
 
-              // Nội dung chính
+              // Content
               Expanded(
                 flex: 9,
                 child: Column(

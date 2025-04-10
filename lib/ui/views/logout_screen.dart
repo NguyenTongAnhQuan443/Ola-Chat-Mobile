@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 import 'package:olachat_mobile/ui/views/login_screen.dart';
 import 'package:olachat_mobile/view_models/login_view_model.dart';
 
+import '../../main.dart';
+
 class LogoutScreen extends StatelessWidget {
   const LogoutScreen({super.key});
 
@@ -64,22 +66,21 @@ class LogoutScreen extends StatelessWidget {
                     ),
                     TextButton(
                       onPressed: () {
-                        // Đóng dialog trước
                         Navigator.of(dialogContext).pop();
+                        final viewModel = Provider.of<LoginViewModel>(context, listen: false);
 
-                        // Chờ 1 khung hình để đảm bảo tree ổn định
                         Future.delayed(Duration.zero, () async {
-                          final viewModel = Provider.of<LoginViewModel>(context, listen: false);
                           try {
                             await viewModel.logout();
-
-                            Navigator.of(context).pushAndRemoveUntil(
+                            navigatorKey.currentState?.pushAndRemoveUntil(
                               MaterialPageRoute(builder: (_) => const LoginScreen()),
                                   (route) => false,
                             );
                           } catch (e) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text(viewModel.errorMessage ?? 'Đăng xuất thất bại')),
+                            scaffoldMessengerKey.currentState?.showSnackBar(
+                              SnackBar(
+                                content: Text(viewModel.errorMessage ?? 'Đăng xuất thất bại'),
+                              ),
                             );
                           }
                         });
@@ -89,6 +90,7 @@ class LogoutScreen extends StatelessWidget {
                         style: TextStyle(color: Colors.redAccent, fontSize: 16),
                       ),
                     ),
+
 
                   ],
                 ),

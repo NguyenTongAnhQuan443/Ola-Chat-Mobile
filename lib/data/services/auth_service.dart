@@ -1,5 +1,5 @@
-import '../core/utils/ApiClient.dart';
-import '../data/models/auth_response.dart';
+import '../../core/utils/api_client.dart';
+import '../models/auth_response.dart';
 
 class AuthService {
   final ApiClient _apiClient = ApiClient();

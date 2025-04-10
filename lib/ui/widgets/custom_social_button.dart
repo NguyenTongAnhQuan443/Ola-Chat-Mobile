@@ -9,8 +9,8 @@ class CustomSocialButton extends StatelessWidget {
     required this.iconPath,
     required this.nameButton,
     this.onPressed,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {

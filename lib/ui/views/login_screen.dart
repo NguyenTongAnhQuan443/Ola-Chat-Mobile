@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:olachat_mobile/core/utils/constants.dart';
-import 'package:olachat_mobile/ui/views/phone_verification_screen.dart';
 import 'package:olachat_mobile/ui/views/signup_screen.dart';
 import 'package:olachat_mobile/ui/widgets/custom_social_button.dart';
 import 'package:provider/provider.dart';
-import '../../view_models/login_view_model.dart';
+import '../../view_models/LoginViewModel.dart';
 import '../widgets/custom_textfield.dart';
 import 'bottom_navigationbar_screen.dart';
 

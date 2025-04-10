@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:olachat_mobile/ui/views/login_screen.dart';
-import 'package:olachat_mobile/view_models/login_view_model.dart';
 
 import '../../main.dart';
+import '../../view_models/LoginViewModel.dart';
 
 class LogoutScreen extends StatelessWidget {
   const LogoutScreen({super.key});

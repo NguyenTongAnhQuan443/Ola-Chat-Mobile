@@ -15,7 +15,7 @@ void main() {
       providers: [
         ChangeNotifierProvider(create: (_) => LoginViewModel()),
         ChangeNotifierProvider(create: (_) => PhoneVerificationViewModel()),
-        ChangeNotifierProvider(create: (_) => SignupViewModel())
+        ChangeNotifierProvider(create: (_) => SignUpViewModel())
       ],
       child: MyApp(),
     ),

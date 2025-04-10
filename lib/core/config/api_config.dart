@@ -10,6 +10,6 @@ class ApiConfig {
   static const String loginPhone = "$base/auth/login";
   static const String loginGoogle = "$base/auth/login/google";
   static const String loginFacebook = "$base/auth/login/facebook";
-  static const String register = "$base/auth/register";
   static const String logout = "$base/auth/logout";
+  static const String register = "$host/ola-chat/api/users";
 }

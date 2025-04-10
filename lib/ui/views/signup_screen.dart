@@ -8,7 +8,9 @@ import 'package:olachat_mobile/ui/widgets/custom_social_button.dart';
 import 'package:olachat_mobile/ui/widgets/custom_textfield.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart'
     as dp;
+import 'package:provider/provider.dart';
 
+import '../../view_models/signup_view_model.dart';
 import '../widgets/custom_date_picker_field.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -84,57 +86,42 @@ class _SignUpScreenState extends State<SignUpScreen> {
     final email = emailController.text.trim();
     final password = passwordController.text.trim();
 
-    if (displayName.isEmpty ||
-        email.isEmpty ||
-        password.isEmpty ||
-        selectedDob == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Vui lòng nhập đầy đủ thông tin")),
-      );
+    if (displayName.isEmpty || email.isEmpty || password.isEmpty || selectedDob == null) {
+      showSnackbar("Vui lòng nhập đầy đủ thông tin");
       return;
     }
 
     if (!isAtLeast18YearsOld(selectedDob!)) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Bạn phải đủ 18 tuổi để đăng ký")),
-      );
+      showSnackbar("Bạn phải đủ 18 tuổi để đăng ký");
       return;
     }
 
-    try {
-      final response = await http.post(
-        Uri.parse("http://10.0.2.2:8080/ola-chat/auth/register"),
-        headers: {"Content-Type": "application/json"},
-        body: jsonEncode({
-          "phone": widget.phoneNumber,
-          "username": widget.phoneNumber,
-          "password": password,
-          "displayName": displayName,
-          "email": email,
-          "dob": selectedDob!.toIso8601String(),
-        }),
-      );
+    final data = {
+      "username":  widget.phoneNumber,
+      "password": password,
+      "displayName": displayName,
+      "email": email,
+      "dob": DateFormat('dd/MM/yyyy').format(selectedDob!),
+    };
 
-      if (response.statusCode == 200) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Đăng ký thành công")),
-        );
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-              builder: (context) => const BottomNavigationBarScreen()),
-        );
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Đăng ký thất bại: ${response.statusCode}")),
-        );
-      }
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Lỗi khi đăng ký: $e")),
+    final viewModel = context.read<SignUpViewModel>();
+    final success = await viewModel.register(data);
+
+    if (success) {
+      showSnackbar("Đăng ký thành công");
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const BottomNavigationBarScreen()),
       );
+    } else {
+      showSnackbar(viewModel.errorMessage ?? "Đăng ký thất bại");
     }
   }
+
+  void showSnackbar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+  }
+
 
   @override
   Widget build(BuildContext context) {

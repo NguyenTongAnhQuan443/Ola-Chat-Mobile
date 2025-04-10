@@ -236,7 +236,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => SignUpScreen(phoneNumber: "09")),
+                                        builder: (context) => SignUpScreen(phoneNumber: "0090000000")),
                                   );
                                 },
                                 child: const Text("Đăng ký",

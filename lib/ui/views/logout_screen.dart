@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:olachat_mobile/ui/views/login_screen.dart';
 
 import '../../main.dart';
-import '../../view_models/LoginViewModel.dart';
+import '../../view_models/login_view_model.dart';
 
 class LogoutScreen extends StatelessWidget {
   const LogoutScreen({super.key});

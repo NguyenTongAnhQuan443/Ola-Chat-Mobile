@@ -5,11 +5,13 @@ import 'general_settings_screen.dart';
 import 'logout_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
+  const SettingsScreen({super.key});
+
   @override
-  _SettingsScreenState createState() => _SettingsScreenState();
+  SettingsScreenState createState() => SettingsScreenState();
 }
 
-class _SettingsScreenState extends State<SettingsScreen>
+class SettingsScreenState extends State<SettingsScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
@@ -31,25 +33,22 @@ class _SettingsScreenState extends State<SettingsScreen>
       height: MediaQuery.of(context).size.height * 0.7,
       child: Column(
         children: [
-          // TabBar
           TabBar(
             controller: _tabController,
             labelColor: Colors.black,
             unselectedLabelColor: Colors.grey,
             indicatorColor: Colors.blue,
             dividerColor: Colors.white,
-            tabs: [
+            tabs: const [
               Tab(text: "General"),
               Tab(text: "Account"),
               Tab(text: "Logout"),
             ],
           ),
-
-          // Content TabBar
           Expanded(
             child: TabBarView(
               controller: _tabController,
-              children: [
+              children: const [
                 GeneralSettingsScreen(),
                 AccountSettingsScreen(),
                 LogoutScreen(),

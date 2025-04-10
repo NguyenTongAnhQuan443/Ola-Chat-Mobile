@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:olachat_mobile/ui/views/SplashScreen.dart';
+import 'package:olachat_mobile/ui/views/splash_screen.dart';
 import 'package:olachat_mobile/view_models/login_view_model.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';

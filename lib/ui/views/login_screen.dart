@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:olachat_mobile/core/utils/constants.dart';
-import 'package:olachat_mobile/ui/views/signup_screen.dart';
+import 'package:olachat_mobile/ui/views/phone_verification_screen.dart';
 import 'package:olachat_mobile/ui/widgets/custom_social_button.dart';
 import 'package:provider/provider.dart';
+import '../../main.dart';
 import '../../view_models/login_view_model.dart';
 import '../widgets/custom_textfield.dart';
+import '../widgets/dialog_helper.dart';
 import 'bottom_navigationbar_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -31,50 +33,12 @@ class _LoginScreenState extends State<LoginScreen> {
     await loginMethod();
 
     if (viewModel.authResponse != null) {
-      print("Đăng nhập thành công! Token: ${viewModel.authResponse!.token}");
-      Navigator.pushReplacement(
-        context,
+      navigatorKey.currentState?.pushReplacement(
         MaterialPageRoute(builder: (_) => const BottomNavigationBarScreen()),
       );
     } else {
-      _showLoginErrorDialog(context, viewModel.errorMessage ?? "Có lỗi xảy ra");
+      showGlobalLoginErrorDialog(viewModel.errorMessage ?? "Có lỗi xảy ra");
     }
-  }
-
-  _showLoginErrorDialog(BuildContext context, String message) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return Dialog(
-          backgroundColor: Colors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Container(
-            width: MediaQuery.of(context).size.width * 0.75,
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Text("Đăng nhập thất bại",
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                    textAlign: TextAlign.center),
-                const SizedBox(height: 10),
-                Text(message,
-                    style: const TextStyle(fontSize: 14, color: Colors.black54),
-                    textAlign: TextAlign.center),
-                const SizedBox(height: 20),
-                TextButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  child: const Text("Thử lại",
-                      style: TextStyle(color: Colors.blue, fontSize: 16)),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
   }
 
   @override
@@ -192,24 +156,34 @@ class _LoginScreenState extends State<LoginScreen> {
                             height: 44,
                             child: ElevatedButton.icon(
                               onPressed: () async {
-                                final viewModel = Provider.of<LoginViewModel>(context, listen: false);
+                                final viewModel = Provider.of<LoginViewModel>(
+                                    context,
+                                    listen: false);
                                 await viewModel.loginWithPhone(
                                   phoneController.text.trim(),
                                   passwordController.text.trim(),
                                 );
 
                                 if (viewModel.authResponse != null) {
-                                  print('Đăng nhập số điện thoại thành công: ${viewModel.authResponse!.token}');
-
-                                  Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(builder: (context) => const BottomNavigationBarScreen()),
+                                  navigatorKey.currentState?.pushReplacement(
+                                    MaterialPageRoute(
+                                        builder: (_) =>
+                                            const BottomNavigationBarScreen()),
                                   );
                                 } else {
-                                  _showLoginErrorDialog(context, viewModel.errorMessage ?? 'Có lỗi xảy ra');
+                                  if (viewModel.authResponse != null) {
+                                    navigatorKey.currentState?.pushReplacement(
+                                      MaterialPageRoute(
+                                          builder: (_) =>
+                                              const BottomNavigationBarScreen()),
+                                    );
+                                  } else {
+                                    showGlobalLoginErrorDialog(
+                                        viewModel.errorMessage ??
+                                            'Có lỗi xảy ra');
+                                  }
                                 }
                               },
-
                               label: const Text("Đăng nhập",
                                   style: TextStyle(fontSize: 14)),
                               style: ElevatedButton.styleFrom(
@@ -236,7 +210,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => SignUpScreen(phoneNumber: "0090000000")),
+                                        builder: (context) =>
+                                            PhoneVerificationScreen()),
                                   );
                                 },
                                 child: const Text("Đăng ký",

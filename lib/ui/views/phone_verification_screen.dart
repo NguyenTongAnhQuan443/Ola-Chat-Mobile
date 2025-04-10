@@ -1,12 +1,14 @@
 import 'dart:convert';
+import 'dart:core';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:http/http.dart' as http;
 import 'package:olachat_mobile/core/utils/constants.dart';
 import 'package:olachat_mobile/ui/views/signup_screen.dart';
 import 'package:olachat_mobile/ui/widgets/custom_textfield.dart';
-
 import '../../core/config/api_config.dart';
+import '../widgets/dialog_helper.dart';
+import '../widgets/show_snack_bar.dart';
 
 class PhoneVerificationScreen extends StatefulWidget {
   const PhoneVerificationScreen({super.key});
@@ -21,14 +23,11 @@ class _PhoneVerificationScreenState extends State<PhoneVerificationScreen> {
   final TextEditingController otpController = TextEditingController();
   bool isOtpSent = false;
 
-  void _showSnack(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
-  }
-
   Future<void> sendOtp() async {
     final phone = phoneController.text.trim();
-    if (phone.isEmpty) {
-      _showSnack("Vui lòng nhập số điện thoại");
+    if (!isValidPhone(phone)) {
+      showGlobalLoginErrorDialog(
+          "Số điện thoại không hợp lệ. Phải bắt đầu bằng số 0 và đủ 10 chữ số.");
       return;
     }
 
@@ -41,20 +40,22 @@ class _PhoneVerificationScreenState extends State<PhoneVerificationScreen> {
 
       if (res.statusCode == 200) {
         setState(() => isOtpSent = true);
-        _showSnack("Mã OTP đã gửi về số điện thoại");
+        showSuccessSnackBar(context, "Mã OTP đã gửi về số điện thoại");
       } else {
-        _showSnack("Không thể gửi OTP. Mã lỗi: ${res.statusCode}");
+        showGlobalLoginErrorDialog(
+            "Không thể gửi OTP. Mã lỗi: ${res.statusCode}");
       }
     } catch (e) {
-      _showSnack("Lỗi gửi OTP: $e");
+      showGlobalLoginErrorDialog("Lỗi gửi OTP: $e");
     }
   }
 
   Future<void> verifyOtp() async {
     final phone = phoneController.text.trim();
     final otp = otpController.text.trim();
-    if (phone.isEmpty || otp.isEmpty) {
-      _showSnack("Vui lòng nhập đầy đủ số điện thoại và mã OTP");
+
+    if (!isValidPhone(phone) || otp.isEmpty) {
+      showErrorSnackBar(context, "Vui lòng nhập đúng số điện thoại và mã OTP.");
       return;
     }
 
@@ -65,17 +66,23 @@ class _PhoneVerificationScreenState extends State<PhoneVerificationScreen> {
         body: jsonEncode({"phone": phone, "otp": otp}),
       );
 
-      if (res.statusCode == 200) {
-        _showSnack("Xác thực thành công");
+      final responseData = jsonDecode(utf8.decode(res.bodyBytes));
+
+      if (res.statusCode == 200 && responseData['success'] == true) {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (_) => SignUpScreen(phoneNumber: phone)),
+          MaterialPageRoute(
+            builder: (_) => SignUpScreen(phoneNumber: phone),
+          ),
         );
       } else {
-        _showSnack("OTP không hợp lệ hoặc đã hết hạn. Mã lỗi: ${res.statusCode}");
+        showErrorSnackBar(
+          context,
+          responseData['message'] ?? "OTP không hợp lệ hoặc đã hết hạn.",
+        );
       }
     } catch (e) {
-      _showSnack("Lỗi xác thực OTP: $e");
+      showErrorSnackBar(context, "Lỗi xác thực OTP: $e");
     }
   }
 
@@ -180,5 +187,10 @@ class _PhoneVerificationScreenState extends State<PhoneVerificationScreen> {
         ),
       ),
     );
+  }
+
+  bool isValidPhone(String phone) {
+    final regex = RegExp(r'^0\d{9}$');
+    return regex.hasMatch(phone);
   }
 }

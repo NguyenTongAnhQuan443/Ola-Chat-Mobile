@@ -7,6 +7,7 @@ import 'package:olachat_mobile/core/utils/constants.dart';
 import 'package:olachat_mobile/ui/views/signup_screen.dart';
 import 'package:olachat_mobile/ui/widgets/custom_textfield.dart';
 import '../../core/config/api_config.dart';
+import '../../main.dart';
 import '../widgets/dialog_helper.dart';
 import '../widgets/show_snack_bar.dart';
 
@@ -40,7 +41,8 @@ class _PhoneVerificationScreenState extends State<PhoneVerificationScreen> {
 
       if (res.statusCode == 200) {
         setState(() => isOtpSent = true);
-        showSuccessSnackBar(context, "Mã OTP đã gửi về số điện thoại");
+        showSuccessSnackBar(
+            navigatorKey.currentContext!, "Mã OTP đã gửi về số điện thoại");
       } else {
         showGlobalLoginErrorDialog(
             "Không thể gửi OTP. Mã lỗi: ${res.statusCode}");
@@ -69,20 +71,19 @@ class _PhoneVerificationScreenState extends State<PhoneVerificationScreen> {
       final responseData = jsonDecode(utf8.decode(res.bodyBytes));
 
       if (res.statusCode == 200 && responseData['success'] == true) {
-        Navigator.pushReplacement(
-          context,
+        navigatorKey.currentState!.pushReplacement(
           MaterialPageRoute(
             builder: (_) => SignUpScreen(phoneNumber: phone),
           ),
         );
       } else {
         showErrorSnackBar(
-          context,
+          navigatorKey.currentContext!,
           responseData['message'] ?? "OTP không hợp lệ hoặc đã hết hạn.",
         );
       }
     } catch (e) {
-      showErrorSnackBar(context, "Lỗi xác thực OTP: $e");
+      showErrorSnackBar(navigatorKey.currentContext!, "Lỗi xác thực OTP: $e");
     }
   }
 

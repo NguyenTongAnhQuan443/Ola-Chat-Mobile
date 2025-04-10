@@ -18,17 +18,21 @@ samples, guidance on mobile development, and a full API reference.
 ## Demo UI
 ### 1.Login Screen
 ![login_screen.png](assets%2Fdemo%2Flogin_screen.png)
-### 2.1 PhoneVerificationScreen 
-![PhoneVerificationScreen.png](assets%2Fdemo%2FPhoneVerificationScreen.png)
 ### 2. SignUp Screen
 ![signup_screen.png](assets%2Fdemo%2Fsignup_screen.png)
+### 2.1 Phone Verification Screen
+![PhoneVerificationScreen.png](assets%2Fdemo%2FPhoneVerificationScreen.png)
+### 2.2 Forgot Password Screen
+![forgot_password_screen.png](assets%2Fdemo%2Fforgot_password_screen.png)
+### 2.3 Confirm Password Screen
+![confirm_password_screen.png](assets%2Fdemo%2Fconfirm_password_screen.png)
 ### 3. Feed_Screen
 ![feed_screen.png](assets%2Fdemo%2Ffeed_screen.png)
-### 4. Search_Screen
+### 4. Search Screen
 ![search_screen.png](assets%2Fdemo%2Fsearch_screen.png)
-### 5. Notifications_Screen
+### 5. Notifications Screen
 ![notifications_screen.png](assets%2Fdemo%2Fnotifications_screen.png)
-### 6. Comments_Screen
+### 6. Comments Screen
 ![comments_screen.png](assets%2Fdemo%2Fcomments_screen.png)
 ### 7.1 Profile - My Posts
 ![profile_my_posts_screen.png](assets%2Fdemo%2Fprofile_my_posts_screen.png)

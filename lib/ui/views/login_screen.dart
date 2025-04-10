@@ -8,6 +8,7 @@ import '../../view_models/login_view_model.dart';
 import '../widgets/custom_textfield.dart';
 import '../widgets/dialog_helper.dart';
 import 'bottom_navigationbar_screen.dart';
+import 'forgot_password_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -136,8 +137,13 @@ class _LoginScreenState extends State<LoginScreen> {
                           Align(
                             alignment: Alignment.centerRight,
                             child: InkWell(
-                              onTap: () {},
-                              child: const Text("Quên mật khẩu?",
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => const ForgotPasswordScreen()),
+                                );
+                              },
+                              child: const Text("Quên mật khẩu ?",
                                   style: TextStyle(
                                       color: Colors.grey, fontSize: 12)),
                             ),

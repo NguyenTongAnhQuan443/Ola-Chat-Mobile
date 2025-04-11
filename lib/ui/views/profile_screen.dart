@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:olachat_mobile/data/models/post.dart';
 import 'package:olachat_mobile/ui/views/settings_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../data/models/user.dart';
 import '../widgets/custom_sliver_to_box_adapter.dart';
@@ -143,6 +146,24 @@ class _ProfileState extends State<ProfileScreen> {
     ),
   ];
 
+  Map<String, dynamic>? userInfo;
+
+  @override
+  void initState() {
+    super.initState();
+    loadUserInfo();
+  }
+
+  Future<void> loadUserInfo() async {
+    final prefs = await SharedPreferences.getInstance();
+    final data = prefs.getString('user_info');
+    if (data != null) {
+      setState(() {
+        userInfo = jsonDecode(data);
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -169,9 +190,13 @@ class _ProfileState extends State<ProfileScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         CircleAvatar(
-                            radius: 40,
-                            backgroundImage: NetworkImage(
-                                "https://netizenturkey.net/wp-content/uploads/2023/12/1703066681-20231220-gdragon.jpg")),
+                          radius: 40,
+                          backgroundImage: userInfo?['avatar'] != null
+                              ? NetworkImage(userInfo!['avatar'])
+                              : const AssetImage(
+                                      "assets/images/default_avatar.png")
+                                  as ImageProvider,
+                        ),
                         SizedBox(
                           width: 187,
                           height: 45,
@@ -196,8 +221,21 @@ class _ProfileState extends State<ProfileScreen> {
                       children: [
                         Row(
                           children: [
+                            // Text(
+                            //   "G-Dragon",
+                            //   style: TextStyle(
+                            //       fontSize: 16, fontWeight: FontWeight.bold),
+                            // ),
+                            // const SizedBox(
+                            //   width: 10,
+                            // ),
+                            // Text(
+                            //   "@anhLong_18_08",
+                            //   style:
+                            //       TextStyle(fontSize: 12, color: Colors.grey),
+                            // )
                             Text(
-                              "G-Dragon",
+                              userInfo?['displayName'] ?? "Tên người dùng",
                               style: TextStyle(
                                   fontSize: 16, fontWeight: FontWeight.bold),
                             ),
@@ -205,10 +243,15 @@ class _ProfileState extends State<ProfileScreen> {
                               width: 10,
                             ),
                             Text(
-                              "@anhLong_18_08",
+                              userInfo?['nickname'] ?? "Biệt danh",
                               style:
                                   TextStyle(fontSize: 12, color: Colors.grey),
-                            )
+                            ),
+                            const SizedBox(width: 10),
+                            // Text(
+                            //   userInfo?['bio'] ?? "",
+                            //   style: TextStyle(fontSize: 12, color: Colors.grey),
+                            // )
                           ],
                         ),
                         Padding(
@@ -303,9 +346,9 @@ Widget buildView_3(int selectedIndex, List<Post> myPosts, savePosts) {
         showCommentButton: true,
       );
     case 2:
-     return SliverToBoxAdapter(
-       child: SettingsScreen(),
-     );
+      return SliverToBoxAdapter(
+        child: SettingsScreen(),
+      );
     default:
       return SizedBox.shrink(); // Nếu không khớp case nào, ẩn đi
   }

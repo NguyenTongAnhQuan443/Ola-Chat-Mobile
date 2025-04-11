@@ -37,11 +37,17 @@ class _SplashScreenState extends State<SplashScreen> {
       isValid = body['success'] == true;
     }
 
+    final loginVM = Provider.of<LoginViewModel>(context, listen: false);
+
     if (isValid) {
+      // ✅ Làm mới dữ liệu user
+      await loginVM.refreshUserInfo();
       _goToHome();
     } else {
-      final refreshed = await Provider.of<LoginViewModel>(context, listen: false).tryRefreshToken();
+      final refreshed = await loginVM.tryRefreshToken();
       if (refreshed) {
+        // ✅ Làm mới dữ liệu user sau khi refresh token thành công
+        await loginVM.refreshUserInfo();
         _goToHome();
       } else {
         _goToLogin();

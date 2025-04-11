@@ -11,7 +11,7 @@ class ApiConfig {
   static const String authLoginGoogle = "$base/auth/login/google";
   static const String authLoginFacebook = "$base/auth/login/facebook";
   static const String authLogout = "$base/auth/logout";
-  static const String authRegister = "$base/api/users";
+  static const String authRegister = "$base/users";
   static const String authForgotPassword = "$base/auth/forgot-password";
   static const String authResetPassword = "$base/auth/reset-password";
   static const String authRefresh = "$base/auth/refresh";

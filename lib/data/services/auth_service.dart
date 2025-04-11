@@ -1,7 +1,11 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../core/config/api_config.dart';
 import 'api_service.dart';
 import '../models/auth_response.dart';
+import 'package:http/http.dart' as http;
 
 class AuthService {
   final ApiService _api = ApiService();
@@ -85,5 +89,23 @@ class AuthService {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('access_token', auth.token);
     await prefs.setString('refresh_token', auth.refreshToken);
+  }
+
+  //  Get Info User
+  Future<Map<String, dynamic>> getMyInfo(String accessToken) async {
+    final response = await http.get(
+      Uri.parse('${ApiConfig.base}/users/my-info'),
+      headers: {
+        'Authorization': 'Bearer $accessToken',
+        'Content-Type': 'application/json',
+      },
+    );
+
+    final json = jsonDecode(response.body);
+    if (response.statusCode == 200 && json['success'] == true) {
+      return jsonDecode(utf8.decode(response.bodyBytes))['data'];
+    } else {
+      throw Exception('Lấy thông tin người dùng thất bại');
+    }
   }
 }

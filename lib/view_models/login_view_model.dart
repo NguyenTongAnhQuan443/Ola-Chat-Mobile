@@ -54,6 +54,11 @@ class LoginViewModel extends ChangeNotifier {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString('access_token', _authResponse!.token);
       await prefs.setString('refresh_token', _authResponse!.refreshToken);
+
+      // Lấy và lưu thông tin người dùng vào SharedPreferences
+      final userInfo = await _authService.getMyInfo(_authResponse!.token);
+      await prefs.setString(
+          'user_info', jsonEncode(userInfo)); // UTF-8 by default
     } catch (e) {
       _errorMessage = e.toString().replaceFirst('Exception: ', '');
     } finally {
@@ -188,5 +193,20 @@ class LoginViewModel extends ChangeNotifier {
     }
 
     return await tryRefreshToken();
+  }
+
+  Future<void> refreshUserInfo() async {
+    final prefs = await SharedPreferences.getInstance();
+    final accessToken = prefs.getString('access_token');
+    if (accessToken == null) return;
+
+    try {
+      final userInfo = await _authService.getMyInfo(accessToken);
+      await prefs.setString(
+          'user_info', jsonEncode(userInfo)); // UTF-8 by default
+      print("🔄 Làm mới user info thành công");
+    } catch (e) {
+      print("❌ Lỗi khi làm mới user info: $e");
+    }
   }
 }

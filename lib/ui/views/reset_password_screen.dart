@@ -4,6 +4,7 @@ import 'package:olachat_mobile/core/utils/constants.dart';
 import 'package:olachat_mobile/ui/widgets/custom_textfield.dart';
 import 'package:olachat_mobile/view_models/reset_password_view_model.dart';
 import 'package:provider/provider.dart';
+import '../widgets/app_logo_header.dart';
 import '../widgets/show_snack_bar.dart';
 
 class ResetPasswordScreen extends StatefulWidget {
@@ -32,20 +33,21 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Expanded(
-                flex: 1,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Image.asset('assets/icons/LogoApp.png',
-                        width: AppStyles.logoIconSize,
-                        height: AppStyles.logoIconSize),
-                    const SizedBox(width: 18),
-                    const Text("Social", style: AppStyles.socialTextStyle),
-                  ],
-                ),
-              ),
+              // Expanded(
+              //   flex: 1,
+              //   child: Row(
+              //     mainAxisAlignment: MainAxisAlignment.center,
+              //     crossAxisAlignment: CrossAxisAlignment.end,
+              //     children: [
+              //       Image.asset('assets/icons/LogoApp.png',
+              //           width: AppStyles.logoIconSize,
+              //           height: AppStyles.logoIconSize),
+              //       const SizedBox(width: 18),
+              //       const Text("Social", style: AppStyles.socialTextStyle),
+              //     ],
+              //   ),
+              // ),
+              AppLogoHeader(showBackButton: false),
               Expanded(
                 flex: 9,
                 child: Column(

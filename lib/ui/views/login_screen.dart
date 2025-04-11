@@ -5,6 +5,7 @@ import 'package:olachat_mobile/ui/widgets/custom_social_button.dart';
 import 'package:provider/provider.dart';
 import '../../main.dart';
 import '../../view_models/login_view_model.dart';
+import '../widgets/app_logo_header.dart';
 import '../widgets/custom_textfield.dart';
 import '../widgets/show_snack_bar.dart';
 import 'bottom_navigationbar_screen.dart';
@@ -28,10 +29,9 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
-  Future<void> _handleSocialLogin(
-      BuildContext scaffoldContext, Future<void> Function() loginMethod) async {
-    final viewModel =
-        Provider.of<LoginViewModel>(scaffoldContext, listen: false);
+  Future<void> _handleSocialLogin(Future<void> Function() loginMethod) async {
+    final context = navigatorKey.currentContext!;
+    final viewModel = Provider.of<LoginViewModel>(context, listen: false);
     await loginMethod();
 
     if (viewModel.authResponse != null) {
@@ -39,14 +39,13 @@ class _LoginScreenState extends State<LoginScreen> {
         MaterialPageRoute(builder: (_) => const BottomNavigationBarScreen()),
       );
     } else {
-      showErrorSnackBar(
-          scaffoldContext, viewModel.errorMessage ?? 'Có lỗi xảy ra');
+      showErrorSnackBar(context, viewModel.errorMessage ?? 'Có lỗi xảy ra');
     }
   }
 
-  Future<void> _handleLogin(BuildContext scaffoldContext) async {
-    final viewModel =
-        Provider.of<LoginViewModel>(scaffoldContext, listen: false);
+  Future<void> _handleLogin() async {
+    final context = navigatorKey.currentContext!;
+    final viewModel = Provider.of<LoginViewModel>(context, listen: false);
     await viewModel.loginWithPhone(
       phoneController.text.trim(),
       passwordController.text.trim(),
@@ -57,8 +56,7 @@ class _LoginScreenState extends State<LoginScreen> {
         MaterialPageRoute(builder: (_) => const BottomNavigationBarScreen()),
       );
     } else {
-      showErrorSnackBar(
-          scaffoldContext, viewModel.errorMessage ?? 'Có lỗi xảy ra');
+      showErrorSnackBar(context, viewModel.errorMessage ?? 'Có lỗi xảy ra');
     }
   }
 
@@ -74,20 +72,7 @@ class _LoginScreenState extends State<LoginScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Expanded(
-                flex: 1,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Image.asset('assets/icons/LogoApp.png',
-                        width: AppStyles.logoIconSize,
-                        height: AppStyles.logoIconSize),
-                    const SizedBox(width: 18),
-                    const Text("Social", style: AppStyles.socialTextStyle),
-                  ],
-                ),
-              ),
+              AppLogoHeader(showBackButton: false),
               Expanded(
                 flex: 9,
                 child: Column(
@@ -103,22 +88,20 @@ class _LoginScreenState extends State<LoginScreen> {
                             nameButton: "Đăng nhập với Google",
                             onPressed: viewModel.isLoading
                                 ? null
-                                : () => _handleSocialLogin(context, () async {
-                                      await Provider.of<LoginViewModel>(context,
-                                              listen: false)
-                                          .loginWithGoogle();
-                                    }),
+                                : () => _handleSocialLogin(() async {
+                              await Provider.of<LoginViewModel>(navigatorKey.currentContext!, listen: false)
+                                  .loginWithGoogle();
+                            }),
                           ),
                           CustomSocialButton(
                             iconPath: "assets/icons/Facebook.png",
                             nameButton: "Đăng nhập với Facebook",
                             onPressed: viewModel.isLoading
                                 ? null
-                                : () => _handleSocialLogin(context, () async {
-                                      await Provider.of<LoginViewModel>(context,
-                                              listen: false)
-                                          .loginWithFacebook();
-                                    }),
+                                : () => _handleSocialLogin(() async {
+                              await Provider.of<LoginViewModel>(navigatorKey.currentContext!, listen: false)
+                                  .loginWithFacebook();
+                            }),
                           ),
                           const SizedBox(height: 5),
                           Row(
@@ -166,7 +149,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
-                                          const ForgotPasswordScreen()),
+                                      const ForgotPasswordScreen()),
                                 );
                               },
                               child: const Text("Quên mật khẩu ?",
@@ -189,7 +172,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             child: ElevatedButton(
                               onPressed: viewModel.isLoading
                                   ? null
-                                  : () => _handleLogin(context),
+                                  : () => _handleLogin(),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.black,
                                 foregroundColor: Colors.white,
@@ -201,17 +184,17 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                               child: viewModel.isLoading
                                   ? const SizedBox(
-                                      width: 20,
-                                      height: 20,
-                                      child: CircularProgressIndicator(
-                                        strokeWidth: 2,
-                                        valueColor:
-                                            AlwaysStoppedAnimation<Color>(
-                                                Colors.white),
-                                      ),
-                                    )
+                                width: 20,
+                                height: 20,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  valueColor:
+                                  AlwaysStoppedAnimation<Color>(
+                                      Colors.white),
+                                ),
+                              )
                                   : const Text("Đăng nhập",
-                                      style: TextStyle(fontSize: 14)),
+                                  style: TextStyle(fontSize: 14)),
                             ),
                           ),
                           const SizedBox(height: 30),

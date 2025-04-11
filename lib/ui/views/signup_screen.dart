@@ -11,6 +11,7 @@ import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart'
 import 'package:provider/provider.dart';
 
 import '../../view_models/signup_view_model.dart';
+import '../widgets/app_logo_header.dart';
 import '../widgets/custom_date_picker_field.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -133,20 +134,21 @@ class _SignUpScreenState extends State<SignUpScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Expanded(
-                flex: 1,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Image.asset('assets/icons/LogoApp.png',
-                        width: AppStyles.logoIconSize,
-                        height: AppStyles.logoIconSize),
-                    const SizedBox(width: 18),
-                    Text("Social", style: AppStyles.socialTextStyle),
-                  ],
-                ),
-              ),
+              // Expanded(
+              //   flex: 1,
+              //   child: Row(
+              //     mainAxisAlignment: MainAxisAlignment.center,
+              //     crossAxisAlignment: CrossAxisAlignment.end,
+              //     children: [
+              //       Image.asset('assets/icons/LogoApp.png',
+              //           width: AppStyles.logoIconSize,
+              //           height: AppStyles.logoIconSize),
+              //       const SizedBox(width: 18),
+              //       Text("Social", style: AppStyles.socialTextStyle),
+              //     ],
+              //   ),
+              // ),
+              AppLogoHeader(showBackButton: true),
               Expanded(
                 flex: 9,
                 child: Column(

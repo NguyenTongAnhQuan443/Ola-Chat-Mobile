@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:olachat_mobile/ui/views/personal_info_tab.dart';
 
 import 'account_settings_screen.dart';
 import 'general_settings_screen.dart';
@@ -18,7 +19,7 @@ class SettingsScreenState extends State<SettingsScreen>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(length: 4, vsync: this);
   }
 
   @override
@@ -41,7 +42,8 @@ class SettingsScreenState extends State<SettingsScreen>
             dividerColor: Colors.white,
             tabs: const [
               Tab(text: "Ảnh đại diện"),
-              Tab(text: "Tài khoản"),
+              Tab(text: "Giới thiệu"),
+              Tab(text: "Thông tin"),
               Tab(text: "Đăng xuất"),
             ],
           ),
@@ -51,6 +53,7 @@ class SettingsScreenState extends State<SettingsScreen>
               children: const [
                 GeneralSettingsScreen(),
                 AccountSettingsScreen(),
+                PersonalInfoTab(),
                 LogoutScreen(),
               ],
             ),

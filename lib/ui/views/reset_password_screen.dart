@@ -1,12 +1,10 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:http/http.dart' as http;
 import 'package:olachat_mobile/core/utils/constants.dart';
 import 'package:olachat_mobile/ui/widgets/custom_textfield.dart';
-import '../../core/config/api_config.dart';
+import 'package:olachat_mobile/view_models/reset_password_view_model.dart';
+import 'package:provider/provider.dart';
 import '../widgets/show_snack_bar.dart';
-import 'login_screen.dart';
 
 class ResetPasswordScreen extends StatefulWidget {
   final String email;
@@ -22,48 +20,10 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   final TextEditingController newPasswordController = TextEditingController();
   final TextEditingController confirmPasswordController = TextEditingController();
 
-  Future<void> resetPassword() async {
-    final otp = otpController.text.trim();
-    final newPass = newPasswordController.text.trim();
-    final confirmPass = confirmPasswordController.text.trim();
-
-    if (otp.isEmpty || newPass.isEmpty || confirmPass.isEmpty) {
-      showErrorSnackBar(context, 'Vui lòng điền đầy đủ thông tin.');
-      return;
-    }
-
-    if (newPass != confirmPass) {
-      showErrorSnackBar(context, 'Mật khẩu nhập lại không khớp.');
-      return;
-    }
-
-    try {
-      final res = await http.post(
-        Uri.parse("ApiConfig.resetPassword"),
-        headers: {"Content-Type": "application/json"},
-        body: jsonEncode({
-          "email": widget.email,
-          "otp": otp,
-          "newPassword": newPass
-        }),
-      );
-
-      final data = jsonDecode(utf8.decode(res.bodyBytes));
-      if (res.statusCode == 200 && data['success'] == true) {
-        showSuccessSnackBar(context, 'Đặt lại mật khẩu thành công.');
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (_) => const LoginScreen()),
-        );
-      } else {
-        showErrorSnackBar(context, data['message'] ?? 'OTP không hợp lệ.');
-      }
-    } catch (e) {
-      showErrorSnackBar(context, 'Lỗi đổi mật khẩu: $e');
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
+    final viewModel = Provider.of<ResetPasswordViewModel>(context);
+
     return SafeArea(
       child: Scaffold(
         backgroundColor: AppColors.backgroundColor,
@@ -118,7 +78,37 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                       width: double.infinity,
                       height: 44,
                       child: ElevatedButton(
-                        onPressed: resetPassword,
+                        onPressed: viewModel.isLoading
+                            ? null
+                            : () {
+                          final otp = otpController.text.trim();
+                          final newPass = newPasswordController.text.trim();
+                          final confirmPass = confirmPasswordController.text.trim();
+
+                          if (otp.isEmpty || newPass.isEmpty || confirmPass.isEmpty) {
+                            showErrorSnackBar(context, 'Vui lòng điền đầy đủ thông tin.');
+                            return;
+                          }
+
+                          if (newPass != confirmPass) {
+                            showErrorSnackBar(context, 'Mật khẩu nhập lại không khớp.');
+                            return;
+                          }
+
+                          if (!viewModel.isValidPassword(newPass)) {
+                            showErrorSnackBar(
+                                context,
+                                'Mật khẩu phải có ít nhất 8 ký tự, 1 chữ cái viết hoa, 1 số và 1 ký tự đặc biệt.');
+                            return;
+                          }
+
+                          viewModel.resetPassword(
+                            widget.email,
+                            otp,
+                            newPass,
+                            context,
+                          );
+                        },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.black,
                           foregroundColor: Colors.white,
@@ -128,7 +118,16 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                           side: BorderSide(color: Colors.grey.shade300),
                           elevation: 0,
                         ),
-                        child: const Text("Đổi mật khẩu", style: TextStyle(fontSize: 14)),
+                        child: viewModel.isLoading
+                            ? const SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                          ),
+                        )
+                            : const Text("Đổi mật khẩu", style: TextStyle(fontSize: 14)),
                       ),
                     ),
                   ],

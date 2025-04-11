@@ -12,4 +12,7 @@ class ApiConfig {
   static const String loginFacebook = "$base/auth/login/facebook";
   static const String logout = "$base/auth/logout";
   static const String register = "$host/ola-chat/api/users";
+  static const String forgotPassword = "$base/auth/forgot-password";
+  static const String resetPassword = "$base/auth/reset-password";
+
 }

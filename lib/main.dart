@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:olachat_mobile/ui/views/splash_screen.dart';
+import 'package:olachat_mobile/view_models/forgot_password_view_model.dart';
 import 'package:olachat_mobile/view_models/login_view_model.dart';
 import 'package:olachat_mobile/view_models/phone_verification_view_model.dart';
+import 'package:olachat_mobile/view_models/reset_password_view_model.dart';
 import 'package:olachat_mobile/view_models/signup_view_model.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -15,7 +17,9 @@ void main() {
       providers: [
         ChangeNotifierProvider(create: (_) => LoginViewModel()),
         ChangeNotifierProvider(create: (_) => PhoneVerificationViewModel()),
-        ChangeNotifierProvider(create: (_) => SignUpViewModel())
+        ChangeNotifierProvider(create: (_) => SignUpViewModel()),
+        ChangeNotifierProvider(create: (_) => ForgotPasswordViewModel()),
+        ChangeNotifierProvider(create: (_) => ResetPasswordViewModel()),
       ],
       child: MyApp(),
     ),

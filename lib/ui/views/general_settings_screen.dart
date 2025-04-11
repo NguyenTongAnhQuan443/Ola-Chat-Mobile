@@ -6,6 +6,7 @@ import 'package:olachat_mobile/view_models/profile_view_model.dart';
 import 'package:provider/provider.dart';
 
 class GeneralSettingsScreen extends StatelessWidget {
+  // UI Cập nhập avatar
   const GeneralSettingsScreen({super.key});
 
   Future<void> pickImage(BuildContext context) async {

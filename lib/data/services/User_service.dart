@@ -42,4 +42,23 @@ class UserService {
       throw Exception("Làm mới thông tin thất bại.");
     }
   }
+
+  Future<void> updateProfile(Map<String, dynamic> data) async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('access_token');
+
+    final response = await http.put(
+      Uri.parse(ApiConfig.updateProfile),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode(data),
+    );
+
+    final json = jsonDecode(utf8.decode(response.bodyBytes));
+    if (response.statusCode != 200 || json['success'] != true) {
+      throw Exception(json['message'] ?? "Cập nhật thông tin thất bại.");
+    }
+  }
 }

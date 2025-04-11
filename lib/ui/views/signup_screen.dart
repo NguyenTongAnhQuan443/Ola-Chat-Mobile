@@ -1,18 +1,18 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:olachat_mobile/core/utils/constants.dart';
 import 'package:olachat_mobile/ui/views/bottom_navigationbar_screen.dart';
 import 'package:olachat_mobile/ui/widgets/custom_social_button.dart';
 import 'package:olachat_mobile/ui/widgets/custom_textfield.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart'
-    as dp;
+as dp;
 import 'package:provider/provider.dart';
 
 import '../../view_models/signup_view_model.dart';
 import '../widgets/app_logo_header.dart';
 import '../widgets/custom_date_picker_field.dart';
+import '../widgets/show_snack_bar.dart';
+import 'login_screen.dart';
 
 class SignUpScreen extends StatefulWidget {
   final String phoneNumber;
@@ -30,6 +30,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   DateTime? selectedDob;
   final DateFormat dateFormat = DateFormat('dd/MM/yyyy');
+  bool isLoading = false;
 
   @override
   void dispose() {
@@ -44,10 +45,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
     final age = now.year -
         dob.year -
         ((now.month < dob.month ||
-                (now.month == dob.month && now.day < dob.day))
+            (now.month == dob.month && now.day < dob.day))
             ? 1
             : 0);
     return age >= 18;
+  }
+
+  bool isValidPassword(String password) {
+    return RegExp(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$')
+        .hasMatch(password);
   }
 
   Future<void> pickDateOfBirth() async {
@@ -87,18 +93,29 @@ class _SignUpScreenState extends State<SignUpScreen> {
     final email = emailController.text.trim();
     final password = passwordController.text.trim();
 
-    if (displayName.isEmpty || email.isEmpty || password.isEmpty || selectedDob == null) {
-      showSnackbar("Vui lòng nhập đầy đủ thông tin");
+    if (displayName.isEmpty ||
+        email.isEmpty ||
+        password.isEmpty ||
+        selectedDob == null) {
+      showErrorSnackBar(context, "Vui lòng nhập đầy đủ thông tin");
       return;
     }
 
     if (!isAtLeast18YearsOld(selectedDob!)) {
-      showSnackbar("Bạn phải đủ 18 tuổi để đăng ký");
+      showErrorSnackBar(context, "Bạn phải đủ 18 tuổi để đăng ký");
       return;
     }
 
+    if (!isValidPassword(password)) {
+      showErrorSnackBar(context,
+          "Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ thường, chữ hoa, số và ký tự đặc biệt.");
+      return;
+    }
+
+    setState(() => isLoading = true);
+
     final data = {
-      "username":  widget.phoneNumber,
+      "username": widget.phoneNumber,
       "password": password,
       "displayName": displayName,
       "email": email,
@@ -108,21 +125,18 @@ class _SignUpScreenState extends State<SignUpScreen> {
     final viewModel = context.read<SignUpViewModel>();
     final success = await viewModel.register(data);
 
+    setState(() => isLoading = false);
+
     if (success) {
-      showSnackbar("Đăng ký thành công");
+      showSuccessSnackBar(context, "Đăng ký thành công");
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (_) => const BottomNavigationBarScreen()),
+        MaterialPageRoute(builder: (_) => const LoginScreen()),
       );
     } else {
-      showSnackbar(viewModel.errorMessage ?? "Đăng ký thất bại");
+      showErrorSnackBar(context, viewModel.errorMessage ?? "Đăng ký thất bại");
     }
   }
-
-  void showSnackbar(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
-  }
-
 
   @override
   Widget build(BuildContext context) {
@@ -134,21 +148,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              // Expanded(
-              //   flex: 1,
-              //   child: Row(
-              //     mainAxisAlignment: MainAxisAlignment.center,
-              //     crossAxisAlignment: CrossAxisAlignment.end,
-              //     children: [
-              //       Image.asset('assets/icons/LogoApp.png',
-              //           width: AppStyles.logoIconSize,
-              //           height: AppStyles.logoIconSize),
-              //       const SizedBox(width: 18),
-              //       Text("Social", style: AppStyles.socialTextStyle),
-              //     ],
-              //   ),
-              // ),
-              AppLogoHeader(showBackButton: true),
+              AppLogoHeader(showBackButton: false),
               Expanded(
                 flex: 9,
                 child: Column(
@@ -196,18 +196,21 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               labelText: "Họ tên",
                               controller: nameController,
                               isPassword: false,
+                              enabled: true,
                             ),
                             const SizedBox(height: 12),
                             CustomTextField(
                               labelText: "Email",
                               controller: emailController,
                               isPassword: false,
+                              enabled: true,
                             ),
                             const SizedBox(height: 12),
                             CustomTextField(
                               labelText: "Mật khẩu",
                               controller: passwordController,
                               isPassword: true,
+                              enabled: true,
                             ),
                             const SizedBox(height: 12),
                             CustomDatePickerField(
@@ -228,7 +231,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             width: double.infinity,
                             height: 44,
                             child: ElevatedButton(
-                              onPressed: registerUser,
+                              onPressed: isLoading ? null : registerUser,
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.black,
                                 foregroundColor: Colors.white,
@@ -238,7 +241,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 side: BorderSide(color: Colors.grey.shade300),
                                 elevation: 0,
                               ),
-                              child: const Text("Đăng ký",
+                              child: isLoading
+                                  ? const SizedBox(
+                                width: 20,
+                                height: 20,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                ),
+                              )
+                                  : const Text("Đăng ký",
                                   style: TextStyle(fontSize: 14)),
                             ),
                           ),

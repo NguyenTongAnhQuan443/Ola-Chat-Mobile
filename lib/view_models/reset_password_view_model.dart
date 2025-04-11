@@ -11,7 +11,7 @@ class ResetPasswordViewModel with ChangeNotifier {
   String? error;
 
   bool isValidPassword(String password) {
-    return RegExp(r'^(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$')
+    return RegExp(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$')
         .hasMatch(password);
   }
 

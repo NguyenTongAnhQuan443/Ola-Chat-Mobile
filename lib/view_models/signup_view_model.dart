@@ -22,7 +22,7 @@ class SignUpViewModel extends ChangeNotifier {
       await _authService.register(data);
       return true;
     } catch (e) {
-      _errorMessage = 'Lỗi khi đăng ký: $e';
+      _errorMessage = e.toString().replaceFirst('Exception: ', '');
       return false;
     } finally {
       _isLoading = false;

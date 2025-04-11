@@ -44,6 +44,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                       labelText: "Địa chỉ email",
                       controller: emailController,
                       isPassword: false,
+                      enabled: true,
                     ),
                     const SizedBox(height: 16),
                     SizedBox(

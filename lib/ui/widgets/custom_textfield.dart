@@ -4,12 +4,13 @@ class CustomTextField extends StatefulWidget {
   final String labelText;
   final TextEditingController controller;
   final bool isPassword;
+  final bool enabled;
 
   const CustomTextField({
-    super.key,
     required this.labelText,
     required this.controller,
-    this.isPassword = false,
+    required this.isPassword,
+    this.enabled = true, // <-- mặc định
   });
 
   @override
@@ -30,6 +31,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
     return SizedBox(
       height: 44,
       child: TextField(
+        enabled: widget.enabled,
         controller: widget.controller,
         obscureText: _obscureText,
         decoration: InputDecoration(

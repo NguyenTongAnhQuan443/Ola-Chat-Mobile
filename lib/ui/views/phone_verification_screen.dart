@@ -5,10 +5,10 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:http/http.dart' as http;
 import 'package:olachat_mobile/core/utils/constants.dart';
 import 'package:olachat_mobile/ui/views/signup_screen.dart';
+import 'package:olachat_mobile/ui/widgets/app_logo_header.dart';
 import 'package:olachat_mobile/ui/widgets/custom_textfield.dart';
 import '../../core/config/api_config.dart';
 import '../../main.dart';
-import '../widgets/dialog_helper.dart';
 import '../widgets/show_snack_bar.dart';
 
 class PhoneVerificationScreen extends StatefulWidget {
@@ -27,7 +27,8 @@ class _PhoneVerificationScreenState extends State<PhoneVerificationScreen> {
   Future<void> sendOtp() async {
     final phone = phoneController.text.trim();
     if (!isValidPhone(phone)) {
-      showGlobalLoginErrorDialog(
+      showErrorSnackBar(
+          navigatorKey.currentContext!,
           "Số điện thoại không hợp lệ. Phải bắt đầu bằng số 0 và đủ 10 chữ số.");
       return;
     }
@@ -44,11 +45,12 @@ class _PhoneVerificationScreenState extends State<PhoneVerificationScreen> {
         showSuccessSnackBar(
             navigatorKey.currentContext!, "Mã OTP đã gửi về số điện thoại");
       } else {
-        showGlobalLoginErrorDialog(
+        showErrorSnackBar(navigatorKey.currentContext!,
             "Không thể gửi OTP. Mã lỗi: ${res.statusCode}");
       }
     } catch (e) {
-      showGlobalLoginErrorDialog("Lỗi gửi OTP: $e");
+      showErrorSnackBar(
+          navigatorKey.currentContext!, "Lỗi gửi OTP: ${e.toString()}");
     }
   }
 
@@ -83,7 +85,8 @@ class _PhoneVerificationScreenState extends State<PhoneVerificationScreen> {
         );
       }
     } catch (e) {
-      showErrorSnackBar(navigatorKey.currentContext!, "Lỗi xác thực OTP: $e");
+      showErrorSnackBar(
+          navigatorKey.currentContext!, "Lỗi xác thực OTP: ${e.toString()}");
     }
   }
 
@@ -97,23 +100,7 @@ class _PhoneVerificationScreenState extends State<PhoneVerificationScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              // Header
-              Expanded(
-                flex: 1,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Image.asset('assets/icons/LogoApp.png',
-                        width: AppStyles.logoIconSize,
-                        height: AppStyles.logoIconSize),
-                    const SizedBox(width: 18),
-                    const Text("Social", style: AppStyles.socialTextStyle),
-                  ],
-                ),
-              ),
-
-              // Content
+              AppLogoHeader(showBackButton: true),
               Expanded(
                 flex: 9,
                 child: Column(
@@ -128,7 +115,9 @@ class _PhoneVerificationScreenState extends State<PhoneVerificationScreen> {
                       labelText: "Số điện thoại",
                       controller: phoneController,
                       isPassword: false,
+                      enabled: !isOtpSent, // khóa khi đã gửi OTP
                     ),
+
                     const SizedBox(height: 16),
                     if (isOtpSent)
                       Column(
@@ -137,6 +126,7 @@ class _PhoneVerificationScreenState extends State<PhoneVerificationScreen> {
                             labelText: "Mã OTP",
                             controller: otpController,
                             isPassword: false,
+                            enabled: isOtpSent,
                           ),
                           const SizedBox(height: 16),
                         ],
@@ -191,7 +181,8 @@ class _PhoneVerificationScreenState extends State<PhoneVerificationScreen> {
   }
 
   bool isValidPhone(String phone) {
+    final trimmed = phone.trim();
     final regex = RegExp(r'^0\d{9}$');
-    return regex.hasMatch(phone);
+    return regex.hasMatch(trimmed);
   }
 }

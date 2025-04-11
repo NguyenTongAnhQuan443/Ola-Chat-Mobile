@@ -62,18 +62,21 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                       labelText: "Mã OTP",
                       controller: otpController,
                       isPassword: false,
+                      enabled: true,
                     ),
                     const SizedBox(height: 16),
                     CustomTextField(
                       labelText: "Mật khẩu mới",
                       controller: newPasswordController,
                       isPassword: true,
+                      enabled: true,
                     ),
                     const SizedBox(height: 16),
                     CustomTextField(
                       labelText: "Nhập lại mật khẩu",
                       controller: confirmPasswordController,
                       isPassword: true,
+                      enabled: true,
                     ),
                     const SizedBox(height: 24),
                     SizedBox(

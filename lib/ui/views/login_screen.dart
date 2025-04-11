@@ -89,9 +89,11 @@ class _LoginScreenState extends State<LoginScreen> {
                             onPressed: viewModel.isLoading
                                 ? null
                                 : () => _handleSocialLogin(() async {
-                              await Provider.of<LoginViewModel>(navigatorKey.currentContext!, listen: false)
-                                  .loginWithGoogle();
-                            }),
+                                      await Provider.of<LoginViewModel>(
+                                              navigatorKey.currentContext!,
+                                              listen: false)
+                                          .loginWithGoogle();
+                                    }),
                           ),
                           CustomSocialButton(
                             iconPath: "assets/icons/Facebook.png",
@@ -99,9 +101,11 @@ class _LoginScreenState extends State<LoginScreen> {
                             onPressed: viewModel.isLoading
                                 ? null
                                 : () => _handleSocialLogin(() async {
-                              await Provider.of<LoginViewModel>(navigatorKey.currentContext!, listen: false)
-                                  .loginWithFacebook();
-                            }),
+                                      await Provider.of<LoginViewModel>(
+                                              navigatorKey.currentContext!,
+                                              listen: false)
+                                          .loginWithFacebook();
+                                    }),
                           ),
                           const SizedBox(height: 5),
                           Row(
@@ -134,13 +138,17 @@ class _LoginScreenState extends State<LoginScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           CustomTextField(
-                              labelText: "Số điện thoại",
-                              controller: phoneController,
-                              isPassword: false),
+                            labelText: "Số điện thoại",
+                            controller: phoneController,
+                            isPassword: false,
+                            enabled: true,
+                          ),
                           CustomTextField(
-                              labelText: "Mật khẩu",
-                              controller: passwordController,
-                              isPassword: true),
+                            labelText: "Mật khẩu",
+                            controller: passwordController,
+                            isPassword: true,
+                            enabled: true,
+                          ),
                           Align(
                             alignment: Alignment.centerRight,
                             child: InkWell(
@@ -149,7 +157,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
-                                      const ForgotPasswordScreen()),
+                                          const ForgotPasswordScreen()),
                                 );
                               },
                               child: const Text("Quên mật khẩu ?",
@@ -184,17 +192,17 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                               child: viewModel.isLoading
                                   ? const SizedBox(
-                                width: 20,
-                                height: 20,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                  valueColor:
-                                  AlwaysStoppedAnimation<Color>(
-                                      Colors.white),
-                                ),
-                              )
+                                      width: 20,
+                                      height: 20,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                        valueColor:
+                                            AlwaysStoppedAnimation<Color>(
+                                                Colors.white),
+                                      ),
+                                    )
                                   : const Text("Đăng nhập",
-                                  style: TextStyle(fontSize: 14)),
+                                      style: TextStyle(fontSize: 14)),
                             ),
                           ),
                           const SizedBox(height: 30),

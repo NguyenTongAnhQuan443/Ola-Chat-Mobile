@@ -16,4 +16,8 @@ class ApiConfig {
   static const String authResetPassword = "$base/auth/reset-password";
   static const String authRefresh = "$base/auth/refresh";
   static const String authIntrospect = "$base/auth/introspect";
+
+  //   User
+  static const String userInfo = "$base/users/my-info";
+  static const String updateAvatar = "$base/users/my-avatar";
 }

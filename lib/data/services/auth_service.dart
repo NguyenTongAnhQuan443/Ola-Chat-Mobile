@@ -94,7 +94,7 @@ class AuthService {
   //  Get Info User
   Future<Map<String, dynamic>> getMyInfo(String accessToken) async {
     final response = await http.get(
-      Uri.parse('${ApiConfig.base}/users/my-info'),
+      Uri.parse(ApiConfig.userInfo),
       headers: {
         'Authorization': 'Bearer $accessToken',
         'Content-Type': 'application/json',

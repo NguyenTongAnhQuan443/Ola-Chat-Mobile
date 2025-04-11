@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 import '../../main.dart';
 import '../../view_models/login_view_model.dart';
 import '../widgets/custom_textfield.dart';
-import '../widgets/dialog_helper.dart';
+import '../widgets/show_snack_bar.dart';
 import 'bottom_navigationbar_screen.dart';
 import 'forgot_password_screen.dart';
 
@@ -29,8 +29,9 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> _handleSocialLogin(
-      BuildContext context, Future<void> Function() loginMethod) async {
-    final viewModel = Provider.of<LoginViewModel>(context, listen: false);
+      BuildContext scaffoldContext, Future<void> Function() loginMethod) async {
+    final viewModel =
+        Provider.of<LoginViewModel>(scaffoldContext, listen: false);
     await loginMethod();
 
     if (viewModel.authResponse != null) {
@@ -38,12 +39,33 @@ class _LoginScreenState extends State<LoginScreen> {
         MaterialPageRoute(builder: (_) => const BottomNavigationBarScreen()),
       );
     } else {
-      showGlobalLoginErrorDialog(viewModel.errorMessage ?? "Có lỗi xảy ra");
+      showErrorSnackBar(
+          scaffoldContext, viewModel.errorMessage ?? 'Có lỗi xảy ra');
+    }
+  }
+
+  Future<void> _handleLogin(BuildContext scaffoldContext) async {
+    final viewModel =
+        Provider.of<LoginViewModel>(scaffoldContext, listen: false);
+    await viewModel.loginWithPhone(
+      phoneController.text.trim(),
+      passwordController.text.trim(),
+    );
+
+    if (viewModel.authResponse != null) {
+      navigatorKey.currentState?.pushReplacement(
+        MaterialPageRoute(builder: (_) => const BottomNavigationBarScreen()),
+      );
+    } else {
+      showErrorSnackBar(
+          scaffoldContext, viewModel.errorMessage ?? 'Có lỗi xảy ra');
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final viewModel = Provider.of<LoginViewModel>(context);
+
     return SafeArea(
       child: Scaffold(
         backgroundColor: AppColors.backgroundColor,
@@ -79,22 +101,24 @@ class _LoginScreenState extends State<LoginScreen> {
                           CustomSocialButton(
                             iconPath: "assets/icons/Google.png",
                             nameButton: "Đăng nhập với Google",
-                            onPressed: () =>
-                                _handleSocialLogin(context, () async {
-                              await Provider.of<LoginViewModel>(context,
-                                      listen: false)
-                                  .loginWithGoogle();
-                            }),
+                            onPressed: viewModel.isLoading
+                                ? null
+                                : () => _handleSocialLogin(context, () async {
+                                      await Provider.of<LoginViewModel>(context,
+                                              listen: false)
+                                          .loginWithGoogle();
+                                    }),
                           ),
                           CustomSocialButton(
                             iconPath: "assets/icons/Facebook.png",
                             nameButton: "Đăng nhập với Facebook",
-                            onPressed: () =>
-                                _handleSocialLogin(context, () async {
-                              await Provider.of<LoginViewModel>(context,
-                                      listen: false)
-                                  .loginWithFacebook();
-                            }),
+                            onPressed: viewModel.isLoading
+                                ? null
+                                : () => _handleSocialLogin(context, () async {
+                                      await Provider.of<LoginViewModel>(context,
+                                              listen: false)
+                                          .loginWithFacebook();
+                                    }),
                           ),
                           const SizedBox(height: 5),
                           Row(
@@ -140,7 +164,9 @@ class _LoginScreenState extends State<LoginScreen> {
                               onTap: () {
                                 Navigator.push(
                                   context,
-                                  MaterialPageRoute(builder: (context) => const ForgotPasswordScreen()),
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          const ForgotPasswordScreen()),
                                 );
                               },
                               child: const Text("Quên mật khẩu ?",
@@ -160,38 +186,10 @@ class _LoginScreenState extends State<LoginScreen> {
                           SizedBox(
                             width: double.infinity,
                             height: 44,
-                            child: ElevatedButton.icon(
-                              onPressed: () async {
-                                final viewModel = Provider.of<LoginViewModel>(
-                                    context,
-                                    listen: false);
-                                await viewModel.loginWithPhone(
-                                  phoneController.text.trim(),
-                                  passwordController.text.trim(),
-                                );
-
-                                if (viewModel.authResponse != null) {
-                                  navigatorKey.currentState?.pushReplacement(
-                                    MaterialPageRoute(
-                                        builder: (_) =>
-                                            const BottomNavigationBarScreen()),
-                                  );
-                                } else {
-                                  if (viewModel.authResponse != null) {
-                                    navigatorKey.currentState?.pushReplacement(
-                                      MaterialPageRoute(
-                                          builder: (_) =>
-                                              const BottomNavigationBarScreen()),
-                                    );
-                                  } else {
-                                    showGlobalLoginErrorDialog(
-                                        viewModel.errorMessage ??
-                                            'Có lỗi xảy ra');
-                                  }
-                                }
-                              },
-                              label: const Text("Đăng nhập",
-                                  style: TextStyle(fontSize: 14)),
+                            child: ElevatedButton(
+                              onPressed: viewModel.isLoading
+                                  ? null
+                                  : () => _handleLogin(context),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.black,
                                 foregroundColor: Colors.white,
@@ -201,7 +199,19 @@ class _LoginScreenState extends State<LoginScreen> {
                                 side: BorderSide(color: Colors.grey.shade300),
                                 elevation: 0,
                               ),
-                              icon: const SizedBox(),
+                              child: viewModel.isLoading
+                                  ? const SizedBox(
+                                      width: 20,
+                                      height: 20,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                        valueColor:
+                                            AlwaysStoppedAnimation<Color>(
+                                                Colors.white),
+                                      ),
+                                    )
+                                  : const Text("Đăng nhập",
+                                      style: TextStyle(fontSize: 14)),
                             ),
                           ),
                           const SizedBox(height: 30),

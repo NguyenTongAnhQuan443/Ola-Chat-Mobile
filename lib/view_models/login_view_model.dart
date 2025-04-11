@@ -55,7 +55,7 @@ class LoginViewModel extends ChangeNotifier {
       await prefs.setString('access_token', _authResponse!.token);
       await prefs.setString('refresh_token', _authResponse!.refreshToken);
     } catch (e) {
-      _errorMessage = e.toString();
+      _errorMessage = e.toString().replaceFirst('Exception: ', '');
     } finally {
       _isLoading = false;
       notifyListeners();
@@ -133,7 +133,7 @@ class LoginViewModel extends ChangeNotifier {
       _authResponse = null;
       notifyListeners();
     } catch (e) {
-      _errorMessage = e.toString();
+      _errorMessage = e.toString().replaceFirst('Exception: ', '');
       notifyListeners();
     }
   }

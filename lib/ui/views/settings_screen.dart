@@ -40,9 +40,9 @@ class SettingsScreenState extends State<SettingsScreen>
             indicatorColor: Colors.blue,
             dividerColor: Colors.white,
             tabs: const [
-              Tab(text: "General"),
-              Tab(text: "Account"),
-              Tab(text: "Logout"),
+              Tab(text: "Ảnh đại diện"),
+              Tab(text: "Tài khoản"),
+              Tab(text: "Đăng xuất"),
             ],
           ),
           Expanded(

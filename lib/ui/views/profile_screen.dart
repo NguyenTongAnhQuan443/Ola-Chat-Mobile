@@ -3,9 +3,11 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:olachat_mobile/data/models/post.dart';
 import 'package:olachat_mobile/ui/views/settings_screen.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../data/models/user.dart';
+import '../../view_models/login_view_model.dart';
 import '../widgets/custom_sliver_to_box_adapter.dart';
 import '../widgets/list_post.dart';
 import '../widgets/social_header.dart';
@@ -154,6 +156,17 @@ class _ProfileState extends State<ProfileScreen> {
     loadUserInfo();
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    // Gọi sau khi widget được mount
+    Future.microtask(() {
+      final loginVM = Provider.of<LoginViewModel>(context, listen: false);
+      loginVM.refreshUserInfo();
+    });
+  }
+
   Future<void> loadUserInfo() async {
     final prefs = await SharedPreferences.getInstance();
     final data = prefs.getString('user_info');
@@ -221,19 +234,6 @@ class _ProfileState extends State<ProfileScreen> {
                       children: [
                         Row(
                           children: [
-                            // Text(
-                            //   "G-Dragon",
-                            //   style: TextStyle(
-                            //       fontSize: 16, fontWeight: FontWeight.bold),
-                            // ),
-                            // const SizedBox(
-                            //   width: 10,
-                            // ),
-                            // Text(
-                            //   "@anhLong_18_08",
-                            //   style:
-                            //       TextStyle(fontSize: 12, color: Colors.grey),
-                            // )
                             Text(
                               userInfo?['displayName'] ?? "Tên người dùng",
                               style: TextStyle(
@@ -248,19 +248,15 @@ class _ProfileState extends State<ProfileScreen> {
                                   TextStyle(fontSize: 12, color: Colors.grey),
                             ),
                             const SizedBox(width: 10),
-                            // Text(
-                            //   userInfo?['bio'] ?? "",
-                            //   style: TextStyle(fontSize: 12, color: Colors.grey),
-                            // )
                           ],
                         ),
                         Padding(
-                          padding: const EdgeInsets.fromLTRB(0, 18, 0, 0),
-                          child: Text(
-                            "Nghệ Sĩ Nhân Dân",
-                            style: TextStyle(fontSize: 12, color: Colors.grey),
-                          ),
-                        )
+                            padding: const EdgeInsets.fromLTRB(0, 18, 0, 0),
+                            child: Text(
+                              userInfo?['bio'] ?? "",
+                              style:
+                                  TextStyle(fontSize: 12, color: Colors.grey),
+                            ))
                       ],
                     ),
                   ),

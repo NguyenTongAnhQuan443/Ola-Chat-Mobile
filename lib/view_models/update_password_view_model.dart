@@ -42,8 +42,7 @@ class UpdatePasswordViewModel with ChangeNotifier {
       final prefs = await SharedPreferences.getInstance();
       final token = prefs.getString('access_token');
 
-      final uri = Uri.parse(
-          "${ApiConfig.changePassword}?oldPassword=$oldPassword&newPassword=$newPassword");
+      final uri = Uri.parse(ApiConfig.changePassword);
 
       final response = await http.put(
         uri,
@@ -51,6 +50,10 @@ class UpdatePasswordViewModel with ChangeNotifier {
           "Authorization": "Bearer $token",
           "Content-Type": "application/json",
         },
+        body: jsonEncode({
+          "oldPassword": oldPassword,
+          "newPassword": newPassword,
+        }),
       );
 
       final data = jsonDecode(utf8.decode(response.bodyBytes));

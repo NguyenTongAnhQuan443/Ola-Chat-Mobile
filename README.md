@@ -38,11 +38,13 @@ samples, guidance on mobile development, and a full API reference.
 ![profile_my_posts_screen.png](assets%2Fdemo%2Fprofile_my_posts_screen.png)
 ### 7.2 Profile - Save Posts Screen
 ![profile_save_posts_screen.png](assets%2Fdemo%2Fprofile_save_posts_screen.png)
-### 7.3 Profile - Settings - Genneral
-![profile_settings_general_screen.png](assets%2Fdemo%2Fprofile_settings_general_screen.png)
-### 7.4 Profile - Settings - Account
-![profile_settings_account_screen.png](assets%2Fdemo%2Fprofile_settings_account_screen.png)
-### 7.4 Profile - Settings - Logout
+### 7.3 Profile - Settings - Avatar
+![profile_setting_avatar.png](assets%2Fdemo%2Fprofile_setting_avatar.png)
+### 7.4 Profile - Settings - Account - Introduce
+![profile_setting_introduce.png](assets%2Fdemo%2Fprofile_setting_introduce.png)
+### 7.5 Profile - Settings - Personal Info
+![profile_setting_personal_info.png](assets%2Fdemo%2Fprofile_setting_personal_info.png)
+### 7.6 Profile - Settings - Logout
 ![profile_settings_logout_screen.png](assets%2Fdemo%2Fprofile_settings_logout_screen.png)
 ### 8 Message List Screen
 ![messages_list_screen.png](assets%2Fdemo%2Fmessages_list_screen.png)

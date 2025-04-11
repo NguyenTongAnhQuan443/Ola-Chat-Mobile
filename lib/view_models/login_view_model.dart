@@ -55,10 +55,10 @@ class LoginViewModel extends ChangeNotifier {
       await prefs.setString('access_token', _authResponse!.token);
       await prefs.setString('refresh_token', _authResponse!.refreshToken);
 
-      // Lấy và lưu thông tin người dùng vào SharedPreferences
       final userInfo = await _authService.getMyInfo(_authResponse!.token);
-      await prefs.setString(
-          'user_info', jsonEncode(userInfo)); // UTF-8 by default
+      _userInfo = userInfo; // ✅ Cập nhật local
+      await prefs.setString('user_info', jsonEncode(userInfo)); // ✅ Lưu vào local storage
+
     } catch (e) {
       _errorMessage = e.toString().replaceFirst('Exception: ', '');
     } finally {

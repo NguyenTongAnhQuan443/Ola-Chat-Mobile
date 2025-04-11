@@ -4,6 +4,7 @@ import 'package:olachat_mobile/view_models/account_settings_view_model.dart';
 import 'package:provider/provider.dart';
 
 class AccountSettingsScreen extends StatelessWidget {
+  // Giới thiệu
   const AccountSettingsScreen({super.key});
 
   @override

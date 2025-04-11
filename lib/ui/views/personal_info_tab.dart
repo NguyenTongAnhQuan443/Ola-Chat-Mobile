@@ -1,20 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:olachat_mobile/view_models/login_view_model.dart';
+import 'package:provider/provider.dart';
 
-import 'UpdateDobScreen.dart';
+import 'update_dob_screen.dart';
 import 'UpdateEmailScreen.dart';
-import 'UpdatePasswordScreen.dart';
+import 'update_password_screen.dart';
 
 class PersonalInfoTab extends StatelessWidget {
   const PersonalInfoTab({super.key});
 
+  String formatDate(String? dateStr) {
+    if (dateStr == null || dateStr.isEmpty) return '';
+    try {
+      final dateTime = DateTime.parse(dateStr);
+      return DateFormat('dd/MM/yyyy').format(dateTime);
+    } catch (e) {
+      return dateStr;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final info = {
-      'Số điện thoại': '0365962232',
-      'Email': 'ntanhquan.sly@gmail.com',
-      'Ngày sinh': '04/04/2003',
-      'Ngày tạo tài khoản': '11/04/2025',
-    };
+    final userInfo = Provider.of<LoginViewModel>(context).userInfo;
 
     return Padding(
       padding: const EdgeInsets.all(20),
@@ -27,25 +35,23 @@ class PersonalInfoTab extends StatelessWidget {
           ),
           const SizedBox(height: 16),
 
-          buildInfoTile('Số điện thoại', info['Số điện thoại']!),
-          buildInfoTile('Email', info['Email']!, onEdit: () {
+          buildInfoTile('Số điện thoại', userInfo?['username'] ?? ''),
+          buildInfoTile('Email', userInfo?['email'] ?? '', onEdit: () {
             Navigator.push(context, MaterialPageRoute(
               builder: (_) => const UpdateEmailScreen(),
             ));
           }),
-          buildInfoTile('Ngày sinh', info['Ngày sinh']!, onEdit: () {
+          buildInfoTile('Ngày sinh', formatDate(userInfo?['dob']), onEdit: () {
             Navigator.push(context, MaterialPageRoute(
               builder: (_) => const UpdateDobScreen(),
             ));
           }),
-
-          const SizedBox(height: 16),
-          // Dòng cập nhật mật khẩu
           buildInfoTile('Mật khẩu', '********', onEdit: () {
             Navigator.push(context, MaterialPageRoute(
               builder: (_) => const UpdatePasswordScreen(),
             ));
           }),
+          buildInfoTile('Ngày tạo tài khoản', formatDate(userInfo?['createdAt'])),
         ],
       ),
     );
@@ -97,6 +103,4 @@ class PersonalInfoTab extends StatelessWidget {
       ),
     );
   }
-
-
 }

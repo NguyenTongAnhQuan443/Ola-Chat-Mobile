@@ -21,5 +21,7 @@ class ApiConfig {
   static const String userInfo = "$base/users/my-info";
   static const String updateAvatar = "$base/users/my-avatar";
   static const String updateProfile = "$base/users/my-update";
+  static const String changePassword = "$base/users/change-password";
+
 
 }

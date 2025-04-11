@@ -9,7 +9,7 @@ class AuthService {
   // Login Phone
   Future<AuthResponse> loginWithPhone(
       String username, String password, String deviceId) async {
-    final response = await _api.post(ApiConfig.loginPhone, data: {
+    final response = await _api.post(ApiConfig.authLoginPhone, data: {
       'username': username,
       'password': password,
       'deviceId': deviceId,
@@ -26,7 +26,7 @@ class AuthService {
   // Login Google
   Future<AuthResponse> loginWithGoogle(String idToken, String deviceId) async {
     final response = await _api.post(
-      "${ApiConfig.loginGoogle}?deviceId=$deviceId",
+      "${ApiConfig.authLoginGoogle}?deviceId=$deviceId",
       data: {'idToken': idToken},
     );
     final rawData = response.data['data'];
@@ -43,7 +43,7 @@ class AuthService {
   Future<AuthResponse> loginWithFacebook(
       String accessToken, String deviceId) async {
     final response = await _api.post(
-      "${ApiConfig.loginFacebook}?deviceId=$deviceId",
+      "${ApiConfig.authLoginFacebook}?deviceId=$deviceId",
       data: {'accessToken': accessToken},
     );
     final rawData = response.data['data'];
@@ -58,21 +58,21 @@ class AuthService {
 
   // OTP
   Future<void> sendOtp(String phone) async {
-    await _api.post(ApiConfig.sendOtp, data: {"phone": phone});
+    await _api.post(ApiConfig.otpSend, data: {"phone": phone});
   }
 
   Future<void> verifyOtp(String phone, String otp) async {
-    await _api.post(ApiConfig.verifyOtp, data: {"phone": phone, "otp": otp});
+    await _api.post(ApiConfig.otpVerify, data: {"phone": phone, "otp": otp});
   }
 
   // Register
   Future<void> register(Map<String, dynamic> data) async {
-    await _api.post(ApiConfig.register, data: data);
+    await _api.post(ApiConfig.authRegister, data: data);
   }
 
   // Logout
   Future<void> logout(String accessToken, String refreshToken) async {
-    await _api.post(ApiConfig.logout, data: {
+    await _api.post(ApiConfig.authLogout, data: {
       'accessToken': accessToken,
       'refreshToken': refreshToken,
     });

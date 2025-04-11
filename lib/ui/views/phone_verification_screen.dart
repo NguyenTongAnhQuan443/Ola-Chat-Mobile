@@ -34,7 +34,7 @@ class _PhoneVerificationScreenState extends State<PhoneVerificationScreen> {
 
     try {
       final res = await http.post(
-        Uri.parse(ApiConfig.sendOtp),
+        Uri.parse(ApiConfig.otpSend),
         headers: {"Content-Type": "application/json"},
         body: jsonEncode({"phone": phone}),
       );
@@ -63,7 +63,7 @@ class _PhoneVerificationScreenState extends State<PhoneVerificationScreen> {
 
     try {
       final res = await http.post(
-        Uri.parse(ApiConfig.verifyOtp),
+        Uri.parse(ApiConfig.otpVerify),
         headers: {"Content-Type": "application/json"},
         body: jsonEncode({"phone": phone, "otp": otp}),
       );

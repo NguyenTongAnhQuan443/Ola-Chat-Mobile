@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:olachat_mobile/ui/views/login_screen.dart';
+import 'package:olachat_mobile/ui/views/bottom_navigationbar_screen.dart';
+import 'package:olachat_mobile/view_models/login_view_model.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-
-import 'bottom_navigationbar_screen.dart';
+import 'package:olachat_mobile/core/config/api_config.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -22,28 +24,28 @@ class _SplashScreenState extends State<SplashScreen> {
 
   Future<void> _checkLoginStatus() async {
     final prefs = await SharedPreferences.getInstance();
-    final token = prefs.getString('access_token');
+    final accessToken = prefs.getString('access_token');
 
-    if (token == null) {
-      _goToLogin();
-      return;
+    bool isValid = false;
+    if (accessToken != null) {
+      final res = await http.post(
+        Uri.parse('${ApiConfig.base}/auth/introspect'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'token': accessToken}),
+      );
+      final body = jsonDecode(res.body);
+      isValid = body['success'] == true;
     }
 
-    // Gọi API introspect token
-    final url = Uri.parse('http://10.0.2.2:8080/ola-chat/auth/introspect');
-    final res = await http.post(
-      url,
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({'token': token}),
-    );
-
-    final body = jsonDecode(res.body);
-    final isValid = body['success'] == true;
-
-    if (res.statusCode == 200 && isValid) {
-      _goToBottomNavigationBarScreen();
+    if (isValid) {
+      _goToHome();
     } else {
-      _goToLogin();
+      final refreshed = await Provider.of<LoginViewModel>(context, listen: false).tryRefreshToken();
+      if (refreshed) {
+        _goToHome();
+      } else {
+        _goToLogin();
+      }
     }
   }
 
@@ -54,7 +56,7 @@ class _SplashScreenState extends State<SplashScreen> {
     );
   }
 
-  void _goToBottomNavigationBarScreen() {
+  void _goToHome() {
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (_) => const BottomNavigationBarScreen()),

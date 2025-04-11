@@ -23,7 +23,7 @@ class ResetPasswordViewModel with ChangeNotifier {
 
     try {
       final response = await http.post(
-        Uri.parse(ApiConfig.resetPassword),
+        Uri.parse(ApiConfig.authResetPassword),
         headers: {"Content-Type": "application/json"},
         body: jsonEncode({
           "email": email,

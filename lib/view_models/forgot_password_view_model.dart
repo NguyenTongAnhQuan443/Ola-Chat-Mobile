@@ -15,7 +15,7 @@ class ForgotPasswordViewModel with ChangeNotifier {
 
     try {
       final response = await http.post(
-        Uri.parse("${ApiConfig.forgotPassword}?email=$email"),
+        Uri.parse("${ApiConfig.authForgotPassword}?email=$email"),
       );
 
       final data = jsonDecode(utf8.decode(response.bodyBytes));

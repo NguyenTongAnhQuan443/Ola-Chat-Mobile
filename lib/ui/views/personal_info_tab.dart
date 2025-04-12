@@ -4,7 +4,7 @@ import 'package:olachat_mobile/view_models/login_view_model.dart';
 import 'package:provider/provider.dart';
 
 import 'update_dob_screen.dart';
-import 'UpdateEmailScreen.dart';
+import 'update_email_screen.dart';
 import 'update_password_screen.dart';
 
 class PersonalInfoTab extends StatelessWidget {

@@ -46,10 +46,23 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<void> _handleLogin() async {
     final context = navigatorKey.currentContext!;
     final viewModel = Provider.of<LoginViewModel>(context, listen: false);
-    await viewModel.loginWithPhone(
-      phoneController.text.trim(),
-      passwordController.text.trim(),
-    );
+    final phone = phoneController.text.trim();
+    final password = passwordController.text.trim();
+
+    // Kiểm tra định dạng số điện thoại
+    final phoneRegex = RegExp(r'^0\d{9}$');
+    if (!phoneRegex.hasMatch(phone)) {
+      showErrorSnackBar(context, 'Số điện thoại không hợp lệ. Vui lòng nhập 10 số bắt đầu bằng số 0.');
+      return;
+    }
+
+    // Kiểm tra mật khẩu không rỗng
+    if (password.isEmpty) {
+      showErrorSnackBar(context, 'Vui lòng nhập mật khẩu.');
+      return;
+    }
+
+    await viewModel.loginWithPhone(phone, password);
 
     if (viewModel.authResponse != null) {
       navigatorKey.currentState?.pushReplacement(
@@ -59,6 +72,7 @@ class _LoginScreenState extends State<LoginScreen> {
       showErrorSnackBar(context, viewModel.errorMessage ?? 'Có lỗi xảy ra');
     }
   }
+
 
   @override
   Widget build(BuildContext context) {

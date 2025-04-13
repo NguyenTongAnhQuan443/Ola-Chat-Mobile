@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'update_dob_screen.dart';
 import 'update_email_screen.dart';
 import 'update_password_screen.dart';
+import 'login_history_screen.dart';
 
 class PersonalInfoTab extends StatelessWidget {
   const PersonalInfoTab({super.key});
@@ -24,7 +25,7 @@ class PersonalInfoTab extends StatelessWidget {
   Widget build(BuildContext context) {
     final userInfo = Provider.of<LoginViewModel>(context).userInfo;
 
-    return Padding(
+    return SingleChildScrollView(
       padding: const EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -34,7 +35,6 @@ class PersonalInfoTab extends StatelessWidget {
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 16),
-
           buildInfoTile('Số điện thoại', userInfo?['username'] ?? ''),
           buildInfoTile('Email', userInfo?['email'] ?? '', onEdit: () {
             Navigator.push(context, MaterialPageRoute(
@@ -52,6 +52,13 @@ class PersonalInfoTab extends StatelessWidget {
             ));
           }),
           buildInfoTile('Ngày tạo tài khoản', formatDate(userInfo?['createdAt'])),
+          
+          const SizedBox(height: 16),
+          buildInfoTile('Lịch sử đăng nhập', 'Nhấn để xem chi tiết', onEdit: () {
+            Navigator.push(context, MaterialPageRoute(
+              builder: (_) => const LoginHistoryScreen(),
+            ));
+          }),
         ],
       ),
     );
@@ -63,7 +70,7 @@ class PersonalInfoTab extends StatelessWidget {
       borderRadius: BorderRadius.circular(12),
       child: Container(
         margin: const EdgeInsets.only(bottom: 12),
-        padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
+        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
         decoration: BoxDecoration(
           color: Colors.grey.shade100,
           borderRadius: BorderRadius.circular(12),
@@ -97,7 +104,7 @@ class PersonalInfoTab extends StatelessWidget {
               ),
             ),
             if (onEdit != null)
-              const Icon(Icons.edit, size: 18, color: Colors.blue),
+              const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.blue),
           ],
         ),
       ),

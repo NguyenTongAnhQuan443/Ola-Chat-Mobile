@@ -36,7 +36,7 @@ class _UpdateEmailScreenState extends State<UpdateEmailScreen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           SvgPicture.asset(
-                            'assets/images/access_account.svg',
+                            'assets/images/email.svg',
                             height: 300,
                           ),
                           const SizedBox(height: 30),

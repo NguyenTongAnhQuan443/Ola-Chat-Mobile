@@ -26,4 +26,7 @@ class ApiConfig {
   static const String authRegister = "$base/users";
   static const String sendEmailUpdateOtp = "$base/users/update-email";
   static const String verifyEmailUpdateOtp = "$base/users/verify-update-email";
+
+  static String loginHistory(String userId) => "$base/api/login-history/$userId";
+  static String setUserOffline(String userId) =>"$base/api/login-history/offline/$userId";
 }

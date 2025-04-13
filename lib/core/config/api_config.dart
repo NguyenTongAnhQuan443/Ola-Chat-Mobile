@@ -13,7 +13,6 @@ class ApiConfig {
   static const String authLoginGoogle = "$base/auth/login/google";
   static const String authLoginFacebook = "$base/auth/login/facebook";
   static const String authLogout = "$base/auth/logout";
-  static const String authRegister = "$base/users";
   static const String authForgotPassword = "$base/auth/forgot-password";
   static const String authResetPassword = "$base/auth/reset-password";
   static const String authRefresh = "$base/auth/refresh";
@@ -24,4 +23,7 @@ class ApiConfig {
   static const String updateAvatar = "$base/users/my-avatar";
   static const String updateProfile = "$base/users/my-update";
   static const String changePassword = "$base/users/change-password";
+  static const String authRegister = "$base/users";
+  static const String sendEmailUpdateOtp = "$base/users/update-email";
+  static const String verifyEmailUpdateOtp = "$base/users/verify-update-email";
 }

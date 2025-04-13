@@ -8,7 +8,7 @@ import 'package:olachat_mobile/ui/widgets/show_snack_bar.dart';
 import 'package:olachat_mobile/view_models/login_view_model.dart';
 import 'package:provider/provider.dart';
 import '../../core/utils/constants.dart';
-import '../../data/services/User_service.dart';
+import '../../data/services/user_service.dart';
 
 class UpdateDobScreen extends StatefulWidget {
   const UpdateDobScreen({super.key});

@@ -31,13 +31,13 @@ class _UpdatePasswordScreenState extends State<UpdatePasswordScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 24),
                 child: Column(
                   children: [
-                    AppLogoHeader(showBackButton: true),
+                    AppLogoHeader(showBackButton: false),
                     Expanded(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           SvgPicture.asset(
-                            'assets/images/forgot_password.svg',
+                            'assets/images/access_account.svg',
                             height: 300,
                           ),
                           const SizedBox(height: 30),

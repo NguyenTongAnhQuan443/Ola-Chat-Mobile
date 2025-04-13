@@ -1,129 +1,65 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:olachat_mobile/core/config/api_config.dart';
-import 'package:olachat_mobile/ui/widgets/show_snack_bar.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'login_view_model.dart';
 import 'package:provider/provider.dart';
+import '../../data/services/user_service.dart';
+import '../ui/widgets/show_snack_bar.dart';
+import 'login_view_model.dart';
 
 class UpdateEmailViewModel extends ChangeNotifier {
+  final UserService _userService = UserService();
+
   bool isLoading = false;
-  bool otpSent = false;       // Đã gửi OTP cho email hiện tại
-  bool newOtpSent = false;    // Đã gửi OTP cho email mới
+  bool isOtpSent = false;
 
-  /// Gửi OTP đến email hiện tại
-  Future<void> sendOtpToCurrentEmail(String currentEmail, BuildContext context) async {
-    if (currentEmail.isEmpty) {
-      showErrorSnackBar(context, "Vui lòng nhập email hiện tại");
+  /// Kiểm tra định dạng email hợp lệ (mọi domain)
+  bool _isValidEmail(String email) {
+    final regex = RegExp(
+      r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$",
+    );
+    return regex.hasMatch(email);
+  }
+
+  /// Gửi OTP đến email
+  Future<void> sendOtp(BuildContext context, String newEmail) async {
+    if (!_isValidEmail(newEmail)) {
+      showErrorSnackBar(context, "Email không hợp lệ. Vui lòng nhập đúng định dạng email.");
       return;
     }
 
-    isLoading = true;
-    notifyListeners();
-
     try {
-      final response = await http.post(
-        Uri.parse("ApiConfig.authSendOtp"), // endpoint gửi OTP
-        headers: {"Content-Type": "application/json"},
-        body: jsonEncode({"email": currentEmail}),
-      );
+      isLoading = true;
+      notifyListeners();
 
-      final data = jsonDecode(utf8.decode(response.bodyBytes));
-      if (response.statusCode == 200 && data['success'] == true) {
-        showSuccessSnackBar(context, "Đã gửi mã OTP đến email hiện tại");
-        otpSent = true;
-      } else {
-        showErrorSnackBar(context, data['message'] ?? "Không gửi được mã OTP");
-      }
+      await _userService.sendEmailOtp(newEmail);
+      isOtpSent = true;
+      showSuccessSnackBar(context, "Đã gửi mã OTP đến email.");
     } catch (e) {
-      showErrorSnackBar(context, "Lỗi khi gửi OTP: $e");
+      showErrorSnackBar(context, "Lỗi: ${e.toString()}");
     } finally {
       isLoading = false;
       notifyListeners();
     }
   }
 
-  /// Gửi OTP đến email mới
-  Future<void> sendOtpToNewEmail(String newEmail, BuildContext context) async {
-    if (newEmail.isEmpty) {
-      showErrorSnackBar(context, "Vui lòng nhập email mới");
+  /// Xác minh OTP để cập nhật email
+  Future<void> verifyOtp(BuildContext context, String otp) async {
+    if (otp.trim().isEmpty) {
+      showErrorSnackBar(context, "Vui lòng nhập mã OTP.");
       return;
     }
 
-    isLoading = true;
-    notifyListeners();
-
     try {
-      final response = await http.post(
-        Uri.parse("ApiConfig.authSendOtp"),
-        headers: {"Content-Type": "application/json"},
-        body: jsonEncode({"email": newEmail}),
-      );
-
-      final data = jsonDecode(utf8.decode(response.bodyBytes));
-      if (response.statusCode == 200 && data['success'] == true) {
-        showSuccessSnackBar(context, "Đã gửi mã OTP đến email mới");
-        newOtpSent = true;
-      } else {
-        showErrorSnackBar(context, data['message'] ?? "Không gửi được mã OTP");
-      }
-    } catch (e) {
-      showErrorSnackBar(context, "Lỗi khi gửi OTP: $e");
-    } finally {
-      isLoading = false;
+      isLoading = true;
       notifyListeners();
-    }
-  }
 
-  /// Xác thực cả 2 OTP và cập nhật email
-  Future<void> verifyAllOtpsAndUpdateEmail(
-      BuildContext context,
-      String currentEmail,
-      String currentOtp,
-      String newEmail,
-      String newOtp,
-      ) async {
-    if (currentEmail.isEmpty ||
-        currentOtp.isEmpty ||
-        newEmail.isEmpty ||
-        newOtp.isEmpty) {
-      showErrorSnackBar(context, "Vui lòng nhập đầy đủ thông tin.");
-      return;
-    }
+      await _userService.verifyEmailOtp(otp);
 
-    isLoading = true;
-    notifyListeners();
+      // Làm mới userInfo
+      await Provider.of<LoginViewModel>(context, listen: false).refreshUserInfo();
 
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      final token = prefs.getString('access_token');
-
-      final response = await http.post(
-        Uri.parse("ApiConfig.authVerifyEmailOtp"), // endpoint cập nhật email
-        headers: {
-          "Authorization": "Bearer $token",
-          "Content-Type": "application/json",
-        },
-        body: jsonEncode({
-          "oldEmail": currentEmail,
-          "oldEmailOtp": currentOtp,
-          "newEmail": newEmail,
-          "newEmailOtp": newOtp,
-        }),
-      );
-
-      final data = jsonDecode(utf8.decode(response.bodyBytes));
-
-      if (response.statusCode == 200 && data['success'] == true) {
-        showSuccessSnackBar(context, "Cập nhật email thành công");
-        await Provider.of<LoginViewModel>(context, listen: false).refreshUserInfo();
-        Navigator.pop(context);
-      } else {
-        showErrorSnackBar(context, data['message'] ?? "Cập nhật email thất bại");
-      }
+      showSuccessSnackBar(context, "Cập nhật email thành công!");
+      Navigator.pop(context); // Quay lại
     } catch (e) {
-      showErrorSnackBar(context, "Lỗi cập nhật email: $e");
+      showErrorSnackBar(context, "Lỗi: ${e.toString()}");
     } finally {
       isLoading = false;
       notifyListeners();

@@ -14,7 +14,7 @@ class AccountSettingsViewModel extends ChangeNotifier {
   final UserService _userService = UserService();
   bool isLoading = false;
 
-  /// ✅ Load dữ liệu người dùng từ SharedPreferences
+  // Load dữ liệu người dùng từ SharedPreferences
   Future<void> loadInitialData() async {
     try {
       final prefs = await SharedPreferences.getInstance();
@@ -88,7 +88,11 @@ class AccountSettingsViewModel extends ChangeNotifier {
         });
         await prefs.setString('user_info', jsonEncode(decoded));
       }
-      await loadInitialData();
+
+      // XÓA nội dung ô input sau khi cập nhật thành công
+      fullNameController.clear();
+      nicknameController.clear();
+      bioController.clear();
     } catch (e) {
       if (context.mounted) {
         showErrorSnackBar(context, "Lỗi khi cập nhật bộ nhớ cục bộ: $e");

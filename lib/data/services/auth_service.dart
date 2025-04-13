@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../core/config/api_config.dart';
 import 'api_service.dart';
@@ -60,13 +59,22 @@ class AuthService {
     return auth;
   }
 
-  // OTP
-  Future<void> sendOtp(String phone) async {
-    await _api.post(ApiConfig.otpSend, data: {"phone": phone});
+  // ✅ Gửi OTP với provider
+  Future<void> sendOtp(String phone, {String provider = "vonage"}) async {
+    await _api.post(ApiConfig.otpSend, data: {
+      "phone": phone,
+      "provider": provider,
+    });
   }
 
-  Future<void> verifyOtp(String phone, String otp) async {
-    await _api.post(ApiConfig.otpVerify, data: {"phone": phone, "otp": otp});
+  // ✅ Xác minh OTP với provider
+  Future<void> verifyOtp(String phone, String otp,
+      {String provider = "vonage"}) async {
+    await _api.post(ApiConfig.otpVerify, data: {
+      "phone": phone,
+      "otp": otp,
+      "provider": provider,
+    });
   }
 
   // Register
@@ -91,7 +99,7 @@ class AuthService {
     await prefs.setString('refresh_token', auth.refreshToken);
   }
 
-  //  Get Info User
+  // Get Info User
   Future<Map<String, dynamic>> getMyInfo(String accessToken) async {
     final response = await http.get(
       Uri.parse(ApiConfig.userInfo),

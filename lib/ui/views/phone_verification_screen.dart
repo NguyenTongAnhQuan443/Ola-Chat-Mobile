@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:core';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:http/http.dart' as http;
@@ -37,7 +36,7 @@ class _PhoneVerificationScreenState extends State<PhoneVerificationScreen> {
       final res = await http.post(
         Uri.parse(ApiConfig.otpSend),
         headers: {"Content-Type": "application/json"},
-        body: jsonEncode({"phone": phone}),
+        body: jsonEncode({"phone": phone, "provider": "vonage"}),
       );
 
       if (res.statusCode == 200) {
@@ -67,7 +66,11 @@ class _PhoneVerificationScreenState extends State<PhoneVerificationScreen> {
       final res = await http.post(
         Uri.parse(ApiConfig.otpVerify),
         headers: {"Content-Type": "application/json"},
-        body: jsonEncode({"phone": phone, "otp": otp}),
+        body: jsonEncode({
+          "phone": phone,
+          "otp": otp,
+          "provider": "vonage",
+        }),
       );
 
       final responseData = jsonDecode(utf8.decode(res.bodyBytes));
@@ -88,6 +91,12 @@ class _PhoneVerificationScreenState extends State<PhoneVerificationScreen> {
       showErrorSnackBar(
           navigatorKey.currentContext!, "Lỗi xác thực OTP: ${e.toString()}");
     }
+  }
+
+  bool isValidPhone(String phone) {
+    final trimmed = phone.trim();
+    final regex = RegExp(r'^0\d{9}$');
+    return regex.hasMatch(trimmed);
   }
 
   @override
@@ -115,9 +124,8 @@ class _PhoneVerificationScreenState extends State<PhoneVerificationScreen> {
                       labelText: "Số điện thoại",
                       controller: phoneController,
                       isPassword: false,
-                      enabled: !isOtpSent, // khóa khi đã gửi OTP
+                      enabled: !isOtpSent,
                     ),
-
                     const SizedBox(height: 16),
                     if (isOtpSent)
                       Column(
@@ -178,11 +186,5 @@ class _PhoneVerificationScreenState extends State<PhoneVerificationScreen> {
         ),
       ),
     );
-  }
-
-  bool isValidPhone(String phone) {
-    final trimmed = phone.trim();
-    final regex = RegExp(r'^0\d{9}$');
-    return regex.hasMatch(trimmed);
   }
 }

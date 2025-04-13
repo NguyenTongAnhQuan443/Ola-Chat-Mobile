@@ -9,10 +9,21 @@ import 'package:olachat_mobile/view_models/signup_view_model.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
+import 'core/utils/app_lifecycle_handler.dart';
+
 final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+final AppLifecycleHandler _lifecycleHandler = AppLifecycleHandler();
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  print("🔧 Widgets binding initialized");
+
+  final AppLifecycleHandler lifecycleHandler = AppLifecycleHandler();
+  WidgetsBinding.instance.addObserver(lifecycleHandler);
+
+  print("📲 AppLifecycleHandler added");
+
   runApp(
     MultiProvider(
       providers: [

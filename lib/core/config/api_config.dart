@@ -29,4 +29,5 @@ class ApiConfig {
 
   static String loginHistory(String userId) => "$base/api/login-history/$userId";
   static String setUserOffline(String userId) =>"$base/api/login-history/offline/$userId";
+  static const String ping = "$base/api/login-history/ping";
 }

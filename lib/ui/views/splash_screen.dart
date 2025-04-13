@@ -9,6 +9,8 @@ import 'dart:convert';
 import 'package:olachat_mobile/core/config/api_config.dart';
 import 'package:olachat_mobile/ui/widgets/show_snack_bar.dart';
 
+import '../../data/services/ping_service.dart';
+
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
 
@@ -21,6 +23,7 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
     _checkLoginStatus();
+    PingService.start();   // Gọi thủ công để ping ngay khi mở app
   }
 
   Future<void> _checkLoginStatus() async {

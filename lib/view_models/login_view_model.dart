@@ -199,17 +199,18 @@ class LoginViewModel extends ChangeNotifier {
   Map<String, dynamic>? get userInfo => _userInfo;
 
   Future<void> refreshUserInfo() async {
-    final prefs = await SharedPreferences.getInstance();
-    final accessToken = prefs.getString('access_token');
-    if (accessToken == null) return;
-
     try {
-      final userInfoData = await _authService.getMyInfo(accessToken);
-      _userInfo = userInfoData; // 👉 Cập nhật biến local
-      await prefs.setString('user_info', jsonEncode(userInfoData));
-      notifyListeners(); // 🔄 Bắn notify để UI cập nhật
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('access_token');
+      if (token == null) throw Exception("Token không tồn tại");
+
+      final userInfo = await _authService.getMyInfo(token);
+      _userInfo = userInfo;
+      await prefs.setString('user_info', jsonEncode(userInfo));
+      notifyListeners();
     } catch (e) {
-      print("❌ Lỗi khi làm mới user info: $e");
+      debugPrint('❌ refreshUserInfo thất bại: $e');
+      throw Exception("Lấy thông tin người dùng thất bại");
     }
   }
 }

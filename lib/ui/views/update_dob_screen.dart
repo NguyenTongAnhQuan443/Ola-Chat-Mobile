@@ -37,8 +37,21 @@ class _UpdateDobScreenState extends State<UpdateDobScreen> {
     );
   }
 
+  bool _isAtLeast18YearsOld(DateTime date) {
+    final now = DateTime.now();
+    final age = now.year - date.year -
+        ((now.month < date.month || (now.month == date.month && now.day < date.day)) ? 1 : 0);
+    return age >= 18;
+  }
+
   Future<void> _submit() async {
+    if (!_isAtLeast18YearsOld(selectedDate)) {
+      showErrorSnackBar(context, "Bạn phải đủ 18 tuổi trở lên để cập nhật ngày sinh.");
+      return;
+    }
+
     setState(() => isLoading = true);
+
     try {
       final formattedDob = DateFormat('dd/MM/yyyy').format(selectedDate);
       final data = {
@@ -66,7 +79,7 @@ class _UpdateDobScreenState extends State<UpdateDobScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 24),
           child: Column(
             children: [
-              AppLogoHeader(showBackButton: true),
+              AppLogoHeader(showBackButton: false),
               Expanded(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,

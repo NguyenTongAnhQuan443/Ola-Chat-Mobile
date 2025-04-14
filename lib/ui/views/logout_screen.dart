@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:olachat_mobile/ui/views/login_screen.dart';
 
@@ -11,22 +12,35 @@ class LogoutScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: SizedBox(
-        height: 44,
-        width: MediaQuery.of(context).size.width * 0.9,
-        child: ElevatedButton(
-          onPressed: () {
-            _showLogoutDialog(context);
-          },
-          style: ElevatedButton.styleFrom(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8)),
-              backgroundColor: Colors.black87),
-          child: const Text(
-            "Đăng xuất",
-            style: TextStyle(fontSize: 14, color: Colors.white),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          const SizedBox(height: 60),
+          SvgPicture.asset(
+            'assets/images/undraw_logout_weas.svg',
+            height: 250,
           ),
-        ),
+          const SizedBox(height: 30),
+          SizedBox(
+            height: 44,
+            width: MediaQuery.of(context).size.width * 0.9,
+            child: ElevatedButton(
+              onPressed: () {
+                _showLogoutDialog(context);
+              },
+              style: ElevatedButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                backgroundColor: Colors.black87,
+              ),
+              child: const Text(
+                "Đăng xuất",
+                style: TextStyle(fontSize: 14, color: Colors.white),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -68,7 +82,7 @@ class LogoutScreen extends StatelessWidget {
                       onPressed: () {
                         Navigator.of(dialogContext).pop();
                         final viewModel =
-                            Provider.of<LoginViewModel>(context, listen: false);
+                        Provider.of<LoginViewModel>(context, listen: false);
 
                         Future.delayed(Duration.zero, () async {
                           try {
@@ -76,7 +90,7 @@ class LogoutScreen extends StatelessWidget {
                             navigatorKey.currentState?.pushAndRemoveUntil(
                               MaterialPageRoute(
                                   builder: (_) => const LoginScreen()),
-                              (route) => false,
+                                  (route) => false,
                             );
                           } catch (e) {
                             scaffoldMessengerKey.currentState?.showSnackBar(
@@ -90,7 +104,8 @@ class LogoutScreen extends StatelessWidget {
                       },
                       child: const Text(
                         "Đăng xuất",
-                        style: TextStyle(color: Colors.redAccent, fontSize: 16),
+                        style:
+                        TextStyle(color: Colors.redAccent, fontSize: 16),
                       ),
                     ),
                   ],

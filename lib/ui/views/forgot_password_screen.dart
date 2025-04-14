@@ -41,7 +41,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   child: Column(
                     children: [
                       const AppLogoHeader(showBackButton: false),
-                      const SizedBox(height: 24),
+                      const SizedBox(height: 140),
                       SvgPicture.asset(
                         'assets/images/forgot_password.svg',
                         height: 300,
@@ -91,7 +91,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                               : const Text("Gửi mã xác nhận", style: TextStyle(fontSize: 14)),
                         ),
                       ),
-                      const Spacer(), // đẩy phần quay lại xuống dưới cùng
+                      // const Spacer(), // đẩy phần quay lại xuống dưới cùng
+                      const SizedBox(height: 30),
                       InkWell(
                         onTap: () => Navigator.pop(context),
                         child: const Text(

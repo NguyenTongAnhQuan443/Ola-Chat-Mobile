@@ -5,10 +5,10 @@ import 'package:olachat_mobile/view_models/login_view_model.dart';
 import 'package:olachat_mobile/view_models/phone_verification_view_model.dart';
 import 'package:olachat_mobile/view_models/profile_view_model.dart';
 import 'package:olachat_mobile/view_models/reset_password_view_model.dart';
+import 'package:olachat_mobile/view_models/search_view_model.dart';
 import 'package:olachat_mobile/view_models/signup_view_model.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import 'core/utils/app_lifecycle_handler.dart';
 
@@ -31,6 +31,8 @@ Future<void> main() async {
         ChangeNotifierProvider(create: (_) => ForgotPasswordViewModel()),
         ChangeNotifierProvider(create: (_) => ResetPasswordViewModel()),
         ChangeNotifierProvider(create: (_) => ProfileViewModel()),
+        ChangeNotifierProvider(create: (_) => SearchViewModel()),
+
       ],
       child: MyApp(),
     ),

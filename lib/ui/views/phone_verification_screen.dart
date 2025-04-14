@@ -102,86 +102,99 @@ class _PhoneVerificationScreenState extends State<PhoneVerificationScreen> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Scaffold(
-        backgroundColor: AppColors.backgroundColor,
-        body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              AppLogoHeader(showBackButton: true),
-              Expanded(
-                flex: 9,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SvgPicture.asset(
-                      'assets/images/verify_phone.svg',
-                      height: 300,
-                    ),
-                    const SizedBox(height: 30),
-                    CustomTextField(
-                      labelText: "Số điện thoại",
-                      controller: phoneController,
-                      isPassword: false,
-                      enabled: !isOtpSent,
-                    ),
-                    const SizedBox(height: 16),
-                    if (isOtpSent)
-                      Column(
-                        children: [
-                          CustomTextField(
-                            labelText: "Mã OTP",
-                            controller: otpController,
-                            isPassword: false,
-                            enabled: isOtpSent,
-                          ),
-                          const SizedBox(height: 16),
-                        ],
-                      ),
-                    SizedBox(
-                      width: double.infinity,
-                      height: 44,
-                      child: ElevatedButton(
-                        onPressed: () => isOtpSent ? verifyOtp() : sendOtp(),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.black,
-                          foregroundColor: Colors.white,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          side: BorderSide(color: Colors.grey.shade300),
-                          elevation: 0,
-                        ),
-                        child: Text(
-                          isOtpSent ? "Xác minh OTP" : "Gửi mã OTP",
-                          style: const TextStyle(fontSize: 14),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 30),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
+      child: GestureDetector(
+        onTap: () => FocusScope.of(context).unfocus(),
+        child: Scaffold(
+          resizeToAvoidBottomInset: true,
+          backgroundColor: AppColors.backgroundColor,
+          body: LayoutBuilder(
+            builder: (context, constraints) {
+              return SingleChildScrollView(
+                reverse: true,
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                  child: IntrinsicHeight(
+                    child: Column(
                       children: [
-                        const Text("Đã có tài khoản?",
-                            style: TextStyle(fontSize: 14)),
-                        const SizedBox(width: 5),
-                        InkWell(
-                          onTap: () => Navigator.pop(context),
-                          child: const Text(
-                            "Đăng nhập",
-                            style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black),
+                        AppLogoHeader(showBackButton: true),
+                        Expanded(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SvgPicture.asset(
+                                'assets/images/verify_phone.svg',
+                                height: 300,
+                              ),
+                              const SizedBox(height: 30),
+                              CustomTextField(
+                                labelText: "Số điện thoại",
+                                controller: phoneController,
+                                isPassword: false,
+                                enabled: !isOtpSent,
+                              ),
+                              const SizedBox(height: 16),
+                              if (isOtpSent)
+                                Column(
+                                  children: [
+                                    CustomTextField(
+                                      labelText: "Mã OTP",
+                                      controller: otpController,
+                                      isPassword: false,
+                                      enabled: isOtpSent,
+                                    ),
+                                    const SizedBox(height: 16),
+                                  ],
+                                ),
+                              SizedBox(
+                                width: double.infinity,
+                                height: 44,
+                                child: ElevatedButton(
+                                  onPressed: () =>
+                                  isOtpSent ? verifyOtp() : sendOtp(),
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.black,
+                                    foregroundColor: Colors.white,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    side: BorderSide(color: Colors.grey.shade300),
+                                    elevation: 0,
+                                  ),
+                                  child: Text(
+                                    isOtpSent ? "Xác minh OTP" : "Gửi mã OTP",
+                                    style: const TextStyle(fontSize: 14),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 30),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const Text("Đã có tài khoản?",
+                                      style: TextStyle(fontSize: 14)),
+                                  const SizedBox(width: 5),
+                                  InkWell(
+                                    onTap: () => Navigator.pop(context),
+                                    child: const Text(
+                                      "Đăng nhập",
+                                      style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.black),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
                           ),
                         ),
                       ],
                     ),
-                  ],
+                  ),
                 ),
-              ),
-            ],
+              );
+            },
           ),
         ),
       ),

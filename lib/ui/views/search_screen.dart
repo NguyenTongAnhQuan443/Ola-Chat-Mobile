@@ -78,7 +78,15 @@ class _SearchScreenState extends State<SearchScreen> {
               child: Center(
                 child: Padding(
                   padding: EdgeInsets.all(20),
-                  child: CircularProgressIndicator(),
+                  child: const SizedBox(
+                    width: 32,
+                    height: 32,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2.5,
+                      valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF2B4FE1)), // màu xanh hiện đại
+                    ),
+                  ),
+
                 ),
               ),
             ),
@@ -115,7 +123,7 @@ class _SearchScreenState extends State<SearchScreen> {
                         context,
                         MaterialPageRoute(
                           builder: (_) =>
-                              UserProfileScreen(user: viewModel.result!),
+                              UserProfileInfoScreen(user: viewModel.result!),
                         ),
                       );
                     },

@@ -59,7 +59,7 @@ class AuthService {
     return auth;
   }
 
-  // ✅ Gửi OTP với provider
+  // Gửi OTP với provider
   Future<void> sendOtp(String phone, {String provider = "vonage"}) async {
     await _api.post(ApiConfig.otpSend, data: {
       "phone": phone,
@@ -67,7 +67,7 @@ class AuthService {
     });
   }
 
-  // ✅ Xác minh OTP với provider
+  // Xác minh OTP với provider
   Future<void> verifyOtp(String phone, String otp,
       {String provider = "vonage"}) async {
     await _api.post(ApiConfig.otpVerify, data: {
@@ -95,7 +95,7 @@ class AuthService {
   // Save token
   Future<void> _saveTokens(AuthResponse auth) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('access_token', auth.token);
+    await prefs.setString('access_token', auth.accessToken);
     await prefs.setString('refresh_token', auth.refreshToken);
   }
 

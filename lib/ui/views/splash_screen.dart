@@ -29,6 +29,7 @@ class _SplashScreenState extends State<SplashScreen> {
     final prefs = await SharedPreferences.getInstance();
     final accessToken = prefs.getString('access_token');
     final refreshToken = prefs.getString('refresh_token');
+
     final loginVM = Provider.of<LoginViewModel>(context, listen: false);
 
     if (accessToken == null && refreshToken == null) {

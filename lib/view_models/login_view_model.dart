@@ -24,14 +24,15 @@ class LoginViewModel extends ChangeNotifier {
       final info = DeviceInfoPlugin();
       if (Platform.isAndroid) {
         final androidInfo = await info.androidInfo;
-        deviceId = androidInfo.id;
+        deviceId = '${androidInfo.brand} ${androidInfo.model}';
       } else if (Platform.isIOS) {
         final iosInfo = await info.iosInfo;
-        deviceId = iosInfo.identifierForVendor ?? 'unknown';
+        deviceId = iosInfo.utsname.machine ?? 'iOS';
       }
     } catch (e) {
-      print('⚠️ Device ID error: $e');
+      deviceId = 'unknown';
     }
+
     notifyListeners();
   }
 
@@ -52,13 +53,13 @@ class LoginViewModel extends ChangeNotifier {
       _errorMessage = null;
 
       final prefs = await SharedPreferences.getInstance();
-      await prefs.setString('access_token', _authResponse!.token);
+      await prefs.setString('access_token', _authResponse!.accessToken);
       await prefs.setString('refresh_token', _authResponse!.refreshToken);
 
-      final userInfo = await _authService.getMyInfo(_authResponse!.token);
-      _userInfo = userInfo; // ✅ Cập nhật local
-      await prefs.setString('user_info', jsonEncode(userInfo)); // ✅ Lưu vào local storage
-
+      final userInfo = await _authService.getMyInfo(_authResponse!.accessToken);
+      _userInfo = userInfo;
+      await prefs.setString(
+          'user_info', jsonEncode(userInfo));
     } catch (e) {
       _errorMessage = e.toString().replaceFirst('Exception: ', '');
     } finally {
@@ -118,7 +119,6 @@ class LoginViewModel extends ChangeNotifier {
         notifyListeners();
       }
     } catch (e, stack) {
-      print('❌ Facebook login lỗi: $e\n$stack');
       _errorMessage = 'Lỗi Facebook login: ${e.toString()}';
       notifyListeners();
     }
@@ -155,6 +155,8 @@ class LoginViewModel extends ChangeNotifier {
         body: jsonEncode({'refreshToken': refreshToken}),
       );
 
+      debugPrint('📡 [Refresh] status code: ${response.statusCode}');
+      debugPrint('📡 [Refresh] body: ${response.body}');
       final data = jsonDecode(utf8.decode(response.bodyBytes));
 
       if (response.statusCode == 200 && data['success'] == true) {
@@ -165,7 +167,7 @@ class LoginViewModel extends ChangeNotifier {
         return true;
       }
     } catch (e) {
-      print('❌ Refresh token lỗi: $e');
+      debugPrint('❌ Refresh token lỗi: $e');
     }
 
     return false;
@@ -189,7 +191,7 @@ class LoginViewModel extends ChangeNotifier {
 
       if (isValid) return true;
     } catch (e) {
-      print('❌ Introspect token lỗi: $e');
+      debugPrint('❌ Introspect token lỗi: $e');
     }
 
     return await tryRefreshToken();

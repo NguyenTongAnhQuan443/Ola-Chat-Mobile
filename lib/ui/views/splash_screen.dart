@@ -7,7 +7,6 @@ import 'package:olachat_mobile/view_models/login_view_model.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:olachat_mobile/core/config/api_config.dart';
-import 'package:olachat_mobile/ui/widgets/show_snack_bar.dart';
 
 import '../../data/services/ping_service.dart';
 
@@ -23,13 +22,19 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
     _checkLoginStatus();
-    PingService.start();   // Gọi thủ công để ping ngay khi mở app
+    PingService.start();
   }
 
   Future<void> _checkLoginStatus() async {
     final prefs = await SharedPreferences.getInstance();
     final accessToken = prefs.getString('access_token');
+    final refreshToken = prefs.getString('refresh_token');
     final loginVM = Provider.of<LoginViewModel>(context, listen: false);
+
+    if (accessToken == null && refreshToken == null) {
+      _goToLogin();
+      return;
+    }
 
     bool isValid = false;
 
@@ -52,8 +57,6 @@ class _SplashScreenState extends State<SplashScreen> {
         await loginVM.refreshUserInfo();
         _goToHome();
       } catch (e) {
-        debugPrint('❌ Lỗi khi làm mới user info: $e');
-        showErrorSnackBar(context, 'Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.');
         _goToLogin();
       }
     } else {
@@ -63,12 +66,9 @@ class _SplashScreenState extends State<SplashScreen> {
           await loginVM.refreshUserInfo();
           _goToHome();
         } catch (e) {
-          debugPrint('❌ Lỗi khi làm mới user info sau refresh token: $e');
-          showErrorSnackBar(context, 'Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.');
           _goToLogin();
         }
       } else {
-        showErrorSnackBar(context, 'Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.');
         _goToLogin();
       }
     }

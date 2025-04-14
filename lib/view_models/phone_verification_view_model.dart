@@ -8,7 +8,8 @@ class PhoneVerificationViewModel extends ChangeNotifier {
 
   Future<void> sendOtp(String phone) async {
     try {
-      await _authService.sendOtp(phone, provider: "vonage");
+      await _authService.sendOtp(phone, provider: "twillio");
+      // await _authService.sendOtp(phone, provider: "vonage");
       isOtpSent = true;
       error = null;
     } catch (e) {
@@ -19,7 +20,8 @@ class PhoneVerificationViewModel extends ChangeNotifier {
 
   Future<bool> verifyOtp(String phone, String otp) async {
     try {
-      await _authService.verifyOtp(phone, otp, provider: "vonage");
+      await _authService.verifyOtp(phone, otp, provider: "twillio");
+      // await _authService.verifyOtp(phone, otp, provider: "vonage");
       return true;
     } catch (e) {
       error = e.toString();

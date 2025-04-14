@@ -8,6 +8,7 @@ import 'package:olachat_mobile/view_models/reset_password_view_model.dart';
 import 'package:olachat_mobile/view_models/signup_view_model.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'core/utils/app_lifecycle_handler.dart';
 
@@ -15,13 +16,10 @@ final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey = GlobalKey<Scaffol
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 final AppLifecycleHandler _lifecycleHandler = AppLifecycleHandler();
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  print("🔧 Widgets binding initialized");
-
   final AppLifecycleHandler lifecycleHandler = AppLifecycleHandler();
   WidgetsBinding.instance.addObserver(lifecycleHandler);
-
   print("📲 AppLifecycleHandler added");
 
   runApp(

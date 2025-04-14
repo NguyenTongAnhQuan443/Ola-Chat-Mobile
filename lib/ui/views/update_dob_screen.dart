@@ -39,14 +39,17 @@ class _UpdateDobScreenState extends State<UpdateDobScreen> {
 
   bool _isAtLeast18YearsOld(DateTime date) {
     final now = DateTime.now();
-    final age = now.year - date.year -
-        ((now.month < date.month || (now.month == date.month && now.day < date.day)) ? 1 : 0);
+    final age = now.year - date.year - ((now.month < date.month ||
+        (now.month == date.month && now.day < date.day))
+        ? 1
+        : 0);
     return age >= 18;
   }
 
   Future<void> _submit() async {
     if (!_isAtLeast18YearsOld(selectedDate)) {
-      showErrorSnackBar(context, "Bạn phải đủ 18 tuổi trở lên để cập nhật ngày sinh.");
+      showErrorSnackBar(
+          context, "Bạn phải đủ 18 tuổi trở lên để cập nhật ngày sinh.");
       return;
     }
 
@@ -73,88 +76,107 @@ class _UpdateDobScreenState extends State<UpdateDobScreen> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Scaffold(
-        backgroundColor: AppColors.backgroundColor,
-        body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
-          child: Column(
-            children: [
-              AppLogoHeader(showBackButton: false),
-              Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SvgPicture.asset(
-                      'assets/images/dob.svg',
-                      height: 300,
-                    ),
-                    const SizedBox(height: 30),
-                    InkWell(
-                      onTap: _pickDate,
-                      child: Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 14, horizontal: 16),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          border: Border.all(color: Colors.grey.shade300),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              formattedDate,
-                              style: const TextStyle(fontSize: 14),
-                            ),
-                            const Icon(Icons.calendar_today, size: 18),
-                          ],
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 24),
-                    SizedBox(
-                      width: double.infinity,
-                      height: 44,
-                      child: ElevatedButton(
-                        onPressed: isLoading ? null : _submit,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.black,
-                          foregroundColor: Colors.white,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
+      child: GestureDetector(
+        onTap: () => FocusScope.of(context).unfocus(),
+        child: Scaffold(
+          resizeToAvoidBottomInset: true,
+          backgroundColor: AppColors.backgroundColor,
+          body: LayoutBuilder(
+            builder: (context, constraints) {
+              return SingleChildScrollView(
+                reverse: true,
+                padding:
+                const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                  child: IntrinsicHeight(
+                    child: Column(
+                      children: [
+                        AppLogoHeader(showBackButton: false),
+                        Expanded(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SvgPicture.asset(
+                                'assets/images/dob.svg',
+                                height: 300,
+                              ),
+                              const SizedBox(height: 30),
+                              InkWell(
+                                onTap: _pickDate,
+                                child: Container(
+                                  width: double.infinity,
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 14, horizontal: 16),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    border: Border.all(
+                                        color: Colors.grey.shade300),
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        formattedDate,
+                                        style: const TextStyle(fontSize: 14),
+                                      ),
+                                      const Icon(Icons.calendar_today,
+                                          size: 18),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 24),
+                              SizedBox(
+                                width: double.infinity,
+                                height: 44,
+                                child: ElevatedButton(
+                                  onPressed: isLoading ? null : _submit,
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.black,
+                                    foregroundColor: Colors.white,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                  ),
+                                  child: isLoading
+                                      ? const SizedBox(
+                                    width: 20,
+                                    height: 20,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      valueColor:
+                                      AlwaysStoppedAnimation(
+                                          Colors.white),
+                                    ),
+                                  )
+                                      : const Text("Lưu ngày sinh mới",
+                                      style: TextStyle(fontSize: 14)),
+                                ),
+                              ),
+                              const SizedBox(height: 30),
+                              InkWell(
+                                onTap: () => Navigator.pop(context),
+                                child: const Text(
+                                  "Quay lại",
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                        child: isLoading
-                            ? const SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            valueColor:
-                            AlwaysStoppedAnimation(Colors.white),
-                          ),
-                        )
-                            : const Text("Lưu ngày sinh mới",
-                            style: TextStyle(fontSize: 14)),
-                      ),
+                      ],
                     ),
-                    const SizedBox(height: 30),
-                    InkWell(
-                      onTap: () => Navigator.pop(context),
-                      child: const Text(
-                        "Quay lại",
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
-              )
-            ],
+              );
+            },
           ),
         ),
       ),

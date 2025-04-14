@@ -26,8 +26,10 @@ class SearchViewModel extends ChangeNotifier {
         return;
       }
 
+      final url = ApiConfig.searchUser(query);
+
       final response = await http.get(
-        Uri.parse(ApiConfig.searchUser(query)),
+        Uri.parse(url),
         headers: {
           'Authorization': 'Bearer $token',
           'Content-Type': 'application/json',
@@ -46,7 +48,8 @@ class SearchViewModel extends ChangeNotifier {
     } catch (e) {
       error = 'Lỗi kết nối máy chủ';
       result = null;
-    } finally {
+    }
+    finally {
       isLoading = false;
       notifyListeners();
     }

@@ -35,10 +35,10 @@ class UserResponse {
       email: json['email'],
       username: json['username'],
       displayName: json['displayName'],
-      nickname: json['nickname'],
-      avatar: json['avatar'],
-      bio: json['bio'],
-      dob: DateTime.parse(json['dob']),
+      nickname: json['nickname'] ?? '',
+      avatar: json['avatar'] ?? '',
+      bio: json['bio'] ?? '',
+      dob: json['dob'] != null ? DateTime.parse(json['dob']) : DateTime(2000),
       status: json['status'],
       authProvider: json['authProvider'],
       createdAt: DateTime.parse(json['createdAt']),
@@ -46,4 +46,5 @@ class UserResponse {
       role: json['role'],
     );
   }
+
 }

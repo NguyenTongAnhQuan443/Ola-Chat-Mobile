@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:olachat_mobile/ui/views/user_profile_info.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 import 'package:olachat_mobile/ui/widgets/custom_sliver_to_box_adapter.dart';
@@ -91,13 +93,12 @@ class _SearchScreenState extends State<SearchScreen> {
                   child: ListTile(
                     leading: CircleAvatar(
                       radius: 20,
-                      backgroundImage:
-                      NetworkImage(viewModel.result!.avatar),
+                      backgroundImage: NetworkImage(viewModel.result!.avatar),
                     ),
                     title: Text(
                       viewModel.result!.displayName,
                       style:
-                      TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                          TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
                     ),
                     subtitle: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -105,13 +106,18 @@ class _SearchScreenState extends State<SearchScreen> {
                         Text(viewModel.result!.nickname),
                         SizedBox(height: 4),
                         Text(viewModel.result!.bio,
-                            style:
-                            TextStyle(fontSize: 12, color: Colors.grey)),
+                            style: TextStyle(fontSize: 12, color: Colors.grey)),
                       ],
                     ),
                     trailing: Icon(Icons.arrow_forward_outlined),
                     onTap: () {
-                      // Điều hướng sang profile nếu cần
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) =>
+                              UserProfileScreen(user: viewModel.result!),
+                        ),
+                      );
                     },
                   ),
                 ),
@@ -122,12 +128,35 @@ class _SearchScreenState extends State<SearchScreen> {
           if (viewModel.error != null)
             SliverToBoxAdapter(
               child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Center(
-                  child: Text(
-                    viewModel.error!,
-                    style: TextStyle(color: Colors.red),
-                  ),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 24, vertical: 40),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SvgPicture.asset(
+                      'assets/images/SEO-pana.svg',
+                      height: 400,
+                    ),
+                    const SizedBox(height: 24),
+                    Text(
+                      viewModel.error!,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        color: Color(0xFF2D2D2D),
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    const Text(
+                      "Hãy thử lại với số điện thoại hoặc email khác nhé.",
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: Color(0xFF7A7A7A), // nhẹ nhàng hơn
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
                 ),
               ),
             ),

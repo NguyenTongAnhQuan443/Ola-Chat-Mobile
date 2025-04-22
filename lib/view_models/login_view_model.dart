@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -32,7 +33,6 @@ class LoginViewModel extends ChangeNotifier {
     } catch (e) {
       deviceId = 'unknown';
     }
-
     notifyListeners();
   }
 
@@ -47,7 +47,6 @@ class LoginViewModel extends ChangeNotifier {
   Future<void> _handleLogin(Future<AuthResponse> Function() loginMethod) async {
     _isLoading = true;
     notifyListeners();
-
     try {
       _authResponse = await loginMethod();
       _errorMessage = null;
@@ -58,8 +57,14 @@ class LoginViewModel extends ChangeNotifier {
 
       final userInfo = await _authService.getMyInfo(_authResponse!.accessToken);
       _userInfo = userInfo;
-      await prefs.setString(
-          'user_info', jsonEncode(userInfo));
+      await prefs.setString('user_info', jsonEncode(userInfo));
+
+      // Gửi FCM token sau khi login thành công
+      final token = await _getFcmToken();
+      final userId = userInfo['userId'];
+      if (token != null && userId != null) {
+        await _registerDeviceToken(userId, token);
+      }
     } catch (e) {
       _errorMessage = e.toString().replaceFirst('Exception: ', '');
     } finally {
@@ -109,9 +114,7 @@ class LoginViewModel extends ChangeNotifier {
           notifyListeners();
           return;
         }
-
         print('🔵 [FACEBOOK ACCESS TOKEN]: $accessToken');
-
         await _handleLogin(
             () => _authService.loginWithFacebook(accessToken, deviceId));
       } else {
@@ -129,11 +132,9 @@ class LoginViewModel extends ChangeNotifier {
       final prefs = await SharedPreferences.getInstance();
       final access = prefs.getString('access_token');
       final refresh = prefs.getString('refresh_token');
-
       if (access != null && refresh != null) {
         await _authService.logout(access, refresh);
       }
-
       await prefs.clear();
       _authResponse = null;
       notifyListeners();
@@ -154,11 +155,7 @@ class LoginViewModel extends ChangeNotifier {
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'refreshToken': refreshToken}),
       );
-
-      debugPrint('📡 [Refresh] status code: ${response.statusCode}');
-      debugPrint('📡 [Refresh] body: ${response.body}');
       final data = jsonDecode(utf8.decode(response.bodyBytes));
-
       if (response.statusCode == 200 && data['success'] == true) {
         final newAccess = data['data']['accessToken'];
         final newRefresh = data['data']['refreshToken'];
@@ -167,9 +164,8 @@ class LoginViewModel extends ChangeNotifier {
         return true;
       }
     } catch (e) {
-      debugPrint('❌ Refresh token lỗi: $e');
+      debugPrint('Refresh token lỗi: $e');
     }
-
     return false;
   }
 
@@ -191,7 +187,7 @@ class LoginViewModel extends ChangeNotifier {
 
       if (isValid) return true;
     } catch (e) {
-      debugPrint('❌ Introspect token lỗi: $e');
+      debugPrint('Introspect token lỗi: $e');
     }
 
     return await tryRefreshToken();
@@ -211,8 +207,55 @@ class LoginViewModel extends ChangeNotifier {
       await prefs.setString('user_info', jsonEncode(userInfo));
       notifyListeners();
     } catch (e) {
-      debugPrint('❌ refreshUserInfo thất bại: $e');
+      debugPrint('refreshUserInfo thất bại: $e');
       throw Exception("Lấy thông tin người dùng thất bại");
+    }
+  }
+
+  Future<String?> getCurrentUserId() async {
+    final prefs = await SharedPreferences.getInstance();
+    final userJson = prefs.getString('user_info');
+    if (userJson != null) {
+      final userMap = jsonDecode(userJson);
+      return userMap['userId'];
+    }
+    return null;
+  }
+
+  // FCM
+  Future<String?> _getFcmToken() async {
+    try {
+      final fcm = FirebaseMessaging.instance;
+      final token = await fcm.getToken();
+      debugPrint('📲 FCM token lấy được: $token');
+      return token;
+    } catch (e) {
+      debugPrint('Không lấy được FCM token: $e');
+      return null;
+    }
+  }
+
+  Future<void> _registerDeviceToken(String userId, String token) async {
+    final uri =
+        Uri.parse('${ApiConfig.registerDevice}?userId=$userId&token=$token');
+
+    debugPrint("📡 Đang gửi FCM token:");
+    debugPrint("🧑‍💻 userId: $userId");
+    debugPrint("🔑 token: $token");
+    debugPrint("📍 endpoint: $uri");
+
+    try {
+      final response = await http.post(
+        uri,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      );
+
+      debugPrint("✅ Gửi token xong. Status: ${response.statusCode}");
+      debugPrint("📬 Body: ${response.body}");
+    } catch (e) {
+      debugPrint('❌ Lỗi khi gửi FCM token: $e');
     }
   }
 }

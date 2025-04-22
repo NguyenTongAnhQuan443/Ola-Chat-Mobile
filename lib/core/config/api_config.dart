@@ -1,6 +1,7 @@
 class ApiConfig {
-  static const String host = "http://10.0.2.2:8080"; // local cho emulator
+  // static const String host = "http://10.0.2.2:8080"; // local cho emulator
   // static const String host = "http://silenthero.xyz"; // host thật
+  static const String host = "http://192.168.100.135:8080";
 
   static const String base = "$host/ola-chat";
 
@@ -31,4 +32,9 @@ class ApiConfig {
   static String loginHistory(String userId) => "$base/api/login-history/$userId";
   static String setUserOffline(String userId) =>"$base/api/login-history/offline/$userId";
   static const String ping = "$base/api/login-history/ping";
+
+  static const String registerDevice = "$base/api/notifications/register-device";
+
+  // Friend
+  static const String sendFriendRequest = "$base/api/friends/send-request";
 }

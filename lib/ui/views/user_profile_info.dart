@@ -8,6 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../data/models/user.dart';
 import '../../data/models/user_response.dart';
+import '../../view_models/friend_request_view_model.dart';
 import '../../view_models/login_view_model.dart';
 import '../widgets/custom_sliver_to_box_adapter.dart';
 import '../widgets/list_post.dart';
@@ -16,7 +17,8 @@ class UserProfileInfoScreen extends StatefulWidget {
   final UserResponse user;
   final List<Post> myPosts;
 
-  const UserProfileInfoScreen({super.key, required this.user, this.myPosts = const []});
+  const UserProfileInfoScreen(
+      {super.key, required this.user, this.myPosts = const []});
 
   @override
   State<UserProfileInfoScreen> createState() => _UserProfileInfoScreenState();
@@ -37,7 +39,8 @@ class _UserProfileInfoScreenState extends State<UserProfileInfoScreen> {
           slivers: [
             SliverToBoxAdapter(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12),
                 child: Stack(
                   alignment: Alignment.center,
                   children: [
@@ -79,20 +82,23 @@ class _UserProfileInfoScreenState extends State<UserProfileInfoScreen> {
                   children: [
                     CircleAvatar(
                       radius: 50,
-                      backgroundImage: (user.avatar != null && user.avatar!.isNotEmpty)
+                      backgroundImage: (user.avatar != null &&
+                              user.avatar!.isNotEmpty)
                           ? NetworkImage(user.avatar!)
-                          : const AssetImage("assets/images/default_avatar.png") as ImageProvider,
+                          : const AssetImage("assets/images/default_avatar.png")
+                              as ImageProvider,
                     ),
                     const SizedBox(height: 16),
                     Text(
                       user.displayName,
-                      style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                      style: const TextStyle(
+                          fontSize: 20, fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 6),
-                    Text(
-                      "@${user.username}",
-                      style: const TextStyle(color: Colors.grey),
-                    ),
+                    // Text(
+                    //   "${user.username}",
+                    //   style: const TextStyle(color: Colors.grey),
+                    // ),
                     const SizedBox(height: 6),
                     if (user.nickname.isNotEmpty)
                       Text(
@@ -119,18 +125,62 @@ class _UserProfileInfoScreenState extends State<UserProfileInfoScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        ElevatedButton.icon(
-                          onPressed: () {},
-                          icon: const Icon(Icons.person_add_alt, color: Colors.white),
-                          label: const Text("Kết bạn"),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF4B67D3),
-                            foregroundColor: Colors.white,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                          ),
+                        // ElevatedButton.icon(
+                        //   onPressed: () {},
+                        //   icon: const Icon(Icons.person_add_alt, color: Colors.white),
+                        //   label: const Text("Kết bạn"),
+                        //   style: ElevatedButton.styleFrom(
+                        //     backgroundColor: const Color(0xFF4B67D3),
+                        //     foregroundColor: Colors.white,
+                        //     shape: RoundedRectangleBorder(
+                        //       borderRadius: BorderRadius.circular(8),
+                        //     ),
+                        //   ),
+                        // ),
+                        Consumer2<FriendRequestViewModel, LoginViewModel>(
+                          builder: (context, friendVM, loginVM, _) {
+                            return ElevatedButton.icon(
+                              onPressed: friendVM.isLoading
+                                  ? null
+                                  : () async {
+                                final senderId = await loginVM.getCurrentUserId();
+                                final receiverId = widget.user.userId;
+                                debugPrint("📦 [SEND FRIEND REQUEST] senderId: $senderId");
+                                debugPrint("📦 [SEND FRIEND REQUEST] receiverId: $receiverId");
+
+                                if (senderId == null || receiverId == null) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(content: Text("Thiếu thông tin người dùng")),
+                                  );
+                                  return;
+                                }
+
+                                friendVM.sendRequest(
+                                  senderId: senderId,
+                                  receiverId: receiverId,
+                                  context: context,
+                                );
+                              },
+                              icon: friendVM.isLoading
+                                  ? const SizedBox(
+                                      width: 16,
+                                      height: 16,
+                                      child: CircularProgressIndicator(
+                                          strokeWidth: 2, color: Colors.white),
+                                    )
+                                  : const Icon(Icons.person_add_alt,
+                                      color: Colors.white),
+                              label: const Text("Kết bạn"),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: const Color(0xFF4B67D3),
+                                foregroundColor: Colors.white,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8)),
+                              ),
+                            );
+                          },
                         ),
+
                         const SizedBox(width: 12),
                         ElevatedButton.icon(
                           onPressed: () {},
@@ -151,13 +201,17 @@ class _UserProfileInfoScreenState extends State<UserProfileInfoScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
-                        buildIconButton(0, Icons.grid_view_outlined, selectedIndex, (index) {
+                        buildIconButton(
+                            0, Icons.grid_view_outlined, selectedIndex,
+                            (index) {
                           setState(() => selectedIndex = index);
                         }),
-                        buildIconButton(1, Icons.bookmark_border, selectedIndex, (index) {
+                        buildIconButton(1, Icons.bookmark_border, selectedIndex,
+                            (index) {
                           setState(() => selectedIndex = index);
                         }),
-                        buildIconButton(2, Icons.settings, selectedIndex, (index) {
+                        buildIconButton(2, Icons.settings, selectedIndex,
+                            (index) {
                           setState(() => selectedIndex = index);
                         }),
                       ],
@@ -177,20 +231,25 @@ class _UserProfileInfoScreenState extends State<UserProfileInfoScreen> {
   Widget buildStatBox(String count, String label) {
     return Column(
       children: [
-        Text(count, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+        Text(count,
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
         Text(label, style: const TextStyle(fontSize: 12, color: Colors.grey)),
       ],
     );
   }
 
-  Widget buildIconButton(int index, IconData icon, int selectedIndex, Function(int) onTap) {
+  Widget buildIconButton(
+      int index, IconData icon, int selectedIndex, Function(int) onTap) {
     return IconButton(
-      icon: Icon(icon, size: 20, color: selectedIndex == index ? Colors.blue : Colors.black54),
+      icon: Icon(icon,
+          size: 20,
+          color: selectedIndex == index ? Colors.blue : Colors.black54),
       onPressed: () => onTap(index),
     );
   }
 
-  Widget buildView_3(int selectedIndex, List<Post> myPosts, List<Post> savePosts) {
+  Widget buildView_3(
+      int selectedIndex, List<Post> myPosts, List<Post> savePosts) {
     switch (selectedIndex) {
       case 0:
         return ListPost(posts: myPosts, showCommentButton: true);

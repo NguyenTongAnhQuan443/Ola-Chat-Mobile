@@ -79,8 +79,8 @@ class _UserProfileInfoScreenState extends State<UserProfileInfoScreen> {
                   children: [
                     CircleAvatar(
                       radius: 50,
-                      backgroundImage: user.avatar.isNotEmpty
-                          ? NetworkImage(user.avatar)
+                      backgroundImage: (user.avatar != null && user.avatar!.isNotEmpty)
+                          ? NetworkImage(user.avatar!)
                           : const AssetImage("assets/images/default_avatar.png") as ImageProvider,
                     ),
                     const SizedBox(height: 16),

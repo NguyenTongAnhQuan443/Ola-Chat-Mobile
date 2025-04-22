@@ -101,7 +101,9 @@ class _SearchScreenState extends State<SearchScreen> {
                   child: ListTile(
                     leading: CircleAvatar(
                       radius: 20,
-                      backgroundImage: NetworkImage(viewModel.result!.avatar),
+                      backgroundImage: (viewModel.result?.avatar != null && viewModel.result!.avatar.isNotEmpty)
+                          ? NetworkImage(viewModel.result!.avatar)
+                          : const AssetImage("assets/images/default_avatar.png") as ImageProvider,
                     ),
                     title: Text(
                       viewModel.result!.displayName,

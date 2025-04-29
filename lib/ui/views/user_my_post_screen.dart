@@ -12,14 +12,14 @@ import '../widgets/custom_sliver_to_box_adapter.dart';
 import '../widgets/list_post.dart';
 import '../widgets/app_logo_header_two.dart';
 
-class MyProfileScreen extends StatefulWidget {
-  const MyProfileScreen({super.key});
+class UserMyPostScreen extends StatefulWidget {
+  const UserMyPostScreen({super.key});
 
   @override
-  State<MyProfileScreen> createState() => _MyProfileState();
+  State<UserMyPostScreen> createState() => _MyProfileState();
 }
 
-class _MyProfileState extends State<MyProfileScreen> {
+class _MyProfileState extends State<UserMyPostScreen> {
   int selectedIndex = 0;
 
   List<PostModel> myPosts = [

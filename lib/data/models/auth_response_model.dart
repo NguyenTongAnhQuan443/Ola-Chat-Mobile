@@ -1,16 +1,16 @@
-class AuthResponse {
+class AuthResponseModel {
   final String accessToken;
   final String refreshToken;
   final bool authenticated;
 
-  AuthResponse({
+  AuthResponseModel({
     required this.accessToken,
     required this.refreshToken,
     required this.authenticated,
   });
 
-  factory AuthResponse.fromJson(Map<String, dynamic> json) {
-    return AuthResponse(
+  factory AuthResponseModel.fromJson(Map<String, dynamic> json) {
+    return AuthResponseModel(
       accessToken: json['accessToken'],
       refreshToken: json['refreshToken'],
       authenticated: json['authenticated'],

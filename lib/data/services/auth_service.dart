@@ -3,14 +3,14 @@ import 'dart:io';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../core/utils/config/api_config.dart';
 import 'api_service.dart';
-import '../models/auth_response.dart';
+import '../models/auth_response_model.dart';
 import 'package:http/http.dart' as http;
 
 class AuthService {
   final ApiService _api = ApiService();
 
   // Login Phone
-  Future<AuthResponse> loginWithPhone(
+  Future<AuthResponseModel> loginWithPhone(
       String username, String password, String deviceId) async {
     final response = await _api.post(ApiConfig.authLoginPhone, data: {
       'username': username,
@@ -21,13 +21,13 @@ class AuthService {
     if (rawData == null) {
       throw Exception("Không nhận được dữ liệu người dùng từ máy chủ.");
     }
-    final auth = AuthResponse.fromJson(rawData);
+    final auth = AuthResponseModel.fromJson(rawData);
     await _saveTokens(auth);
     return auth;
   }
 
   // Login Google
-  Future<AuthResponse> loginWithGoogle(String idToken, String deviceId) async {
+  Future<AuthResponseModel> loginWithGoogle(String idToken, String deviceId) async {
     final response = await _api.post(
       "${ApiConfig.authLoginGoogle}?deviceId=$deviceId",
       data: {'idToken': idToken},
@@ -37,13 +37,13 @@ class AuthService {
       throw Exception(
           response.data['message'] ?? "Không nhận được dữ liệu từ máy chủ.");
     }
-    final auth = AuthResponse.fromJson(rawData);
+    final auth = AuthResponseModel.fromJson(rawData);
     await _saveTokens(auth);
     return auth;
   }
 
   // Login Facebook
-  Future<AuthResponse> loginWithFacebook(
+  Future<AuthResponseModel> loginWithFacebook(
       String accessToken, String deviceId) async {
     final response = await _api.post(
       "${ApiConfig.authLoginFacebook}?deviceId=$deviceId",
@@ -54,7 +54,7 @@ class AuthService {
       throw Exception(
           response.data['message'] ?? "Không nhận được dữ liệu từ máy chủ.");
     }
-    final auth = AuthResponse.fromJson(rawData);
+    final auth = AuthResponseModel.fromJson(rawData);
     await _saveTokens(auth);
     return auth;
   }
@@ -93,7 +93,7 @@ class AuthService {
   }
 
   // Save token
-  Future<void> _saveTokens(AuthResponse auth) async {
+  Future<void> _saveTokens(AuthResponseModel auth) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('access_token', auth.accessToken);
     await prefs.setString('refresh_token', auth.refreshToken);

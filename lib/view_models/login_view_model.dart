@@ -4,7 +4,7 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import '../data/models/auth_response.dart';
+import '../data/models/auth_response_model.dart';
 import '../data/services/TokenService.dart';
 import '../data/services/auth_service.dart';
 import '../core/utils/config/api_config.dart';
@@ -37,13 +37,13 @@ class LoginViewModel extends ChangeNotifier {
 
   bool _isLoading = false;
   String? _errorMessage;
-  AuthResponse? _authResponse;
+  AuthResponseModel? _authResponse;
 
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
-  AuthResponse? get authResponse => _authResponse;
+  AuthResponseModel? get authResponse => _authResponse;
 
-  Future<void> _handleLogin(Future<AuthResponse> Function() loginMethod) async {
+  Future<void> _handleLogin(Future<AuthResponseModel> Function() loginMethod) async {
     _isLoading = true;
     notifyListeners();
     try {

@@ -6,14 +6,14 @@ import 'package:olachat_mobile/ui/widgets/custom_textfield.dart';
 import 'package:olachat_mobile/view_models/update_password_view_model.dart';
 import 'package:provider/provider.dart';
 
-class UpdatePasswordScreen extends StatefulWidget {
-  const UpdatePasswordScreen({super.key});
+class UserSettingInfomationUpdatePasswordScreen extends StatefulWidget {
+  const UserSettingInfomationUpdatePasswordScreen({super.key});
 
   @override
-  State<UpdatePasswordScreen> createState() => _UpdatePasswordScreenState();
+  State<UserSettingInfomationUpdatePasswordScreen> createState() => _UpdatePasswordScreenState();
 }
 
-class _UpdatePasswordScreenState extends State<UpdatePasswordScreen> {
+class _UpdatePasswordScreenState extends State<UserSettingInfomationUpdatePasswordScreen> {
   final TextEditingController currentPasswordController = TextEditingController();
   final TextEditingController newPasswordController = TextEditingController();
   final TextEditingController confirmPasswordController = TextEditingController();

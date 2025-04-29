@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 
 import 'user_setting_infomation_update_dob_screen.dart';
 import 'user_setting_infomation_update_email_screen.dart';
-import 'update_password_screen.dart';
+import 'user_setting_infomation_update_password_screen.dart';
 import 'user_setting_information_login_history_screen.dart';
 
 class UserSettingInformationScreen extends StatelessWidget {
@@ -48,7 +48,7 @@ class UserSettingInformationScreen extends StatelessWidget {
           }),
           buildInfoTile('Mật khẩu', '********', onEdit: () {
             Navigator.push(context, MaterialPageRoute(
-              builder: (_) => const UpdatePasswordScreen(),
+              builder: (_) => const UserSettingInfomationUpdatePasswordScreen(),
             ));
           }),
           buildInfoTile('Ngày tạo tài khoản', formatDate(userInfo?['createdAt'])),

@@ -1,4 +1,4 @@
-class UserResponse {
+class UserResponseModel {
   final String userId;
   final String email;
   final String username;
@@ -13,7 +13,7 @@ class UserResponse {
   final DateTime updatedAt;
   final String role;
 
-  UserResponse({
+  UserResponseModel({
     required this.userId,
     required this.email,
     required this.username,
@@ -29,8 +29,8 @@ class UserResponse {
     required this.role,
   });
 
-  factory UserResponse.fromJson(Map<String, dynamic> json) {
-    return UserResponse(
+  factory UserResponseModel.fromJson(Map<String, dynamic> json) {
+    return UserResponseModel(
       userId: json['userId'],
       email: json['email'],
       username: json['username'],

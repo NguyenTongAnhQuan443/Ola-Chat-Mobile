@@ -7,14 +7,14 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../data/models/user_model.dart';
-import '../../data/models/user_response.dart';
+import '../../data/models/user_response_model.dart';
 import '../../view_models/friend_request_view_model.dart';
 import '../../view_models/login_view_model.dart';
 import '../widgets/custom_sliver_to_box_adapter.dart';
 import '../widgets/list_post.dart';
 
 class UserProfileInfoScreen extends StatefulWidget {
-  final UserResponse user;
+  final UserResponseModel user;
   final List<PostModel> myPosts;
 
   const UserProfileInfoScreen(

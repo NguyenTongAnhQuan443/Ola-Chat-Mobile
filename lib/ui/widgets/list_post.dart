@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../data/models/post.dart';
+import '../../data/models/post_model.dart';
 import '../views/comments_screen.dart';
 class ListPost extends StatefulWidget {
   final List<Post> posts;

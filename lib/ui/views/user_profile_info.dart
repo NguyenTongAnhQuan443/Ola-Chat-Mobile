@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:olachat_mobile/data/models/post.dart';
+import 'package:olachat_mobile/data/models/post_model.dart';
 import 'package:olachat_mobile/ui/views/settings_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -15,7 +15,7 @@ import '../widgets/list_post.dart';
 
 class UserProfileInfoScreen extends StatefulWidget {
   final UserResponse user;
-  final List<Post> myPosts;
+  final List<PostModel> myPosts;
 
   const UserProfileInfoScreen(
       {super.key, required this.user, this.myPosts = const []});
@@ -26,7 +26,7 @@ class UserProfileInfoScreen extends StatefulWidget {
 
 class _UserProfileInfoScreenState extends State<UserProfileInfoScreen> {
   int selectedIndex = 0;
-  List<Post> savePosts = [];
+  List<PostModel> savePosts = [];
   String? currentUserId;
 
   @override
@@ -315,7 +315,7 @@ class _UserProfileInfoScreenState extends State<UserProfileInfoScreen> {
   }
 
   Widget buildView_3(
-      int selectedIndex, List<Post> myPosts, List<Post> savePosts) {
+      int selectedIndex, List<PostModel> myPosts, List<PostModel> savePosts) {
     switch (selectedIndex) {
       case 0:
         return ListPost(posts: myPosts, showCommentButton: true);

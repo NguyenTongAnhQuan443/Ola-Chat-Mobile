@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:olachat_mobile/data/models/post.dart';
+import 'package:olachat_mobile/data/models/post_model.dart';
 import 'package:olachat_mobile/ui/views/settings_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -22,8 +22,8 @@ class MyProfileScreen extends StatefulWidget {
 class _MyProfileState extends State<MyProfileScreen> {
   int selectedIndex = 0;
 
-  List<Post> myPosts = [
-    Post(
+  List<PostModel> myPosts = [
+    PostModel(
       user: User(
         avatarUrl:
             "https://netizenturkey.net/wp-content/uploads/2023/12/1703066681-20231220-gdragon.jpg",
@@ -35,7 +35,7 @@ class _MyProfileState extends State<MyProfileScreen> {
       likeCount: 270,
       dislikeCount: 15,
     ),
-    Post(
+    PostModel(
       user: User(
         avatarUrl:
             "https://netizenturkey.net/wp-content/uploads/2023/12/1703066681-20231220-gdragon.jpg",
@@ -47,7 +47,7 @@ class _MyProfileState extends State<MyProfileScreen> {
       likeCount: 270,
       dislikeCount: 15,
     ),
-    Post(
+    PostModel(
       user: User(
         avatarUrl:
             "https://netizenturkey.net/wp-content/uploads/2023/12/1703066681-20231220-gdragon.jpg",
@@ -59,7 +59,7 @@ class _MyProfileState extends State<MyProfileScreen> {
       likeCount: 270,
       dislikeCount: 15,
     ),
-    Post(
+    PostModel(
       user: User(
         avatarUrl:
             "https://netizenturkey.net/wp-content/uploads/2023/12/1703066681-20231220-gdragon.jpg",
@@ -71,7 +71,7 @@ class _MyProfileState extends State<MyProfileScreen> {
       likeCount: 270,
       dislikeCount: 15,
     ),
-    Post(
+    PostModel(
       user: User(
         avatarUrl:
             "https://netizenturkey.net/wp-content/uploads/2023/12/1703066681-20231220-gdragon.jpg",
@@ -85,8 +85,8 @@ class _MyProfileState extends State<MyProfileScreen> {
     ),
   ];
 
-  List<Post> savePosts = [
-    Post(
+  List<PostModel> savePosts = [
+    PostModel(
       user: User(
         avatarUrl:
             "https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Taeyang_-_MADE_THE_MOVIE_Premiere_%28cropped%29.jpg/640px-Taeyang_-_MADE_THE_MOVIE_Premiere_%28cropped%29.jpg",
@@ -98,7 +98,7 @@ class _MyProfileState extends State<MyProfileScreen> {
       likeCount: 350,
       dislikeCount: 10,
     ),
-    Post(
+    PostModel(
       user: User(
         avatarUrl:
             "https://media.vov.vn/sites/default/files/styles/large/public/2024-10/11-30-15-psy.jpg",
@@ -110,7 +110,7 @@ class _MyProfileState extends State<MyProfileScreen> {
       likeCount: 500,
       dislikeCount: 20,
     ),
-    Post(
+    PostModel(
       user: User(
         avatarUrl:
             "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTMCg9CVZdmUaQIzbQYFYsn9y1pEaDac7xBZwOF107RYtSIW3h0MstrlkUWAKY39SGGuAo&usqp=CAU",
@@ -122,7 +122,7 @@ class _MyProfileState extends State<MyProfileScreen> {
       likeCount: 420,
       dislikeCount: 15,
     ),
-    Post(
+    PostModel(
       user: User(
         avatarUrl:
             "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Kim_Jennie_%28%EA%B9%80%EC%A0%9C%EB%8B%88%29_05.jpg/250px-Kim_Jennie_%28%EA%B9%80%EC%A0%9C%EB%8B%88%29_05.jpg",
@@ -134,7 +134,7 @@ class _MyProfileState extends State<MyProfileScreen> {
       likeCount: 600,
       dislikeCount: 25,
     ),
-    Post(
+    PostModel(
       user: User(
         avatarUrl:
             "https://images2.thanhnien.vn/528068263637045248/2023/8/31/bts01-16934921040991899287129.jpg",
@@ -289,7 +289,7 @@ Widget buildIconButton(
 }
 
 Widget buildView_3(
-    int selectedIndex, List<Post> myPosts, List<Post> savePosts) {
+    int selectedIndex, List<PostModel> myPosts, List<PostModel> savePosts) {
   switch (selectedIndex) {
     case 0:
       return ListPost(posts: myPosts, showCommentButton: true);

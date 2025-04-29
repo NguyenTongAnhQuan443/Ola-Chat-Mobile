@@ -6,7 +6,7 @@ import 'package:olachat_mobile/ui/views/settings_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../data/models/user.dart';
+import '../../data/models/user_model.dart';
 import '../../data/models/user_response.dart';
 import '../../view_models/friend_request_view_model.dart';
 import '../../view_models/login_view_model.dart';

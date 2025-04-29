@@ -6,7 +6,7 @@ import 'package:olachat_mobile/ui/views/settings_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../data/models/user.dart';
+import '../../data/models/user_model.dart';
 import '../../view_models/login_view_model.dart';
 import '../widgets/custom_sliver_to_box_adapter.dart';
 import '../widgets/list_post.dart';
@@ -24,7 +24,7 @@ class _MyProfileState extends State<MyProfileScreen> {
 
   List<PostModel> myPosts = [
     PostModel(
-      user: User(
+      user: UserModel(
         avatarUrl:
             "https://netizenturkey.net/wp-content/uploads/2023/12/1703066681-20231220-gdragon.jpg",
         userName: "G-Dragon",
@@ -36,7 +36,7 @@ class _MyProfileState extends State<MyProfileScreen> {
       dislikeCount: 15,
     ),
     PostModel(
-      user: User(
+      user: UserModel(
         avatarUrl:
             "https://netizenturkey.net/wp-content/uploads/2023/12/1703066681-20231220-gdragon.jpg",
         userName: "G-Dragon",
@@ -48,7 +48,7 @@ class _MyProfileState extends State<MyProfileScreen> {
       dislikeCount: 15,
     ),
     PostModel(
-      user: User(
+      user: UserModel(
         avatarUrl:
             "https://netizenturkey.net/wp-content/uploads/2023/12/1703066681-20231220-gdragon.jpg",
         userName: "G-Dragon",
@@ -60,7 +60,7 @@ class _MyProfileState extends State<MyProfileScreen> {
       dislikeCount: 15,
     ),
     PostModel(
-      user: User(
+      user: UserModel(
         avatarUrl:
             "https://netizenturkey.net/wp-content/uploads/2023/12/1703066681-20231220-gdragon.jpg",
         userName: "G-Dragon",
@@ -72,7 +72,7 @@ class _MyProfileState extends State<MyProfileScreen> {
       dislikeCount: 15,
     ),
     PostModel(
-      user: User(
+      user: UserModel(
         avatarUrl:
             "https://netizenturkey.net/wp-content/uploads/2023/12/1703066681-20231220-gdragon.jpg",
         userName: "G-Dragon",
@@ -87,7 +87,7 @@ class _MyProfileState extends State<MyProfileScreen> {
 
   List<PostModel> savePosts = [
     PostModel(
-      user: User(
+      user: UserModel(
         avatarUrl:
             "https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Taeyang_-_MADE_THE_MOVIE_Premiere_%28cropped%29.jpg/640px-Taeyang_-_MADE_THE_MOVIE_Premiere_%28cropped%29.jpg",
         userName: "Taeyang",
@@ -99,7 +99,7 @@ class _MyProfileState extends State<MyProfileScreen> {
       dislikeCount: 10,
     ),
     PostModel(
-      user: User(
+      user: UserModel(
         avatarUrl:
             "https://media.vov.vn/sites/default/files/styles/large/public/2024-10/11-30-15-psy.jpg",
         userName: "PSY",
@@ -111,7 +111,7 @@ class _MyProfileState extends State<MyProfileScreen> {
       dislikeCount: 20,
     ),
     PostModel(
-      user: User(
+      user: UserModel(
         avatarUrl:
             "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTMCg9CVZdmUaQIzbQYFYsn9y1pEaDac7xBZwOF107RYtSIW3h0MstrlkUWAKY39SGGuAo&usqp=CAU",
         userName: "Zico",
@@ -123,7 +123,7 @@ class _MyProfileState extends State<MyProfileScreen> {
       dislikeCount: 15,
     ),
     PostModel(
-      user: User(
+      user: UserModel(
         avatarUrl:
             "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Kim_Jennie_%28%EA%B9%80%EC%A0%9C%EB%8B%88%29_05.jpg/250px-Kim_Jennie_%28%EA%B9%80%EC%A0%9C%EB%8B%88%29_05.jpg",
         userName: "Jennie",
@@ -135,7 +135,7 @@ class _MyProfileState extends State<MyProfileScreen> {
       dislikeCount: 25,
     ),
     PostModel(
-      user: User(
+      user: UserModel(
         avatarUrl:
             "https://images2.thanhnien.vn/528068263637045248/2023/8/31/bts01-16934921040991899287129.jpg",
         userName: "RM",

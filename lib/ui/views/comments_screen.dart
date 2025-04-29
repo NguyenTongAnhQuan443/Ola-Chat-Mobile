@@ -3,7 +3,7 @@ import 'package:olachat_mobile/ui/widgets/custom_sliver_to_box_adapter.dart';
 import 'package:olachat_mobile/ui/widgets/social_header.dart';
 
 import '../../data/models/post_model.dart';
-import '../../data/models/user.dart';
+import '../../data/models/user_model.dart';
 import '../widgets/list_post.dart';
 
 class CommentsScreen extends StatefulWidget {
@@ -16,7 +16,7 @@ class CommentsScreen extends StatefulWidget {
 class _CommentsScreenState extends State<CommentsScreen> {
   List<PostModel> posts = [
     PostModel(
-      user: User(
+      user: UserModel(
         avatarUrl:
             "https://netizenturkey.net/wp-content/uploads/2023/12/1703066681-20231220-gdragon.jpg",
         userName: "G-Dragon",

@@ -1,7 +1,7 @@
-import 'package:olachat_mobile/data/models/user.dart';
+import 'package:olachat_mobile/data/models/user_model.dart';
 
 class PostModel {
-  final User user;
+  final UserModel user;
   final String postTime;
   final String postContent;
   int likeCount;

@@ -4,7 +4,7 @@ import 'package:olachat_mobile/ui/widgets/list_post.dart';
 import 'package:olachat_mobile/ui/widgets/social_header.dart';
 
 import '../../data/models/post_model.dart';
-import '../../data/models/user.dart';
+import '../../data/models/user_model.dart';
 
 class FeedScreen extends StatefulWidget {
   const FeedScreen({super.key});
@@ -16,7 +16,7 @@ class FeedScreen extends StatefulWidget {
 class _FeedScreenState extends State<FeedScreen> {
   List<PostModel> posts = [
     PostModel(
-      user: User(
+      user: UserModel(
         avatarUrl:
             "https://netizenturkey.net/wp-content/uploads/2023/12/1703066681-20231220-gdragon.jpg",
         userName: "G-Dragon",
@@ -28,7 +28,7 @@ class _FeedScreenState extends State<FeedScreen> {
       dislikeCount: 15,
     ),
     PostModel(
-      user: User(
+      user: UserModel(
         avatarUrl:
         "https://netizenturkey.net/wp-content/uploads/2023/12/1703066681-20231220-gdragon.jpg",
         userName: "G-Dragon",
@@ -40,7 +40,7 @@ class _FeedScreenState extends State<FeedScreen> {
       dislikeCount: 15,
     ),
     PostModel(
-      user: User(
+      user: UserModel(
         avatarUrl:
         "https://netizenturkey.net/wp-content/uploads/2023/12/1703066681-20231220-gdragon.jpg",
         userName: "G-Dragon",
@@ -52,7 +52,7 @@ class _FeedScreenState extends State<FeedScreen> {
       dislikeCount: 15,
     ),
     PostModel(
-      user: User(
+      user: UserModel(
         avatarUrl:
         "https://netizenturkey.net/wp-content/uploads/2023/12/1703066681-20231220-gdragon.jpg",
         userName: "G-Dragon",
@@ -64,7 +64,7 @@ class _FeedScreenState extends State<FeedScreen> {
       dislikeCount: 15,
     ),
     PostModel(
-      user: User(
+      user: UserModel(
         avatarUrl:
         "https://netizenturkey.net/wp-content/uploads/2023/12/1703066681-20231220-gdragon.jpg",
         userName: "G-Dragon",

@@ -4,14 +4,14 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
-import '../data/models/login_history_item.dart';
+import '../data/models/login_history_model.dart';
 
 class LoginHistoryViewModel extends ChangeNotifier {
-  List<LoginHistoryItem> _items = [];
+  List<LoginHistoryModel> _items = [];
   bool _isLoading = false;
   String? _error;
 
-  List<LoginHistoryItem> get items => _items;
+  List<LoginHistoryModel> get items => _items;
   bool get isLoading => _isLoading;
   String? get error => _error;
 
@@ -37,7 +37,7 @@ class LoginHistoryViewModel extends ChangeNotifier {
 
       if (res.statusCode == 200 && jsonData['success'] == true) {
         _items = (jsonData['data'] as List)
-            .map((e) => LoginHistoryItem.fromJson(e))
+            .map((e) => LoginHistoryModel.fromJson(e))
             .toList();
       } else {
         _error = jsonData['message'] ?? 'Đã có lỗi xảy ra';

@@ -1,18 +1,18 @@
-class LoginHistoryItem {
+class LoginHistoryModel {
   final String loginTime;
   final String? logoutTime;
   final String status;
   final String userAgent;
 
-  LoginHistoryItem({
+  LoginHistoryModel({
     required this.loginTime,
     this.logoutTime,
     required this.status,
     required this.userAgent,
   });
 
-  factory LoginHistoryItem.fromJson(Map<String, dynamic> json) {
-    return LoginHistoryItem(
+  factory LoginHistoryModel.fromJson(Map<String, dynamic> json) {
+    return LoginHistoryModel(
       loginTime: json['loginTime'],
       logoutTime: json['logoutTime'],
       status: json['status'],

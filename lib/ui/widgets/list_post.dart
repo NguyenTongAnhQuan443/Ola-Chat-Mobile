@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../data/models/post_model.dart';
 import '../views/comments_screen.dart';
 class ListPost extends StatefulWidget {
-  final List<Post> posts;
+  final List<PostModel> posts;
   final bool showCommentButton;
 
   const ListPost({
@@ -17,13 +17,13 @@ class ListPost extends StatefulWidget {
 }
 
 class ListPostState extends State<ListPost> {
-  void _incrementLike(Post post) {
+  void _incrementLike(PostModel post) {
     setState(() {
       post.likeCount++;
     });
   }
 
-  void _incrementDislike(Post post) {
+  void _incrementDislike(PostModel post) {
     setState(() {
       post.dislikeCount++;
     });

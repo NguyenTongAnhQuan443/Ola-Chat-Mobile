@@ -54,4 +54,12 @@ class SearchViewModel extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  void clearSearchResult() {
+    result = null;
+    error = null;
+    isLoading = false;
+    notifyListeners();
+  }
+
 }

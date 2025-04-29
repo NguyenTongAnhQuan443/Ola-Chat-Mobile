@@ -27,6 +27,14 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    final viewModel = Provider.of<SearchViewModel>(context, listen: false);
+    viewModel.clearSearchResult();
+    _controller.clear();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final viewModel = Provider.of<SearchViewModel>(context);
 

@@ -8,8 +8,8 @@ import 'update_email_screen.dart';
 import 'update_password_screen.dart';
 import 'user_setting_information_login_history_screen.dart';
 
-class PersonalInfoTab extends StatelessWidget {
-  const PersonalInfoTab({super.key});
+class UserSettingInformationScreen extends StatelessWidget {
+  const UserSettingInformationScreen({super.key});
 
   String formatDate(String? dateStr) {
     if (dateStr == null || dateStr.isEmpty) return '';

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:olachat_mobile/ui/views/personal_info_tab.dart';
+import 'package:olachat_mobile/ui/views/user_setting_information_screen.dart';
 
 import 'user_setting_introduce_screen.dart';
 import 'user_setting_avatar_screen.dart';
@@ -53,7 +53,7 @@ class SettingsScreenState extends State<SettingsScreen>
               children: const [
                 UserSettingAvatarScreen(),
                 UserSettingIntroduceScreen(),
-                PersonalInfoTab(),
+                UserSettingInformationScreen(),
                 LogoutScreen(),
               ],
             ),

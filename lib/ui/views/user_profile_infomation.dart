@@ -10,18 +10,18 @@ import '../../view_models/login_view_model.dart';
 import '../widgets/custom_sliver_to_box_adapter.dart';
 import '../widgets/list_post.dart';
 
-class UserProfileInfoScreen extends StatefulWidget {
+class UserProfileInfomationScreen extends StatefulWidget {
   final UserResponseModel user;
   final List<PostModel> myPosts;
 
-  const UserProfileInfoScreen(
+  const UserProfileInfomationScreen(
       {super.key, required this.user, this.myPosts = const []});
 
   @override
-  State<UserProfileInfoScreen> createState() => _UserProfileInfoScreenState();
+  State<UserProfileInfomationScreen> createState() => _UserProfileInfoScreenState();
 }
 
-class _UserProfileInfoScreenState extends State<UserProfileInfoScreen> {
+class _UserProfileInfoScreenState extends State<UserProfileInfomationScreen> {
   int selectedIndex = 0;
   List<PostModel> savePosts = [];
   String? currentUserId;

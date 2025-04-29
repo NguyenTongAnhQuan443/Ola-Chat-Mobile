@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:olachat_mobile/ui/views/user_profile_info.dart';
+import 'package:olachat_mobile/ui/views/user_profile_infomation.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 import 'package:olachat_mobile/ui/widgets/custom_sliver_to_box_adapter.dart';
@@ -146,7 +146,7 @@ class _SearchScreenState extends State<SearchScreen> {
                         context,
                         MaterialPageRoute(
                           builder: (_) =>
-                              UserProfileInfoScreen(user: viewModel.result!),
+                              UserProfileInfomationScreen(user: viewModel.result!),
                         ),
                       );
                     },

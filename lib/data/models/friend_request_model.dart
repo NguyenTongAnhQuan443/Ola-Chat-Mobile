@@ -1,8 +1,8 @@
-class FriendRequestDTO {
+class FriendRequestModel {
   final String senderId;
   final String receiverId;
 
-  FriendRequestDTO({required this.senderId, required this.receiverId});
+  FriendRequestModel({required this.senderId, required this.receiverId});
 
   Map<String, dynamic> toJson() {
     return {
@@ -11,8 +11,8 @@ class FriendRequestDTO {
     };
   }
 
-  factory FriendRequestDTO.fromJson(Map<String, dynamic> json) {
-    return FriendRequestDTO(
+  factory FriendRequestModel.fromJson(Map<String, dynamic> json) {
+    return FriendRequestModel(
       senderId: json['senderId'],
       receiverId: json['receiverId'],
     );

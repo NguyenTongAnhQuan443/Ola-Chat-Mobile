@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../data/models/friend_request_dto.dart';
+import '../data/models/friend_request_model.dart';
 import '../data/services/friend_request_service.dart';
 
 class FriendRequestViewModel extends ChangeNotifier {
@@ -17,7 +17,7 @@ class FriendRequestViewModel extends ChangeNotifier {
     isLoading = true;
     notifyListeners();
 
-    final request = FriendRequestDTO(senderId: senderId, receiverId: receiverId);
+    final request = FriendRequestModel(senderId: senderId, receiverId: receiverId);
     final success = await _service.sendFriendRequest(request);
 
     isLoading = false;

@@ -4,9 +4,9 @@ import 'package:olachat_mobile/ui/views/messages_list_screen.dart';
 
 import '../../core/utils/constants.dart';
 
-class SocialHeader extends StatelessWidget {
+class AppLogoHeaderTwo extends StatelessWidget {
   // DÀNH CHO CÁC TRANG HOME KHI ĐĂNG NHẬP THÀNH CÔNG
-  const SocialHeader({super.key});
+  const AppLogoHeaderTwo({super.key});
 
   @override
   Widget build(BuildContext context) {

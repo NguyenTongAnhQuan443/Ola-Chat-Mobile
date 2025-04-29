@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:olachat_mobile/ui/widgets/custom_sliver_to_box_adapter.dart';
 import 'package:olachat_mobile/ui/widgets/list_post.dart';
-import 'package:olachat_mobile/ui/widgets/social_header.dart';
+import 'package:olachat_mobile/ui/widgets/app_logo_header_two.dart';
 
 import '../../data/models/post_model.dart';
 import '../../data/models/user_model.dart';
@@ -84,7 +84,7 @@ class _FeedScreenState extends State<FeedScreen> {
       body: CustomScrollView(
         slivers: [
           // View 1 - Header
-          SocialHeader(),
+          AppLogoHeaderTwo(),
           CustomSliverToBoxAdapter(),
 
           //   View 2 - Post

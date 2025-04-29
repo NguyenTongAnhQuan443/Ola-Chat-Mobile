@@ -4,7 +4,7 @@ import 'package:olachat_mobile/ui/views/user_profile_info.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 import 'package:olachat_mobile/ui/widgets/custom_sliver_to_box_adapter.dart';
-import 'package:olachat_mobile/ui/widgets/social_header.dart';
+import 'package:olachat_mobile/ui/widgets/app_logo_header_two.dart';
 import '../../view_models/search_view_model.dart';
 import 'dart:async';
 
@@ -35,7 +35,7 @@ class _SearchScreenState extends State<SearchScreen> {
       body: CustomScrollView(
         slivers: [
           // Header
-          SocialHeader(),
+          AppLogoHeaderTwo(),
           CustomSliverToBoxAdapter(),
 
           // TextField search

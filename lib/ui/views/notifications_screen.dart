@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:olachat_mobile/ui/widgets/social_header.dart';
+import 'package:olachat_mobile/ui/widgets/app_logo_header_two.dart';
 
 class NotificationsScreen extends StatefulWidget {
   const NotificationsScreen({super.key});
@@ -40,7 +40,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
       body: CustomScrollView(
         slivers: [
           // View 1 - Header
-          SocialHeader(),
+          AppLogoHeaderTwo(),
           SliverToBoxAdapter(
             child: Container(
               height: 10,

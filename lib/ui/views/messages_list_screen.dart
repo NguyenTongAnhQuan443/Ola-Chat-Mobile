@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:olachat_mobile/ui/widgets/custom_sliver_to_box_adapter.dart';
-import 'package:olachat_mobile/ui/widgets/social_header.dart';
+import 'package:olachat_mobile/ui/widgets/app_logo_header_two.dart';
 
 import 'messages_conversation_screen.dart';
 
@@ -55,7 +55,7 @@ class _MessageListScreenState extends State<MessagesListScreen> {
         body: CustomScrollView(
           slivers: [
             // View 1 - Header
-            SocialHeader(),
+            AppLogoHeaderTwo(),
             CustomSliverToBoxAdapter(),
 
             // View 2 - New Message

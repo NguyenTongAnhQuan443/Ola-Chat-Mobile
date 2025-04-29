@@ -10,7 +10,7 @@ import '../../data/models/user_model.dart';
 import '../../view_models/login_view_model.dart';
 import '../widgets/custom_sliver_to_box_adapter.dart';
 import '../widgets/list_post.dart';
-import '../widgets/social_header.dart';
+import '../widgets/app_logo_header_two.dart';
 
 class MyProfileScreen extends StatefulWidget {
   const MyProfileScreen({super.key});
@@ -162,7 +162,7 @@ class _MyProfileState extends State<MyProfileScreen> {
       backgroundColor: Colors.white,
       body: CustomScrollView(
         slivers: [
-          SocialHeader(),
+          AppLogoHeaderTwo(),
           CustomSliverToBoxAdapter(),
           SliverToBoxAdapter(
             child: Consumer<LoginViewModel>(

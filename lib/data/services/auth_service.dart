@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../repositories/api_config.dart';
+import '../../core/utils/config/api_config.dart';
 import 'api_service.dart';
 import '../models/auth_response.dart';
 import 'package:http/http.dart' as http;

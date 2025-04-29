@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
-import '../repositories/api_config.dart';
+import '../../core/utils/config/api_config.dart';
 
 class UserService {
   Future<void> uploadAvatar(File imageFile) async {

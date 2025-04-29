@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:ui';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
-import '../repositories/api_config.dart';
+import '../../core/utils/config/api_config.dart';
 
 class PingService {
   static Timer? _pingTimer;

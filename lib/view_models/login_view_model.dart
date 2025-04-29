@@ -7,7 +7,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import '../data/models/auth_response.dart';
 import '../data/services/TokenService.dart';
 import '../data/services/auth_service.dart';
-import '../data/repositories/api_config.dart';
+import '../core/utils/config/api_config.dart';
 import 'package:http/http.dart' as http;
 
 class LoginViewModel extends ChangeNotifier {

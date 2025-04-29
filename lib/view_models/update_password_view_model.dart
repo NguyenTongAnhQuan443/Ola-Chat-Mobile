@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:olachat_mobile/data/repositories/api_config.dart';
+import 'package:olachat_mobile/core/utils/config/api_config.dart';
 import 'package:olachat_mobile/ui/widgets/show_snack_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

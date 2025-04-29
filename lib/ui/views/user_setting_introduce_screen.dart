@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:olachat_mobile/ui/widgets/custom_textfield_settings.dart';
-import 'package:olachat_mobile/view_models/account_settings_view_model.dart';
+import 'package:olachat_mobile/view_models/user_setting_introduce_view_model.dart';
 import 'package:provider/provider.dart';
 
 class UserSettingIntroduceScreen extends StatelessWidget {
@@ -10,8 +10,8 @@ class UserSettingIntroduceScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (_) => AccountSettingsViewModel(),
-      child: Consumer<AccountSettingsViewModel>(
+      create: (_) => UserSettingIntroduceViewModel(),
+      child: Consumer<UserSettingIntroduceViewModel>(
         builder: (context, vm, _) {
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 35),

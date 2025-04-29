@@ -5,7 +5,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:olachat_mobile/view_models/friend_request_view_model.dart';
 
-import 'AppInterceptors.dart';
+import 'appInterceptors.dart';
 import 'firebase_options.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';

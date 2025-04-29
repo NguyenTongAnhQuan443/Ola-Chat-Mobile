@@ -6,7 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../data/services/user_service.dart';
 import 'login_view_model.dart';
 
-class AccountSettingsViewModel extends ChangeNotifier {
+class UserSettingIntroduceViewModel extends ChangeNotifier {
   final fullNameController = TextEditingController();
   final nicknameController = TextEditingController();
   final bioController = TextEditingController();

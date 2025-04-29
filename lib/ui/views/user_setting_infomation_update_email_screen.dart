@@ -6,14 +6,14 @@ import 'package:olachat_mobile/ui/widgets/custom_textfield.dart';
 import 'package:olachat_mobile/view_models/update_email_view_model.dart';
 import 'package:provider/provider.dart';
 
-class UpdateEmailScreen extends StatefulWidget {
-  const UpdateEmailScreen({super.key});
+class UserSettingInfomationUpdateEmailScreen extends StatefulWidget {
+  const UserSettingInfomationUpdateEmailScreen({super.key});
 
   @override
-  State<UpdateEmailScreen> createState() => _UpdateEmailScreenState();
+  State<UserSettingInfomationUpdateEmailScreen> createState() => _UpdateEmailScreenState();
 }
 
-class _UpdateEmailScreenState extends State<UpdateEmailScreen> {
+class _UpdateEmailScreenState extends State<UserSettingInfomationUpdateEmailScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController otpController = TextEditingController();
 

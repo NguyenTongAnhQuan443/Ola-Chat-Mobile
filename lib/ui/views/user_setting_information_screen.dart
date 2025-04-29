@@ -4,7 +4,7 @@ import 'package:olachat_mobile/view_models/login_view_model.dart';
 import 'package:provider/provider.dart';
 
 import 'user_setting_infomation_update_dob_screen.dart';
-import 'update_email_screen.dart';
+import 'user_setting_infomation_update_email_screen.dart';
 import 'update_password_screen.dart';
 import 'user_setting_information_login_history_screen.dart';
 
@@ -38,7 +38,7 @@ class UserSettingInformationScreen extends StatelessWidget {
           buildInfoTile('Số điện thoại', userInfo?['username'] ?? ''),
           buildInfoTile('Email', userInfo?['email'] ?? '', onEdit: () {
             Navigator.push(context, MaterialPageRoute(
-              builder: (_) => const UpdateEmailScreen(),
+              builder: (_) => const UserSettingInfomationUpdateEmailScreen(),
             ));
           }),
           buildInfoTile('Ngày sinh', formatDate(userInfo?['dob']), onEdit: () {

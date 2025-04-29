@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 import 'update_dob_screen.dart';
 import 'update_email_screen.dart';
 import 'update_password_screen.dart';
-import 'login_history_screen.dart';
+import 'user_setting_information_login_history_screen.dart';
 
 class PersonalInfoTab extends StatelessWidget {
   const PersonalInfoTab({super.key});
@@ -56,7 +56,7 @@ class PersonalInfoTab extends StatelessWidget {
           const SizedBox(height: 16),
           buildInfoTile('Lịch sử đăng nhập', 'Nhấn để xem chi tiết', onEdit: () {
             Navigator.push(context, MaterialPageRoute(
-              builder: (_) => const LoginHistoryScreen(),
+              builder: (_) => const UserSettingInformationLoginHistoryScreen(),
             ));
           }),
         ],

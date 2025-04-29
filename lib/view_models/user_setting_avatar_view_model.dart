@@ -7,7 +7,7 @@ import 'package:olachat_mobile/ui/widgets/show_snack_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class ProfileViewModel extends ChangeNotifier {
+class UserSettingAvatarViewModel extends ChangeNotifier {
   File? selectedImage;
   bool isLoading = false;
 

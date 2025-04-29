@@ -6,7 +6,7 @@ import 'dart:convert';
 
 import '../data/models/login_history_model.dart';
 
-class LoginHistoryViewModel extends ChangeNotifier {
+class UserSettingInformationLoginHistoryViewModel extends ChangeNotifier {
   List<LoginHistoryModel> _items = [];
   bool _isLoading = false;
   String? _error;

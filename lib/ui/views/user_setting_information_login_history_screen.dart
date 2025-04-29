@@ -4,11 +4,11 @@ import 'package:intl/intl.dart';
 import 'package:olachat_mobile/core/utils/constants.dart';
 import 'package:olachat_mobile/ui/widgets/app_logo_header_one.dart';
 import 'package:provider/provider.dart';
-import 'package:olachat_mobile/view_models/login_history_view_model.dart';
+import 'package:olachat_mobile/view_models/user_setting_information_login_history_view_model.dart';
 import 'package:olachat_mobile/view_models/login_view_model.dart';
 
-class LoginHistoryScreen extends StatelessWidget {
-  const LoginHistoryScreen({super.key});
+class UserSettingInformationLoginHistoryScreen extends StatelessWidget {
+  const UserSettingInformationLoginHistoryScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -22,8 +22,8 @@ class LoginHistoryScreen extends StatelessWidget {
     }
 
     return ChangeNotifierProvider(
-      create: (_) => LoginHistoryViewModel()..fetchHistory(userId),
-      child: Consumer<LoginHistoryViewModel>(
+      create: (_) => UserSettingInformationLoginHistoryViewModel()..fetchHistory(userId),
+      child: Consumer<UserSettingInformationLoginHistoryViewModel>(
         builder: (context, vm, _) {
           return SafeArea(
             child: Scaffold(

@@ -6,21 +6,21 @@ import 'package:olachat_mobile/view_models/user_setting_avatar_view_model.dart';
 import 'package:provider/provider.dart';
 
 class UserSettingAvatarScreen extends StatelessWidget {
-  // UI Cập nhập avatar
+  // User_Setting_Avatar
   const UserSettingAvatarScreen({super.key});
 
   Future<void> pickImage(BuildContext context) async {
     final picker = ImagePicker();
     final image = await picker.pickImage(source: ImageSource.gallery);
     if (image != null) {
-      Provider.of<ProfileViewModel>(context, listen: false)
+      Provider.of<UserSettingAvatarViewModel>(context, listen: false)
           .selectImage(File(image.path));
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<ProfileViewModel>(
+    return Consumer<UserSettingAvatarViewModel>(
       builder: (context, vm, _) {
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 35),

@@ -3,9 +3,9 @@ import 'package:olachat_mobile/ui/widgets/custom_textfield_settings.dart';
 import 'package:olachat_mobile/view_models/account_settings_view_model.dart';
 import 'package:provider/provider.dart';
 
-class AccountSettingsScreen extends StatelessWidget {
-  // Giới thiệu
-  const AccountSettingsScreen({super.key});
+class UserSettingIntroduceScreen extends StatelessWidget {
+  // User_Setting_Introduce
+  const UserSettingIntroduceScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

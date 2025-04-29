@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:olachat_mobile/ui/views/personal_info_tab.dart';
 
-import 'account_settings_screen.dart';
+import 'user_setting_introduce_screen.dart';
 import 'general_settings_screen.dart';
 import 'logout_screen.dart';
 
@@ -52,7 +52,7 @@ class SettingsScreenState extends State<SettingsScreen>
               controller: _tabController,
               children: const [
                 GeneralSettingsScreen(),
-                AccountSettingsScreen(),
+                UserSettingIntroduceScreen(),
                 PersonalInfoTab(),
                 LogoutScreen(),
               ],

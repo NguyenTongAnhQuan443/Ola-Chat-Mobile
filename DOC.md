@@ -5,3 +5,6 @@
 ✅ Chỉ quay lại LoginScreen nếu refreshToken cũng hết hạn
 
 # Logout flow
+
+# UserSettingIntroduceScreen
+![UserSettingIntroduceScreen.png](assets%2Fnew_demo%2FUserSettingIntroduceScreen.png)

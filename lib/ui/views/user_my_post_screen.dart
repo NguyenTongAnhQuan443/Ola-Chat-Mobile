@@ -159,7 +159,7 @@ class _MyProfileState extends State<MyProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.red,
       body: CustomScrollView(
         slivers: [
           AppLogoHeaderTwo(),

@@ -1,13 +1,9 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:olachat_mobile/core/utils/constants.dart';
 import 'package:olachat_mobile/data/models/post_model.dart';
-import 'package:olachat_mobile/ui/views/settings_screen.dart';
+import 'package:olachat_mobile/ui/views/user_settings_screen.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../data/models/user_model.dart';
 import '../../data/models/user_response_model.dart';
 import '../../view_models/friend_request_view_model.dart';
 import '../../view_models/login_view_model.dart';
@@ -261,7 +257,7 @@ class _UserProfileInfoScreenState extends State<UserProfileInfoScreen> {
       case 1:
         return ListPost(posts: savePosts, showCommentButton: true);
       case 2:
-        return const SliverToBoxAdapter(child: SettingsScreen());
+        return const SliverToBoxAdapter(child: UserSettingScreen());
       default:
         return const SizedBox.shrink();
     }

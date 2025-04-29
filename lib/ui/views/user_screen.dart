@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:olachat_mobile/data/models/post_model.dart';
-import 'package:olachat_mobile/ui/views/settings_screen.dart';
+import 'package:olachat_mobile/ui/views/user_settings_screen.dart';
 import 'package:provider/provider.dart';
 
 import '../../data/models/user_model.dart';
@@ -293,7 +293,7 @@ Widget buildView_3(
     case 1:
       return ListPost(posts: savePosts, showCommentButton: true);
     case 2:
-      return const SliverToBoxAdapter(child: SettingsScreen());
+      return const SliverToBoxAdapter(child: UserSettingScreen());
     default:
       return const SizedBox.shrink();
   }

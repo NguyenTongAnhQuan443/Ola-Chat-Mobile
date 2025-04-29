@@ -5,14 +5,14 @@ import 'user_setting_introduce_screen.dart';
 import 'user_setting_avatar_screen.dart';
 import 'logout_screen.dart';
 
-class SettingsScreen extends StatefulWidget {
-  const SettingsScreen({super.key});
+class UserSettingScreen extends StatefulWidget {
+  const UserSettingScreen({super.key});
 
   @override
   SettingsScreenState createState() => SettingsScreenState();
 }
 
-class SettingsScreenState extends State<SettingsScreen>
+class SettingsScreenState extends State<UserSettingScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
 

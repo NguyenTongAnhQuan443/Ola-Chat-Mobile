@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'data/models/TokenResponse.dart';
+import 'data/models/token_response_model.dart';
 import 'data/services/TokenService.dart';
 
 class AppInterceptors extends Interceptor {

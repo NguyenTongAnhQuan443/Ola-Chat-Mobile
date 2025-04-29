@@ -2,21 +2,21 @@ import 'package:dio/dio.dart';
 
 import '../../core/utils/config/api_config.dart';
 
-class TokenResponse {
+class TokenResponseModel {
   final String accessToken;
   final String refreshToken;
 
-  TokenResponse({required this.accessToken, required this.refreshToken});
+  TokenResponseModel({required this.accessToken, required this.refreshToken});
 
-  factory TokenResponse.fromJson(Map<String, dynamic> json) {
-    return TokenResponse(
+  factory TokenResponseModel.fromJson(Map<String, dynamic> json) {
+    return TokenResponseModel(
       accessToken: json['accessToken'],
       refreshToken: json['refreshToken'],
     );
   }
 }
 
-Future<TokenResponse?> refreshAccessToken(String accessTokenOld, String refreshToken) async {
+Future<TokenResponseModel?> refreshAccessToken(String accessTokenOld, String refreshToken) async {
   try {
     final dio = Dio();
 
@@ -35,7 +35,7 @@ Future<TokenResponse?> refreshAccessToken(String accessTokenOld, String refreshT
 
     if (response.statusCode == 200) {
       final data = response.data['data'];
-      return TokenResponse.fromJson(data);
+      return TokenResponseModel.fromJson(data);
     } else {
       return null;
     }

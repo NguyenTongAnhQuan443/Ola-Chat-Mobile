@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -9,6 +10,9 @@ import '../data/services/token_service.dart';
 import '../data/services/auth_service.dart';
 import '../core/utils/config/api_config.dart';
 import 'package:http/http.dart' as http;
+import 'package:firebase_messaging/firebase_messaging.dart';
+
+import '../firebase_options.dart';
 
 class LoginViewModel extends ChangeNotifier {
   final AuthService _authService;
@@ -43,7 +47,8 @@ class LoginViewModel extends ChangeNotifier {
   String? get errorMessage => _errorMessage;
   AuthResponseModel? get authResponse => _authResponse;
 
-  Future<void> _handleLogin(Future<AuthResponseModel> Function() loginMethod) async {
+  Future<void> _handleLogin(
+      Future<AuthResponseModel> Function() loginMethod) async {
     _isLoading = true;
     notifyListeners();
     try {
@@ -57,8 +62,12 @@ class LoginViewModel extends ChangeNotifier {
 
       final userInfo = await _authService.getMyInfo(_authResponse!.accessToken);
       _userInfo = userInfo;
-      await TokenService.saveUserInfo(jsonEncode(userInfo));
+      // Đăng ký FCM
+      debugPrint("👤 [INFO] userInfo: $userInfo"); // 🔍 kiểm tra key đúng không
+      final userId = userInfo['userId'];
+      await registerDeviceForNotification(userId);
 
+      await TokenService.saveUserInfo(jsonEncode(userInfo));
     } catch (e) {
       _errorMessage = e.toString().replaceFirst('Exception: ', '');
     } finally {
@@ -69,14 +78,14 @@ class LoginViewModel extends ChangeNotifier {
 
   Future<void> loginWithPhone(String username, String password) async {
     await _handleLogin(
-            () => _authService.loginWithPhone(username, password, deviceId));
+        () => _authService.loginWithPhone(username, password, deviceId));
   }
 
   Future<void> loginWithGoogle() async {
     final googleSignIn = GoogleSignIn(
       scopes: ['email'],
       serverClientId:
-      '714231235616-gorl6sl5fja3tgja1pfl9la9qd3b9orf.apps.googleusercontent.com',
+          '714231235616-gorl6sl5fja3tgja1pfl9la9qd3b9orf.apps.googleusercontent.com',
     );
 
     final googleUser = await googleSignIn.signIn();
@@ -110,7 +119,7 @@ class LoginViewModel extends ChangeNotifier {
         }
         print('🔵 [FACEBOOK ACCESS TOKEN]: $accessToken');
         await _handleLogin(
-                () => _authService.loginWithFacebook(accessToken, deviceId));
+            () => _authService.loginWithFacebook(accessToken, deviceId));
       } else {
         _errorMessage = 'Facebook login bị hủy hoặc lỗi.';
         notifyListeners();
@@ -208,5 +217,49 @@ class LoginViewModel extends ChangeNotifier {
       return userMap['userId'];
     }
     return null;
+  }
+
+//   NOTIFICATION
+  Future<void> registerDeviceForNotification(String userId) async {
+    try {
+      if (Firebase.apps.isEmpty) {
+        debugPrint("⚠️ Firebase chưa được khởi tạo. Đang khởi tạo lại...");
+        await Firebase.initializeApp(
+          options: DefaultFirebaseOptions.currentPlatform,
+        );
+      }
+
+      final fcmToken = await FirebaseMessaging.instance.getToken();
+      if (fcmToken == null) {
+        debugPrint("⚠️ [FCM] Không lấy được token.");
+        return;
+      }
+
+      final payload = {
+        'userId': userId,
+        'token': fcmToken,
+        'deviceId': deviceId,
+      };
+
+      debugPrint("📡 [FCM] Gửi yêu cầu đăng ký:");
+      debugPrint("Payload: $payload");
+
+      final response = await http.post(
+        Uri.parse(ApiConfig.registerDevice),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(payload),
+      );
+
+      final responseBody = utf8.decode(response.bodyBytes);
+      debugPrint("✅ [FCM] Phản hồi server (${response.statusCode}): $responseBody");
+
+      if (response.statusCode != 200) {
+        throw Exception("Đăng ký FCM thất bại: ${response.statusCode}");
+      }
+    } catch (e) {
+      debugPrint("❌ [FCM] Lỗi khi đăng ký: $e");
+    }
   }
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:olachat_mobile/ui/views/feed_screen.dart';
 import 'package:olachat_mobile/ui/views/notifications_screen.dart';
-import 'package:olachat_mobile/ui/views/user_my_post_screen.dart';
+import 'package:olachat_mobile/ui/views/user_screen.dart';
 import 'package:olachat_mobile/ui/views/search_screen.dart';
 
 class BottomNavigationBarScreen extends StatefulWidget {
@@ -18,7 +18,7 @@ class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen> {
     FeedScreen(),
     SearchScreen(),
     NotificationsScreen(),
-    UserMyPostScreen()
+    UserScreen()
   ];
 
   final PageStorageBucket bucket = PageStorageBucket();

@@ -33,7 +33,7 @@ class AppLogoHeaderOne extends StatelessWidget {
                   height: AppStyles.logoIconSize,
                 ),
                 const SizedBox(width: 18),
-                const Text("OLA SOCIAL", style: AppStyles.socialTextStyle),
+                const Text(AppStyles.nameApp, style: AppStyles.socialTextStyle),
               ],
             ),
           ),

@@ -50,7 +50,7 @@ class _SearchScreenState extends State<SearchScreen> {
                     if (_debounce?.isActive ?? false) _debounce!.cancel();
                     _debounce = Timer(const Duration(milliseconds: 300), () {
                       if (value.isNotEmpty) {
-                        viewModel.searchUser(value); // gọi API sau 500ms nếu user ngừng gõ
+                        viewModel.searchUser(value); // gọi API sau 300ms nếu user ngừng gõ
                       }
                     });
                   },

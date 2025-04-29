@@ -9,6 +9,7 @@ class AppStyles {
     fontWeight: FontWeight.bold,
   );
   static const double logoIconSize = 32;
+  static const String nameApp = "OLA SOCIAL";
 }
 
 // const App Colors

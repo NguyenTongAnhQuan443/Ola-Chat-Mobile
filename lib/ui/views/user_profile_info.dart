@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:olachat_mobile/core/utils/constants.dart';
 import 'package:olachat_mobile/data/models/post_model.dart';
 import 'package:olachat_mobile/ui/views/settings_screen.dart';
 import 'package:provider/provider.dart';
@@ -77,7 +78,7 @@ class _UserProfileInfoScreenState extends State<UserProfileInfoScreen> {
                         ),
                         const SizedBox(width: 10),
                         const Text(
-                          "Social",
+                          AppStyles.nameApp,
                           style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
@@ -137,68 +138,6 @@ class _UserProfileInfoScreenState extends State<UserProfileInfoScreen> {
                       ],
                     ),
                     const SizedBox(height: 16),
-                    // Row(
-                    //   mainAxisAlignment: MainAxisAlignment.center,
-                    //   children: [
-                    //     Consumer2<FriendRequestViewModel, LoginViewModel>(
-                    //       builder: (context, friendVM, loginVM, _) {
-                    //         return ElevatedButton.icon(
-                    //           onPressed: friendVM.isLoading
-                    //               ? null
-                    //               : () async {
-                    //             final senderId = await loginVM.getCurrentUserId();
-                    //             final receiverId = widget.user.userId;
-                    //             debugPrint("📦 [SEND FRIEND REQUEST] senderId: $senderId");
-                    //             debugPrint("📦 [SEND FRIEND REQUEST] receiverId: $receiverId");
-                    //
-                    //             if (senderId == null || receiverId == null) {
-                    //               ScaffoldMessenger.of(context).showSnackBar(
-                    //                 const SnackBar(content: Text("Thiếu thông tin người dùng")),
-                    //               );
-                    //               return;
-                    //             }
-                    //
-                    //             friendVM.sendRequest(
-                    //               senderId: senderId,
-                    //               receiverId: receiverId,
-                    //               context: context,
-                    //             );
-                    //           },
-                    //           icon: friendVM.isLoading
-                    //               ? const SizedBox(
-                    //                   width: 16,
-                    //                   height: 16,
-                    //                   child: CircularProgressIndicator(
-                    //                       strokeWidth: 2, color: Colors.white),
-                    //                 )
-                    //               : const Icon(Icons.person_add_alt,
-                    //                   color: Colors.white),
-                    //           label: const Text("Kết bạn"),
-                    //           style: ElevatedButton.styleFrom(
-                    //             backgroundColor: const Color(0xFF4B67D3),
-                    //             foregroundColor: Colors.white,
-                    //             shape: RoundedRectangleBorder(
-                    //                 borderRadius: BorderRadius.circular(8)),
-                    //           ),
-                    //         );
-                    //       },
-                    //     ),
-                    //
-                    //     const SizedBox(width: 12),
-                    //     ElevatedButton.icon(
-                    //       onPressed: () {},
-                    //       icon: const Icon(Icons.chat_bubble_outline),
-                    //       label: const Text("Nhắn tin"),
-                    //       style: ElevatedButton.styleFrom(
-                    //         backgroundColor: Colors.grey[200],
-                    //         foregroundColor: Colors.black87,
-                    //         shape: RoundedRectangleBorder(
-                    //           borderRadius: BorderRadius.circular(8),
-                    //         ),
-                    //       ),
-                    //     ),
-                    //   ],
-                    // ),
                     if (currentUserId != null && widget.user.userId != currentUserId)
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,

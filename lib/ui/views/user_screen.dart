@@ -1,10 +1,7 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:olachat_mobile/data/models/post_model.dart';
 import 'package:olachat_mobile/ui/views/settings_screen.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../data/models/user_model.dart';
 import '../../view_models/login_view_model.dart';
@@ -12,14 +9,14 @@ import '../widgets/custom_sliver_to_box_adapter.dart';
 import '../widgets/list_post.dart';
 import '../widgets/app_logo_header_two.dart';
 
-class UserMyPostScreen extends StatefulWidget {
-  const UserMyPostScreen({super.key});
+class UserScreen extends StatefulWidget {
+  const UserScreen({super.key});
 
   @override
-  State<UserMyPostScreen> createState() => _MyProfileState();
+  State<UserScreen> createState() => _MyProfileState();
 }
 
-class _MyProfileState extends State<UserMyPostScreen> {
+class _MyProfileState extends State<UserScreen> {
   int selectedIndex = 0;
 
   List<PostModel> myPosts = [
@@ -159,7 +156,7 @@ class _MyProfileState extends State<UserMyPostScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.red,
+      backgroundColor: Colors.white,
       body: CustomScrollView(
         slivers: [
           AppLogoHeaderTwo(),

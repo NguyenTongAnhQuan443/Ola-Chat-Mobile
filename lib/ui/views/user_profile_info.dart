@@ -27,6 +27,21 @@ class UserProfileInfoScreen extends StatefulWidget {
 class _UserProfileInfoScreenState extends State<UserProfileInfoScreen> {
   int selectedIndex = 0;
   List<Post> savePosts = [];
+  String? currentUserId;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final loginVM = Provider.of<LoginViewModel>(context, listen: false);
+      loginVM.getCurrentUserId().then((id) {
+        setState(() {
+          currentUserId = id;
+        });
+      });
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -122,80 +137,131 @@ class _UserProfileInfoScreenState extends State<UserProfileInfoScreen> {
                       ],
                     ),
                     const SizedBox(height: 16),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        // ElevatedButton.icon(
-                        //   onPressed: () {},
-                        //   icon: const Icon(Icons.person_add_alt, color: Colors.white),
-                        //   label: const Text("Kết bạn"),
-                        //   style: ElevatedButton.styleFrom(
-                        //     backgroundColor: const Color(0xFF4B67D3),
-                        //     foregroundColor: Colors.white,
-                        //     shape: RoundedRectangleBorder(
-                        //       borderRadius: BorderRadius.circular(8),
-                        //     ),
-                        //   ),
-                        // ),
-                        Consumer2<FriendRequestViewModel, LoginViewModel>(
-                          builder: (context, friendVM, loginVM, _) {
-                            return ElevatedButton.icon(
-                              onPressed: friendVM.isLoading
-                                  ? null
-                                  : () async {
-                                final senderId = await loginVM.getCurrentUserId();
-                                final receiverId = widget.user.userId;
-                                debugPrint("📦 [SEND FRIEND REQUEST] senderId: $senderId");
-                                debugPrint("📦 [SEND FRIEND REQUEST] receiverId: $receiverId");
+                    // Row(
+                    //   mainAxisAlignment: MainAxisAlignment.center,
+                    //   children: [
+                    //     Consumer2<FriendRequestViewModel, LoginViewModel>(
+                    //       builder: (context, friendVM, loginVM, _) {
+                    //         return ElevatedButton.icon(
+                    //           onPressed: friendVM.isLoading
+                    //               ? null
+                    //               : () async {
+                    //             final senderId = await loginVM.getCurrentUserId();
+                    //             final receiverId = widget.user.userId;
+                    //             debugPrint("📦 [SEND FRIEND REQUEST] senderId: $senderId");
+                    //             debugPrint("📦 [SEND FRIEND REQUEST] receiverId: $receiverId");
+                    //
+                    //             if (senderId == null || receiverId == null) {
+                    //               ScaffoldMessenger.of(context).showSnackBar(
+                    //                 const SnackBar(content: Text("Thiếu thông tin người dùng")),
+                    //               );
+                    //               return;
+                    //             }
+                    //
+                    //             friendVM.sendRequest(
+                    //               senderId: senderId,
+                    //               receiverId: receiverId,
+                    //               context: context,
+                    //             );
+                    //           },
+                    //           icon: friendVM.isLoading
+                    //               ? const SizedBox(
+                    //                   width: 16,
+                    //                   height: 16,
+                    //                   child: CircularProgressIndicator(
+                    //                       strokeWidth: 2, color: Colors.white),
+                    //                 )
+                    //               : const Icon(Icons.person_add_alt,
+                    //                   color: Colors.white),
+                    //           label: const Text("Kết bạn"),
+                    //           style: ElevatedButton.styleFrom(
+                    //             backgroundColor: const Color(0xFF4B67D3),
+                    //             foregroundColor: Colors.white,
+                    //             shape: RoundedRectangleBorder(
+                    //                 borderRadius: BorderRadius.circular(8)),
+                    //           ),
+                    //         );
+                    //       },
+                    //     ),
+                    //
+                    //     const SizedBox(width: 12),
+                    //     ElevatedButton.icon(
+                    //       onPressed: () {},
+                    //       icon: const Icon(Icons.chat_bubble_outline),
+                    //       label: const Text("Nhắn tin"),
+                    //       style: ElevatedButton.styleFrom(
+                    //         backgroundColor: Colors.grey[200],
+                    //         foregroundColor: Colors.black87,
+                    //         shape: RoundedRectangleBorder(
+                    //           borderRadius: BorderRadius.circular(8),
+                    //         ),
+                    //       ),
+                    //     ),
+                    //   ],
+                    // ),
+                    if (currentUserId != null && widget.user.userId != currentUserId)
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Consumer2<FriendRequestViewModel, LoginViewModel>(
+                            builder: (context, friendVM, loginVM, _) {
+                              return ElevatedButton.icon(
+                                onPressed: friendVM.isLoading
+                                    ? null
+                                    : () async {
+                                  final senderId = await loginVM.getCurrentUserId();
+                                  final receiverId = widget.user.userId;
+                                  debugPrint("📦 [SEND FRIEND REQUEST] senderId: $senderId");
+                                  debugPrint("📦 [SEND FRIEND REQUEST] receiverId: $receiverId");
 
-                                if (senderId == null || receiverId == null) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(content: Text("Thiếu thông tin người dùng")),
+                                  if (senderId == null || receiverId == null) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(content: Text("Thiếu thông tin người dùng")),
+                                    );
+                                    return;
+                                  }
+
+                                  friendVM.sendRequest(
+                                    senderId: senderId,
+                                    receiverId: receiverId,
+                                    context: context,
                                   );
-                                  return;
-                                }
-
-                                friendVM.sendRequest(
-                                  senderId: senderId,
-                                  receiverId: receiverId,
-                                  context: context,
-                                );
-                              },
-                              icon: friendVM.isLoading
-                                  ? const SizedBox(
-                                      width: 16,
-                                      height: 16,
-                                      child: CircularProgressIndicator(
-                                          strokeWidth: 2, color: Colors.white),
-                                    )
-                                  : const Icon(Icons.person_add_alt,
-                                      color: Colors.white),
-                              label: const Text("Kết bạn"),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: const Color(0xFF4B67D3),
-                                foregroundColor: Colors.white,
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(8)),
+                                },
+                                icon: friendVM.isLoading
+                                    ? const SizedBox(
+                                  width: 16,
+                                  height: 16,
+                                  child: CircularProgressIndicator(
+                                      strokeWidth: 2, color: Colors.white),
+                                )
+                                    : const Icon(Icons.person_add_alt, color: Colors.white),
+                                label: const Text("Kết bạn"),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color(0xFF4B67D3),
+                                  foregroundColor: Colors.white,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8)),
+                                ),
+                              );
+                            },
+                          ),
+                          const SizedBox(width: 12),
+                          ElevatedButton.icon(
+                            onPressed: () {},
+                            icon: const Icon(Icons.chat_bubble_outline),
+                            label: const Text("Nhắn tin"),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.grey[200],
+                              foregroundColor: Colors.black87,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
                               ),
-                            );
-                          },
-                        ),
-
-                        const SizedBox(width: 12),
-                        ElevatedButton.icon(
-                          onPressed: () {},
-                          icon: const Icon(Icons.chat_bubble_outline),
-                          label: const Text("Nhắn tin"),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.grey[200],
-                            foregroundColor: Colors.black87,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
                             ),
                           ),
-                        ),
-                      ],
-                    ),
+                        ],
+                      ),
+
+
                     const SizedBox(height: 16),
                     const Divider(),
                     Row(

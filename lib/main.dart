@@ -1,9 +1,11 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:olachat_mobile/view_models/friend_request_view_model.dart';
 
+import 'AppInterceptors.dart';
 import 'firebase_options.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -17,6 +19,7 @@ import 'view_models/signup_view_model.dart';
 import 'view_models/search_view_model.dart';
 import 'view_models/profile_view_model.dart';
 
+late Dio dio;
 // GLOBAL
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
@@ -63,6 +66,8 @@ Future<void> main() async {
     print("📱 FCM Token: $token");
   });
 
+  // dio = Dio();
+  // dio.interceptors.add(AppInterceptors(dio));
   runApp(
     MultiProvider(
       providers: [

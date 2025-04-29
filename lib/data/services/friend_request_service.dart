@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-import '../../core/config/api_config.dart';
+import '../repositories/api_config.dart';
 import '../models/friend_request_dto.dart';
 
 class FriendRequestService {

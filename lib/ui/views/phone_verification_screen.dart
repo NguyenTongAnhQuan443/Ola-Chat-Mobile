@@ -6,7 +6,7 @@ import 'package:olachat_mobile/core/utils/constants.dart';
 import 'package:olachat_mobile/ui/views/signup_screen.dart';
 import 'package:olachat_mobile/ui/widgets/app_logo_header.dart';
 import 'package:olachat_mobile/ui/widgets/custom_textfield.dart';
-import '../../core/config/api_config.dart';
+import '../../data/repositories/api_config.dart';
 import '../../main.dart';
 import '../widgets/show_snack_bar.dart';
 

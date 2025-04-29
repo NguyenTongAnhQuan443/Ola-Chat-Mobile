@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:olachat_mobile/core/config/api_config.dart';
+import 'package:olachat_mobile/data/repositories/api_config.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';

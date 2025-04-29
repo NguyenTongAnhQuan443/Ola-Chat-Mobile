@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:olachat_mobile/ui/widgets/custom_sliver_to_box_adapter.dart';
 import 'package:olachat_mobile/ui/widgets/social_header.dart';
 import '../../view_models/search_view_model.dart';
+import 'dart:async';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
@@ -16,6 +17,14 @@ class SearchScreen extends StatefulWidget {
 
 class _SearchScreenState extends State<SearchScreen> {
   final TextEditingController _controller = TextEditingController();
+  Timer? _debounce;
+
+  @override
+  void dispose() {
+    _debounce?.cancel();
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,11 +46,15 @@ class _SearchScreenState extends State<SearchScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 child: TextField(
                   controller: _controller,
-                  onSubmitted: (value) {
-                    if (value.isNotEmpty) {
-                      viewModel.searchUser(value); // gọi API
-                    }
+                  onChanged: (value) {
+                    if (_debounce?.isActive ?? false) _debounce!.cancel();
+                    _debounce = Timer(const Duration(milliseconds: 300), () {
+                      if (value.isNotEmpty) {
+                        viewModel.searchUser(value); // gọi API sau 500ms nếu user ngừng gõ
+                      }
+                    });
                   },
+
                   decoration: InputDecoration(
                     prefixIcon: Icon(
                       Icons.search,

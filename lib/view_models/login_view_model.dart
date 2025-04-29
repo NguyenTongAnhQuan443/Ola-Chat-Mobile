@@ -5,10 +5,10 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../data/models/auth_response.dart';
+import '../data/services/TokenService.dart';
 import '../data/services/auth_service.dart';
-import '../core/config/api_config.dart';
+import '../data/repositories/api_config.dart';
 import 'package:http/http.dart' as http;
 
 class LoginViewModel extends ChangeNotifier {
@@ -51,13 +51,14 @@ class LoginViewModel extends ChangeNotifier {
       _authResponse = await loginMethod();
       _errorMessage = null;
 
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setString('access_token', _authResponse!.accessToken);
-      await prefs.setString('refresh_token', _authResponse!.refreshToken);
+      await TokenService.saveTokens(
+        _authResponse!.accessToken,
+        _authResponse!.refreshToken,
+      );
 
       final userInfo = await _authService.getMyInfo(_authResponse!.accessToken);
       _userInfo = userInfo;
-      await prefs.setString('user_info', jsonEncode(userInfo));
+      await TokenService.saveUserInfo(jsonEncode(userInfo));
 
       // Gửi FCM token sau khi login thành công
       final token = await _getFcmToken();
@@ -75,14 +76,14 @@ class LoginViewModel extends ChangeNotifier {
 
   Future<void> loginWithPhone(String username, String password) async {
     await _handleLogin(
-        () => _authService.loginWithPhone(username, password, deviceId));
+            () => _authService.loginWithPhone(username, password, deviceId));
   }
 
   Future<void> loginWithGoogle() async {
     final googleSignIn = GoogleSignIn(
       scopes: ['email'],
       serverClientId:
-          '714231235616-gorl6sl5fja3tgja1pfl9la9qd3b9orf.apps.googleusercontent.com',
+      '714231235616-gorl6sl5fja3tgja1pfl9la9qd3b9orf.apps.googleusercontent.com',
     );
 
     final googleUser = await googleSignIn.signIn();
@@ -116,12 +117,12 @@ class LoginViewModel extends ChangeNotifier {
         }
         print('🔵 [FACEBOOK ACCESS TOKEN]: $accessToken');
         await _handleLogin(
-            () => _authService.loginWithFacebook(accessToken, deviceId));
+                () => _authService.loginWithFacebook(accessToken, deviceId));
       } else {
         _errorMessage = 'Facebook login bị hủy hoặc lỗi.';
         notifyListeners();
       }
-    } catch (e, stack) {
+    } catch (e) {
       _errorMessage = 'Lỗi Facebook login: ${e.toString()}';
       notifyListeners();
     }
@@ -129,13 +130,12 @@ class LoginViewModel extends ChangeNotifier {
 
   Future<void> logout() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final access = prefs.getString('access_token');
-      final refresh = prefs.getString('refresh_token');
+      final access = await TokenService.getAccessToken();
+      final refresh = await TokenService.getRefreshToken();
       if (access != null && refresh != null) {
         await _authService.logout(access, refresh);
       }
-      await prefs.clear();
+      await TokenService.clearAll(); // 🛠 clear cả token và user_info
       _authResponse = null;
       notifyListeners();
     } catch (e) {
@@ -145,8 +145,7 @@ class LoginViewModel extends ChangeNotifier {
   }
 
   Future<bool> tryRefreshToken() async {
-    final prefs = await SharedPreferences.getInstance();
-    final refreshToken = prefs.getString('refresh_token');
+    final refreshToken = await TokenService.getRefreshToken();
     if (refreshToken == null) return false;
 
     try {
@@ -159,8 +158,7 @@ class LoginViewModel extends ChangeNotifier {
       if (response.statusCode == 200 && data['success'] == true) {
         final newAccess = data['data']['accessToken'];
         final newRefresh = data['data']['refreshToken'];
-        await prefs.setString('access_token', newAccess);
-        await prefs.setString('refresh_token', newRefresh);
+        await TokenService.saveTokens(newAccess, newRefresh);
         return true;
       }
     } catch (e) {
@@ -170,8 +168,7 @@ class LoginViewModel extends ChangeNotifier {
   }
 
   Future<bool> validateOrRefreshToken() async {
-    final prefs = await SharedPreferences.getInstance();
-    final token = prefs.getString('access_token');
+    final token = await TokenService.getAccessToken();
 
     if (token == null) return false;
 
@@ -198,13 +195,12 @@ class LoginViewModel extends ChangeNotifier {
 
   Future<void> refreshUserInfo() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final token = prefs.getString('access_token');
+      final token = await TokenService.getAccessToken();
       if (token == null) throw Exception("Token không tồn tại");
 
       final userInfo = await _authService.getMyInfo(token);
       _userInfo = userInfo;
-      await prefs.setString('user_info', jsonEncode(userInfo));
+      await TokenService.saveUserInfo(jsonEncode(userInfo));
       notifyListeners();
     } catch (e) {
       debugPrint('refreshUserInfo thất bại: $e');
@@ -213,8 +209,7 @@ class LoginViewModel extends ChangeNotifier {
   }
 
   Future<String?> getCurrentUserId() async {
-    final prefs = await SharedPreferences.getInstance();
-    final userJson = prefs.getString('user_info');
+    final userJson = await TokenService.getUserInfo();
     if (userJson != null) {
       final userMap = jsonDecode(userJson);
       return userMap['userId'];
@@ -237,7 +232,7 @@ class LoginViewModel extends ChangeNotifier {
 
   Future<void> _registerDeviceToken(String userId, String token) async {
     final uri =
-        Uri.parse('${ApiConfig.registerDevice}?userId=$userId&token=$token');
+    Uri.parse('${ApiConfig.registerDevice}?userId=$userId&token=$token');
 
     debugPrint("📡 Đang gửi FCM token:");
     debugPrint("🧑‍💻 userId: $userId");

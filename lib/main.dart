@@ -36,7 +36,6 @@ Future<void> main() async {
   final AppLifecycleHandler lifecycleHandler = AppLifecycleHandler();
   WidgetsBinding.instance.addObserver(lifecycleHandler);
 
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
   // Cấu hình hiển thị local notification
@@ -62,12 +61,8 @@ Future<void> main() async {
     }
   });
 
-  FirebaseMessaging.instance.getToken().then((token) {
-    print("📱 FCM Token: $token");
-  });
-
-  // dio = Dio();
-  // dio.interceptors.add(AppInterceptors(dio));
+  dio = Dio();
+  dio.interceptors.add(AppInterceptors(dio));
   runApp(
     MultiProvider(
       providers: [

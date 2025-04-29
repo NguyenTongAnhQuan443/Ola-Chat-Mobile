@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:device_info_plus/device_info_plus.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -60,12 +59,6 @@ class LoginViewModel extends ChangeNotifier {
       _userInfo = userInfo;
       await TokenService.saveUserInfo(jsonEncode(userInfo));
 
-      // Gửi FCM token sau khi login thành công
-      final token = await _getFcmToken();
-      final userId = userInfo['userId'];
-      if (token != null && userId != null) {
-        await _registerDeviceToken(userId, token);
-      }
     } catch (e) {
       _errorMessage = e.toString().replaceFirst('Exception: ', '');
     } finally {
@@ -135,7 +128,7 @@ class LoginViewModel extends ChangeNotifier {
       if (access != null && refresh != null) {
         await _authService.logout(access, refresh);
       }
-      await TokenService.clearAll(); // 🛠 clear cả token và user_info
+      await TokenService.clearAll(); // clear cả token và user_info
       _authResponse = null;
       notifyListeners();
     } catch (e) {
@@ -215,42 +208,5 @@ class LoginViewModel extends ChangeNotifier {
       return userMap['userId'];
     }
     return null;
-  }
-
-  // FCM
-  Future<String?> _getFcmToken() async {
-    try {
-      final fcm = FirebaseMessaging.instance;
-      final token = await fcm.getToken();
-      debugPrint('📲 FCM token lấy được: $token');
-      return token;
-    } catch (e) {
-      debugPrint('Không lấy được FCM token: $e');
-      return null;
-    }
-  }
-
-  Future<void> _registerDeviceToken(String userId, String token) async {
-    final uri =
-    Uri.parse('${ApiConfig.registerDevice}?userId=$userId&token=$token');
-
-    debugPrint("📡 Đang gửi FCM token:");
-    debugPrint("🧑‍💻 userId: $userId");
-    debugPrint("🔑 token: $token");
-    debugPrint("📍 endpoint: $uri");
-
-    try {
-      final response = await http.post(
-        uri,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      );
-
-      debugPrint("✅ Gửi token xong. Status: ${response.statusCode}");
-      debugPrint("📬 Body: ${response.body}");
-    } catch (e) {
-      debugPrint('❌ Lỗi khi gửi FCM token: $e');
-    }
   }
 }

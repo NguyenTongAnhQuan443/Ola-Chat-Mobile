@@ -10,14 +10,14 @@ import 'package:provider/provider.dart';
 import '../../core/utils/constants.dart';
 import '../../data/services/user_service.dart';
 
-class UpdateDobScreen extends StatefulWidget {
-  const UpdateDobScreen({super.key});
+class UserSettingInfomationUpdateDobScreen extends StatefulWidget {
+  const UserSettingInfomationUpdateDobScreen({super.key});
 
   @override
-  State<UpdateDobScreen> createState() => _UpdateDobScreenState();
+  State<UserSettingInfomationUpdateDobScreen> createState() => _UpdateDobScreenState();
 }
 
-class _UpdateDobScreenState extends State<UpdateDobScreen> {
+class _UpdateDobScreenState extends State<UserSettingInfomationUpdateDobScreen> {
   DateTime selectedDate = DateTime(2003, 4, 4);
   bool isLoading = false;
 

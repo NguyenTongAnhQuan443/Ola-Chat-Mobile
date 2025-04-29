@@ -3,7 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:olachat_mobile/view_models/login_view_model.dart';
 import 'package:provider/provider.dart';
 
-import 'update_dob_screen.dart';
+import 'user_setting_infomation_update_dob_screen.dart';
 import 'update_email_screen.dart';
 import 'update_password_screen.dart';
 import 'user_setting_information_login_history_screen.dart';
@@ -43,7 +43,7 @@ class UserSettingInformationScreen extends StatelessWidget {
           }),
           buildInfoTile('Ngày sinh', formatDate(userInfo?['dob']), onEdit: () {
             Navigator.push(context, MaterialPageRoute(
-              builder: (_) => const UpdateDobScreen(),
+              builder: (_) => const UserSettingInfomationUpdateDobScreen(),
             ));
           }),
           buildInfoTile('Mật khẩu', '********', onEdit: () {

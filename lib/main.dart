@@ -17,7 +17,7 @@ import 'view_models/phone_verification_view_model.dart';
 import 'view_models/reset_password_view_model.dart';
 import 'view_models/signup_view_model.dart';
 import 'view_models/search_view_model.dart';
-import 'view_models/profile_view_model.dart';
+import 'view_models/user_setting_avatar_view_model.dart';
 
 late Dio dio;
 // GLOBAL

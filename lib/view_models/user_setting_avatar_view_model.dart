@@ -31,7 +31,7 @@ class ProfileViewModel extends ChangeNotifier {
 
       final request = http.MultipartRequest(
         'PUT',
-        Uri.parse(ApiConfig.updateAvatar), // Tạo hằng số này trong ApiConfig
+        Uri.parse(ApiConfig.updateAvatar),
       );
       request.headers['Authorization'] = 'Bearer $token';
       request.files.add(await http.MultipartFile.fromPath('avatar', selectedImage!.path));

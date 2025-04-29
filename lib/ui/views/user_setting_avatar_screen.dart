@@ -2,12 +2,12 @@ import 'dart:io';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:olachat_mobile/view_models/profile_view_model.dart';
+import 'package:olachat_mobile/view_models/user_setting_avatar_view_model.dart';
 import 'package:provider/provider.dart';
 
-class GeneralSettingsScreen extends StatelessWidget {
+class UserSettingAvatarScreen extends StatelessWidget {
   // UI Cập nhập avatar
-  const GeneralSettingsScreen({super.key});
+  const UserSettingAvatarScreen({super.key});
 
   Future<void> pickImage(BuildContext context) async {
     final picker = ImagePicker();

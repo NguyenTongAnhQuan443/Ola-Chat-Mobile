@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:olachat_mobile/ui/views/personal_info_tab.dart';
 
 import 'user_setting_introduce_screen.dart';
-import 'general_settings_screen.dart';
+import 'user_setting_avatar_screen.dart';
 import 'logout_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -51,7 +51,7 @@ class SettingsScreenState extends State<SettingsScreen>
             child: TabBarView(
               controller: _tabController,
               children: const [
-                GeneralSettingsScreen(),
+                UserSettingAvatarScreen(),
                 UserSettingIntroduceScreen(),
                 PersonalInfoTab(),
                 LogoutScreen(),

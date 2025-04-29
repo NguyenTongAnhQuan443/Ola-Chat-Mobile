@@ -4,7 +4,7 @@ import 'package:olachat_mobile/core/utils/constants.dart';
 import 'package:olachat_mobile/ui/widgets/custom_textfield.dart';
 import 'package:olachat_mobile/view_models/reset_password_view_model.dart';
 import 'package:provider/provider.dart';
-import '../widgets/app_logo_header.dart';
+import '../widgets/app_logo_header_one.dart';
 import '../widgets/show_snack_bar.dart';
 
 class ResetPasswordScreen extends StatefulWidget {
@@ -42,7 +42,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                 child: IntrinsicHeight(
                   child: Column(
                     children: [
-                      const AppLogoHeader(showBackButton: false),
+                      const AppLogoHeaderOne(showBackButton: false),
                       const SizedBox(height: 16),
                       SvgPicture.asset(
                         'assets/images/confirmed.svg',

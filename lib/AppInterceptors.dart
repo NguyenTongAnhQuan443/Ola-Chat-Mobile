@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'data/models/token_response_model.dart';
-import 'data/services/TokenService.dart';
+import 'data/services/token_service.dart';
 
 class AppInterceptors extends Interceptor {
   final Dio dio;

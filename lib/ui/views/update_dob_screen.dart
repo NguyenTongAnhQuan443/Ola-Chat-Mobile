@@ -3,7 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart'
 as dp;
 import 'package:intl/intl.dart';
-import 'package:olachat_mobile/ui/widgets/app_logo_header.dart';
+import 'package:olachat_mobile/ui/widgets/app_logo_header_one.dart';
 import 'package:olachat_mobile/ui/widgets/show_snack_bar.dart';
 import 'package:olachat_mobile/view_models/login_view_model.dart';
 import 'package:provider/provider.dart';
@@ -92,7 +92,7 @@ class _UpdateDobScreenState extends State<UpdateDobScreen> {
                   child: IntrinsicHeight(
                     child: Column(
                       children: [
-                        AppLogoHeader(showBackButton: false),
+                        AppLogoHeaderOne(showBackButton: false),
                         Expanded(
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,

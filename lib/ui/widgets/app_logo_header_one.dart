@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:olachat_mobile/core/utils/constants.dart';
 
-class AppLogoHeader extends StatelessWidget {
+class AppLogoHeaderOne extends StatelessWidget {
+  // DÀNH CHO CÁC TRANG ĐĂNG NHẬP ĐĂNG KÝ V.V
   final bool showBackButton;
 
-  const AppLogoHeader({super.key, this.showBackButton = false});
+  const AppLogoHeaderOne({super.key, this.showBackButton = false});
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +33,7 @@ class AppLogoHeader extends StatelessWidget {
                   height: AppStyles.logoIconSize,
                 ),
                 const SizedBox(width: 18),
-                const Text("Social", style: AppStyles.socialTextStyle),
+                const Text("OLA SOCIAL", style: AppStyles.socialTextStyle),
               ],
             ),
           ),

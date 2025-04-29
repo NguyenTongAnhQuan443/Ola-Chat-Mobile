@@ -4,7 +4,7 @@ import 'package:olachat_mobile/core/utils/constants.dart';
 import 'package:olachat_mobile/ui/widgets/custom_textfield.dart';
 import 'package:olachat_mobile/view_models/forgot_password_view_model.dart';
 import 'package:provider/provider.dart';
-import '../widgets/app_logo_header.dart';
+import '../widgets/app_logo_header_one.dart';
 import '../widgets/show_snack_bar.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
@@ -40,7 +40,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 child: IntrinsicHeight(
                   child: Column(
                     children: [
-                      const AppLogoHeader(showBackButton: false),
+                      const AppLogoHeaderOne(showBackButton: false),
                       const SizedBox(height: 140),
                       SvgPicture.asset(
                         'assets/images/forgot_password.svg',

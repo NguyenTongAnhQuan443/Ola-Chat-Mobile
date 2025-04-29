@@ -5,7 +5,7 @@ import 'package:olachat_mobile/ui/widgets/custom_social_button.dart';
 import 'package:provider/provider.dart';
 import '../../main.dart';
 import '../../view_models/login_view_model.dart';
-import '../widgets/app_logo_header.dart';
+import '../widgets/app_logo_header_one.dart';
 import '../widgets/custom_textfield.dart';
 import '../widgets/show_snack_bar.dart';
 import 'bottom_navigationbar_screen.dart';
@@ -86,7 +86,7 @@ class _LoginScreenState extends State<LoginScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              AppLogoHeader(showBackButton: false),
+              AppLogoHeaderOne(showBackButton: false),
               Expanded(
                 flex: 9,
                 child: Column(

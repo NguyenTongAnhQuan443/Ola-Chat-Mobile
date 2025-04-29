@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:olachat_mobile/core/utils/constants.dart';
-import 'package:olachat_mobile/ui/widgets/app_logo_header.dart';
+import 'package:olachat_mobile/ui/widgets/app_logo_header_one.dart';
 import 'package:olachat_mobile/ui/widgets/custom_textfield.dart';
 import 'package:olachat_mobile/view_models/update_email_view_model.dart';
 import 'package:provider/provider.dart';
@@ -39,7 +39,7 @@ class _UpdateEmailScreenState extends State<UpdateEmailScreen> {
                         child: IntrinsicHeight(
                           child: Column(
                             children: [
-                              AppLogoHeader(showBackButton: false),
+                              AppLogoHeaderOne(showBackButton: false),
                               Expanded(
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,

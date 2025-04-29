@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import '../data/models/auth_response_model.dart';
-import '../data/services/TokenService.dart';
+import '../data/services/token_service.dart';
 import '../data/services/auth_service.dart';
 import '../core/utils/config/api_config.dart';
 import 'package:http/http.dart' as http;

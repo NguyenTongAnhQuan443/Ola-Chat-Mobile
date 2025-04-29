@@ -5,6 +5,7 @@ import 'package:olachat_mobile/ui/views/messages_list_screen.dart';
 import '../../core/utils/constants.dart';
 
 class SocialHeader extends StatelessWidget {
+  // DÀNH CHO CÁC TRANG HOME KHI ĐĂNG NHẬP THÀNH CÔNG
   const SocialHeader({super.key});
 
   @override
@@ -25,7 +26,7 @@ class SocialHeader extends StatelessWidget {
                       width: AppStyles.logoIconSize,
                       height: AppStyles.logoIconSize),
                   const SizedBox(width: 18),
-                  const Text("Social", style: AppStyles.socialTextStyle),
+                  const Text("OLA SOCIAL", style: AppStyles.socialTextStyle),
                 ],
               ),
               onTap: () {

@@ -4,7 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:http/http.dart' as http;
 import 'package:olachat_mobile/core/utils/constants.dart';
 import 'package:olachat_mobile/ui/views/signup_screen.dart';
-import 'package:olachat_mobile/ui/widgets/app_logo_header.dart';
+import 'package:olachat_mobile/ui/widgets/app_logo_header_one.dart';
 import 'package:olachat_mobile/ui/widgets/custom_textfield.dart';
 import '../../core/utils/config/api_config.dart';
 import '../../main.dart';
@@ -117,7 +117,7 @@ class _PhoneVerificationScreenState extends State<PhoneVerificationScreen> {
                   child: IntrinsicHeight(
                     child: Column(
                       children: [
-                        AppLogoHeader(showBackButton: true),
+                        AppLogoHeaderOne(showBackButton: true),
                         Expanded(
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,

@@ -9,7 +9,7 @@ as dp;
 import 'package:provider/provider.dart';
 
 import '../../view_models/signup_view_model.dart';
-import '../widgets/app_logo_header.dart';
+import '../widgets/app_logo_header_one.dart';
 import '../widgets/custom_date_picker_field.dart';
 import '../widgets/show_snack_bar.dart';
 import 'login_screen.dart';
@@ -148,7 +148,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              AppLogoHeader(showBackButton: false),
+              AppLogoHeaderOne(showBackButton: false),
               Expanded(
                 flex: 9,
                 child: Column(

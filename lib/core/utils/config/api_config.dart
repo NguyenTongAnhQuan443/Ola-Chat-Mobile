@@ -1,7 +1,7 @@
 class ApiConfig {
-  static const String host = "http://10.0.2.2:8080"; // local cho emulator
+  // static const String host = "http://10.0.2.2:8080"; // local cho emulator
   // static const String host = "http://silenthero.xyz"; // host thật
-  // static const String host = "http://192.168.100.135:8080";
+  static const String host = "http://192.168.1.4:8080";
 
   static const String base = "$host/ola-chat";
 
@@ -29,7 +29,6 @@ class ApiConfig {
   static const String verifyEmailUpdateOtp = "$base/users/verify-update-email";
   static String searchUser(String query) => "$base/users/search?query=$query";
 
-
   static String loginHistory(String userId) => "$base/api/login-history/$userId";
   static String setUserOffline(String userId) =>"$base/api/login-history/offline/$userId";
   static const String ping = "$base/api/login-history/ping";
@@ -38,4 +37,9 @@ class ApiConfig {
 
   // Friend
   static const String sendFriendRequest = "$base/api/friends/send-request";
+  static const String getSentFriendRequests = "$base/api/friends/requests/sent";
+  static const String getReceivedFriendRequests = "$base/api/friends/requests/received";
+  static String cancelFriendRequest(String receiverId) =>
+      "$base/api/friends/requests/$receiverId/cancel";
+
 }

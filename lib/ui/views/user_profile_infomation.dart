@@ -9,6 +9,7 @@ import '../../view_models/friend_request_view_model.dart';
 import '../../view_models/login_view_model.dart';
 import '../widgets/custom_sliver_to_box_adapter.dart';
 import '../widgets/list_post.dart';
+import '../widgets/show_snack_bar.dart';
 
 class UserProfileInfomationScreen extends StatefulWidget {
   final UserResponseModel user;
@@ -18,7 +19,8 @@ class UserProfileInfomationScreen extends StatefulWidget {
       {super.key, required this.user, this.myPosts = const []});
 
   @override
-  State<UserProfileInfomationScreen> createState() => _UserProfileInfoScreenState();
+  State<UserProfileInfomationScreen> createState() =>
+      _UserProfileInfoScreenState();
 }
 
 class _UserProfileInfoScreenState extends State<UserProfileInfomationScreen> {
@@ -28,17 +30,20 @@ class _UserProfileInfoScreenState extends State<UserProfileInfomationScreen> {
 
   @override
   void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
       final loginVM = Provider.of<LoginViewModel>(context, listen: false);
-      loginVM.getCurrentUserId().then((id) {
-        setState(() {
-          currentUserId = id;
-        });
+      final friendVM =
+          Provider.of<FriendRequestViewModel>(context, listen: false);
+
+      final id = await loginVM.getCurrentUserId();
+      setState(() {
+        currentUserId = id;
       });
+
+      // Đồng bộ danh sách lời mời kết bạn đã gửi với DB
+      await friendVM.fetchSentRequests();
     });
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -134,50 +139,106 @@ class _UserProfileInfoScreenState extends State<UserProfileInfomationScreen> {
                       ],
                     ),
                     const SizedBox(height: 16),
-                    if (currentUserId != null && widget.user.userId != currentUserId)
+                    if (currentUserId != null &&
+                        widget.user.userId != currentUserId)
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Consumer2<FriendRequestViewModel, LoginViewModel>(
                             builder: (context, friendVM, loginVM, _) {
+                              final isSent =
+                                  friendVM.isRequestSent(widget.user.userId);
+
+                              // return ElevatedButton.icon(
+                              //   onPressed: friendVM.isLoading || isSent
+                              //       ? null
+                              //       : () async {
+                              //           final senderId =
+                              //               await loginVM.getCurrentUserId();
+                              //           final receiverId = widget.user.userId;
+                              //
+                              //           if (senderId == null ||
+                              //               receiverId == null) {
+                              //             ScaffoldMessenger.of(context)
+                              //                 .showSnackBar(
+                              //               const SnackBar(
+                              //                   content: Text(
+                              //                       "Thiếu thông tin người dùng")),
+                              //             );
+                              //             return;
+                              //           }
+                              //
+                              //           await friendVM.sendRequest(
+                              //             senderId: senderId,
+                              //             receiverId: receiverId,
+                              //             context: context,
+                              //           );
+                              //         },
+                              //   icon: friendVM.isLoading
+                              //       ? const SizedBox(
+                              //           width: 16,
+                              //           height: 16,
+                              //           child: CircularProgressIndicator(
+                              //               strokeWidth: 2,
+                              //               color: Colors.white),
+                              //         )
+                              //       : Icon(
+                              //           isSent
+                              //               ? Icons.check
+                              //               : Icons.person_add_alt,
+                              //           color: Colors.white,
+                              //         ),
+                              //   label:
+                              //       Text(isSent ? "Đã gửi lời mời" : "Kết bạn"),
+                              //   style: ElevatedButton.styleFrom(
+                              //     backgroundColor: isSent
+                              //         ? Colors.grey
+                              //         : const Color(0xFF4B67D3),
+                              //     foregroundColor: Colors.white,
+                              //     shape: RoundedRectangleBorder(
+                              //         borderRadius: BorderRadius.circular(8)),
+                              //   ),
+                              // );
                               return ElevatedButton.icon(
                                 onPressed: friendVM.isLoading
                                     ? null
                                     : () async {
                                   final senderId = await loginVM.getCurrentUserId();
                                   final receiverId = widget.user.userId;
-                                  debugPrint("📦 [SEND FRIEND REQUEST] senderId: $senderId");
-                                  debugPrint("📦 [SEND FRIEND REQUEST] receiverId: $receiverId");
 
                                   if (senderId == null || receiverId == null) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(content: Text("Thiếu thông tin người dùng")),
-                                    );
+                                    showErrorSnackBar(context, "Thiếu thông tin người dùng");
                                     return;
                                   }
 
-                                  friendVM.sendRequest(
-                                    senderId: senderId,
-                                    receiverId: receiverId,
-                                    context: context,
-                                  );
+                                  if (isSent) {
+                                    await friendVM.cancelRequest(receiverId: receiverId, context: context);
+                                  } else {
+                                    await friendVM.sendRequest(
+                                      senderId: senderId,
+                                      receiverId: receiverId,
+                                      context: context,
+                                    );
+                                  }
                                 },
                                 icon: friendVM.isLoading
                                     ? const SizedBox(
                                   width: 16,
                                   height: 16,
-                                  child: CircularProgressIndicator(
-                                      strokeWidth: 2, color: Colors.white),
+                                  child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
                                 )
-                                    : const Icon(Icons.person_add_alt, color: Colors.white),
-                                label: const Text("Kết bạn"),
+                                    : Icon(
+                                  isSent ? Icons.cancel : Icons.person_add_alt,
+                                  color: Colors.white,
+                                ),
+                                label: Text(isSent ? "Hủy lời mời" : "Kết bạn"),
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: const Color(0xFF4B67D3),
+                                  backgroundColor: isSent ? Colors.red : const Color(0xFF4B67D3),
                                   foregroundColor: Colors.white,
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(8)),
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                                 ),
                               );
+
                             },
                           ),
                           const SizedBox(width: 12),
@@ -195,7 +256,6 @@ class _UserProfileInfoScreenState extends State<UserProfileInfomationScreen> {
                           ),
                         ],
                       ),
-
 
                     const SizedBox(height: 16),
                     const Divider(),

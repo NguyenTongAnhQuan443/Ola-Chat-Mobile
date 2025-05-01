@@ -41,5 +41,11 @@ class ApiConfig {
   static const String getReceivedFriendRequests = "$base/api/friends/requests/received";
   static String cancelFriendRequest(String receiverId) =>
       "$base/api/friends/requests/$receiverId/cancel";
+  static String acceptFriendRequest(String requestId) =>
+      "$base/api/friends/$requestId/accept";
+
+  static String rejectFriendRequest(String requestId) =>
+      "$base/api/friends/$requestId/reject";
+
 
 }

@@ -42,6 +42,9 @@ class _UserProfileInfoScreenState extends State<UserProfileInfomationScreen> {
 
       // Đồng bộ danh sách lời mời kết bạn đã gửi với DB
       await friendVM.fetchSentRequests();
+      // Đồng bộ lời mời kết bạn đã nhận
+      await friendVM.fetchReceivedRequests();
+
     });
   }
 
@@ -146,59 +149,71 @@ class _UserProfileInfoScreenState extends State<UserProfileInfomationScreen> {
                         children: [
                           Consumer2<FriendRequestViewModel, LoginViewModel>(
                             builder: (context, friendVM, loginVM, _) {
-                              final isSent =
-                                  friendVM.isRequestSent(widget.user.userId);
+                              final isSent = friendVM.isRequestSent(widget.user.userId);
+                              final isReceived = friendVM.isReceivedRequestFrom(widget.user.userId);
 
-                              // return ElevatedButton.icon(
-                              //   onPressed: friendVM.isLoading || isSent
-                              //       ? null
-                              //       : () async {
-                              //           final senderId =
-                              //               await loginVM.getCurrentUserId();
-                              //           final receiverId = widget.user.userId;
-                              //
-                              //           if (senderId == null ||
-                              //               receiverId == null) {
-                              //             ScaffoldMessenger.of(context)
-                              //                 .showSnackBar(
-                              //               const SnackBar(
-                              //                   content: Text(
-                              //                       "Thiếu thông tin người dùng")),
-                              //             );
-                              //             return;
-                              //           }
-                              //
-                              //           await friendVM.sendRequest(
-                              //             senderId: senderId,
-                              //             receiverId: receiverId,
-                              //             context: context,
-                              //           );
-                              //         },
-                              //   icon: friendVM.isLoading
-                              //       ? const SizedBox(
-                              //           width: 16,
-                              //           height: 16,
-                              //           child: CircularProgressIndicator(
-                              //               strokeWidth: 2,
-                              //               color: Colors.white),
-                              //         )
-                              //       : Icon(
-                              //           isSent
-                              //               ? Icons.check
-                              //               : Icons.person_add_alt,
-                              //           color: Colors.white,
-                              //         ),
-                              //   label:
-                              //       Text(isSent ? "Đã gửi lời mời" : "Kết bạn"),
-                              //   style: ElevatedButton.styleFrom(
-                              //     backgroundColor: isSent
-                              //         ? Colors.grey
-                              //         : const Color(0xFF4B67D3),
-                              //     foregroundColor: Colors.white,
-                              //     shape: RoundedRectangleBorder(
-                              //         borderRadius: BorderRadius.circular(8)),
-                              //   ),
-                              // );
+                              if (isReceived) {
+                                return ElevatedButton.icon(
+                                  onPressed: () {
+                                    showDialog(
+                                      context: context,
+                                      builder: (_) => AlertDialog(
+                                        title: const Text("Lời mời kết bạn"),
+                                        content: const Text("Bạn muốn phản hồi lời mời kết bạn này?"),
+                                        actionsPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                                        actions: [
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Expanded(
+                                                child: ElevatedButton.icon(
+                                                  icon: const Icon(Icons.check_circle, color: Colors.white),
+                                                  label: const Text("Chấp nhận"),
+                                                  style: ElevatedButton.styleFrom(
+                                                    backgroundColor: const Color(0xFF4B67D3),
+                                                    foregroundColor: Colors.white,
+                                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                                                    padding: const EdgeInsets.symmetric(vertical: 12),
+                                                  ),
+                                                  onPressed: () async {
+                                                    Navigator.pop(context);
+                                                    await friendVM.acceptRequest(widget.user.userId, context);
+                                                  },
+                                                ),
+                                              ),
+                                              const SizedBox(width: 12),
+                                              Expanded(
+                                                child: OutlinedButton.icon(
+                                                  icon: const Icon(Icons.cancel, color: Colors.red),
+                                                  label: const Text("Từ chối"),
+                                                  style: OutlinedButton.styleFrom(
+                                                    foregroundColor: Colors.red,
+                                                    side: const BorderSide(color: Colors.red),
+                                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                                                    padding: const EdgeInsets.symmetric(vertical: 12),
+                                                  ),
+                                                  onPressed: () async {
+                                                    Navigator.pop(context);
+                                                    await friendVM.rejectRequest(widget.user.userId, context);
+                                                  },
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                  icon: const Icon(Icons.person_add_alt, color: Colors.white),
+                                  label: const Text("Phản hồi"),
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: const Color(0xFF4B67D3),
+                                    foregroundColor: Colors.white,
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                                  ),
+                                );
+                              }
                               return ElevatedButton.icon(
                                 onPressed: friendVM.isLoading
                                     ? null

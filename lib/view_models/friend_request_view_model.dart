@@ -110,7 +110,6 @@ class FriendRequestViewModel extends ChangeNotifier {
 
       if (response.statusCode == 200) {
         final raw = jsonDecode(utf8.decode(response.bodyBytes));
-        debugPrint("🟡 API response: $raw");
 
         final data = raw['data'];
         if (data is! List) {

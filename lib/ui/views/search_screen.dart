@@ -30,7 +30,9 @@ class _SearchScreenState extends State<SearchScreen> {
   void initState() {
     super.initState();
     final viewModel = Provider.of<SearchViewModel>(context, listen: false);
-    viewModel.clearSearchResult();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      viewModel.clearSearchResult();
+    });
     _controller.clear();
   }
 

@@ -39,4 +39,10 @@ class ApiConfig {
   static String cancelFriendRequest(String receiverId) => "$base/api/friends/requests/$receiverId/cancel";
   static String acceptFriendRequest(String requestId) => "$base/api/friends/$requestId/accept";
   static String rejectFriendRequest(String requestId) => "$base/api/friends/$requestId/reject";
+
+  // Notification
+  static String getNotifications({required int page, int size = 10, String sort = 'desc'}) {
+    return "$base/api/notifications?page=$page&size=$size&sort=$sort";
+  }
+
 }

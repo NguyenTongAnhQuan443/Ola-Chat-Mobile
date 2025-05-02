@@ -1,87 +1,153 @@
 import 'package:flutter/material.dart';
+import 'dart:convert';
+import 'package:provider/provider.dart';
 import 'package:olachat_mobile/ui/widgets/app_logo_header_two.dart';
+import 'package:olachat_mobile/view_models/notification_view_model.dart';
+import 'all_notifications_screen.dart';
 
-class NotificationsScreen extends StatefulWidget {
+class NotificationsScreen extends StatelessWidget {
   const NotificationsScreen({super.key});
 
   @override
-  State<NotificationsScreen> createState() => _NotificationsScreenState();
-}
-
-class _NotificationsScreenState extends State<NotificationsScreen> {
-  final List<Map<String, String>> notifications = [
-    {
-      "name": "Lee Min Ho",
-      "description": "Start following you.",
-      "time": "1m",
-      "image":
-          "https://kenh14cdn.com/2016/4-1480306785639.png"
-    },
-    {
-      "name": "kim soo-hyun ",
-      "description": "Liked your post.",
-      "time": "2d",
-      "image":
-          "https://cdn.shopify.com/s/files/1/0469/3927/5428/files/adba30abc41c147e29a634078c8762e1.jpg?v=1723635440"
-    },
-    {
-      "name": "Kim Ji Won ",
-      "description": "Commented on your post.",
-      "time": "10w",
-      "image":
-          "https://media-cdn-v2.laodong.vn/storage/newsportal/2024/4/30/1334046/Kim-Ji-Won-1B15.jpg?w=800&h=496&crop=auto&scale=both"
-    },
-  ];
-
-  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: CustomScrollView(
-        slivers: [
-          // View 1 - Header
-          AppLogoHeaderTwo(),
-          SliverToBoxAdapter(
-            child: Container(
-              height: 10,
-              color: Colors.grey.shade100, // Set màu nền cho Container
-              child: const SizedBox(height: 10), // Nội dung của bạn
-            ),
-          ),
+    return ChangeNotifierProvider(
+      create: (_) => NotificationViewModel()..fetchTopNotifications(),
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: Consumer<NotificationViewModel>(
+          builder: (context, vm, _) {
+            return RefreshIndicator(
+              onRefresh: vm.fetchTopNotifications,
+              child: CustomScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                slivers: [
+                  AppLogoHeaderTwo(),
+                  SliverToBoxAdapter(child: Container(height: 10, color: Colors.grey.shade100)),
 
-          //   View 2 - Post
-          SliverList(
-            delegate: SliverChildBuilderDelegate(
-              (BuildContext context, int index) {
-                var notification = notifications[index];
-                return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  child: Card(
-                    color: Colors.white,
-                    child: ListTile(
-                      leading: CircleAvatar(
-                        radius: 20,
-                        backgroundImage: NetworkImage(notification["image"]!),
-                      ),
-                      title: Text(
-                        notification["name"]!,
-                        style: TextStyle(
-                            fontSize: 14, fontWeight: FontWeight.bold),
-                      ),
-                      subtitle: Text(notification["description"]!),
-                      trailing: Text(
-                        notification["time"]!,
-                        style: TextStyle(color: Colors.grey),
-                      ),
+                  SliverToBoxAdapter(
+                    child: sectionHeader(
+                      title: "Thông báo mới",
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (_) => const AllNotificationsScreen()),
+                        );
+                      },
                     ),
                   ),
-                );
-              },
-              childCount: notifications.length,
-            ),
-          )
+
+                  vm.isLoadingTop
+                      ? const SliverToBoxAdapter(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(vertical: 20),
+                      child: Center(child: CircularProgressIndicator()),
+                    ),
+                  )
+                      : SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                          (context, index) {
+                        final notification = vm.topNotifications[index];
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                          child: Card(
+                            color: const Color(0xFFF4EDFC),
+                            child: ListTile(
+                              leading: const CircleAvatar(
+                                radius: 20,
+                                backgroundColor: Color(0xFFD9BFFF),
+                                child: Icon(Icons.notifications, color: Color(0xFF6A1B9A)),
+                              ),
+                              title: Text(
+                                utf8.decode(notification.title.codeUnits),
+                                style: const TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              subtitle: Text(utf8.decode(notification.body.codeUnits)),
+                              trailing: Text(
+                                formatTime(notification.createdAt),
+                                style: const TextStyle(color: Colors.grey, fontSize: 12),
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                      childCount: vm.topNotifications.length,
+                    ),
+                  ),
+
+                  SliverToBoxAdapter(child: const SizedBox(height: 16)),
+
+                  SliverToBoxAdapter(
+                    child: sectionHeader(
+                      title: "Lời mời kết bạn",
+                      onTap: () {},
+                    ),
+                  ),
+                  SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                          (context, index) {
+                        var user = vm.visibleFriendRequests[index];
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                          child: Row(
+                            children: [
+                              const CircleAvatar(radius: 24, backgroundColor: Color(0xFFF4EDFC)),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(user['name']!, style: const TextStyle(fontWeight: FontWeight.bold)),
+                                    Text(user['mutual']!, style: const TextStyle(fontSize: 12, color: Colors.grey)),
+                                  ],
+                                ),
+                              ),
+                              ElevatedButton(
+                                onPressed: () {},
+                                style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
+                                child: const Text("Xác nhận"),
+                              ),
+                              const SizedBox(width: 8),
+                              OutlinedButton(
+                                onPressed: () {},
+                                child: const Text("Xoá"),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                      childCount: vm.visibleFriendRequests.length,
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget sectionHeader({required String title, required VoidCallback onTap}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+          TextButton(
+            onPressed: onTap,
+            child: const Text("Xem tất cả", style: TextStyle(color: Colors.black)),
+          ),
         ],
       ),
     );
+  }
+
+  String formatTime(DateTime time) {
+    final now = DateTime.now();
+    final difference = now.difference(time);
+    if (difference.inMinutes < 60) return "${difference.inMinutes} phút trước";
+    if (difference.inHours < 24) return "${difference.inHours} giờ trước";
+    return "${difference.inDays} ngày trước";
   }
 }

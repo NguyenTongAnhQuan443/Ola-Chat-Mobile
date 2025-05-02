@@ -4,7 +4,6 @@ import 'package:olachat_mobile/data/services/notification_service.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:olachat_mobile/core/utils/config/api_config.dart';
-
 import '../data/models/notification_model.dart';
 
 class NotificationViewModel extends ChangeNotifier {
@@ -20,8 +19,10 @@ class NotificationViewModel extends ChangeNotifier {
   // Shared loading state
   bool isLoadingTop = false;
 
-  List<Map<String, String>> visibleFriendRequests = [];
+  // Lời mời kết bạn hiển thị
+  List<Map<String, String?>> visibleFriendRequests = [];
 
+  // Fetch 3 thông báo + lời mời kết bạn
   Future<void> fetchTopNotifications() async {
     try {
       isLoadingTop = true;
@@ -89,15 +90,57 @@ class NotificationViewModel extends ChangeNotifier {
       final data = jsonDecode(utf8.decode(response.bodyBytes));
 
       if (response.statusCode == 200 && data['data'] != null) {
-        visibleFriendRequests = (data['data'] as List).map<Map<String, String>>((item) {
+        visibleFriendRequests = (data['data'] as List).map<Map<String, String?>>((item) {
           return {
-            'name': item['sender']['fullName'] ?? 'Ẩn danh',
-            'mutual': '${item['mutualFriendsCount']} bạn chung'
+            'requestId': item['requestId'],
+            'userId': item['userId'],
+            'name': item['displayName'] ?? 'Ẩn danh',
+            'avatar': item['avatar'],
           };
-        }).toList().take(2).toList();
+        }).take(3).toList();
       }
     } catch (e) {
       debugPrint("❌ Lỗi fetchFriendRequests: $e");
+    }
+  }
+
+  Future<void> acceptFriendRequest(String requestId) async {
+    try {
+      final token = await TokenService.getAccessToken();
+      if (token == null) throw Exception("Token không tồn tại");
+
+      final url = Uri.parse(ApiConfig.acceptFriendRequest(requestId));
+      final response = await http.post(url, headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      });
+
+      if (response.statusCode == 200) {
+        visibleFriendRequests.removeWhere((e) => e['requestId'] == requestId);
+        notifyListeners();
+      }
+    } catch (e) {
+      debugPrint("❌ Lỗi acceptFriendRequest: $e");
+    }
+  }
+
+  Future<void> rejectFriendRequest(String requestId) async {
+    try {
+      final token = await TokenService.getAccessToken();
+      if (token == null) throw Exception("Token không tồn tại");
+
+      final url = Uri.parse(ApiConfig.rejectFriendRequest(requestId));
+      final response = await http.post(url, headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      });
+
+      if (response.statusCode == 200) {
+        visibleFriendRequests.removeWhere((e) => e['requestId'] == requestId);
+        notifyListeners();
+      }
+    } catch (e) {
+      debugPrint("❌ Lỗi rejectFriendRequest: $e");
     }
   }
 }

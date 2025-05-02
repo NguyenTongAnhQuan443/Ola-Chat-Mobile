@@ -82,6 +82,7 @@ class NotificationsScreen extends StatelessWidget {
                       onTap: () {},
                     ),
                   ),
+                  // Lời mời kết bạn
                   SliverList(
                     delegate: SliverChildBuilderDelegate(
                           (context, index) {
@@ -89,28 +90,69 @@ class NotificationsScreen extends StatelessWidget {
                         return Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                           child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              const CircleAvatar(radius: 24, backgroundColor: Color(0xFFF4EDFC)),
+                              CircleAvatar(
+                                radius: 24,
+                                backgroundImage: user['avatar'] != null
+                                    ? NetworkImage(user['avatar']!)
+                                    : const AssetImage('assets/images/default_avatar.png') as ImageProvider,
+                              ),
                               const SizedBox(width: 12),
                               Expanded(
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(user['name']!, style: const TextStyle(fontWeight: FontWeight.bold)),
-                                    Text(user['mutual']!, style: const TextStyle(fontSize: 12, color: Colors.grey)),
+                                    Text(
+                                      user['name'] ?? 'Ẩn danh',
+                                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                                    ),
+                                    const Text(
+                                      "Đang chờ kết bạn",
+                                      style: TextStyle(fontSize: 12, color: Colors.grey),
+                                    ),
                                   ],
                                 ),
                               ),
-                              ElevatedButton(
-                                onPressed: () {},
-                                style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
-                                child: const Text("Xác nhận"),
-                              ),
-                              const SizedBox(width: 8),
-                              OutlinedButton(
-                                onPressed: () {},
-                                child: const Text("Xoá"),
-                              ),
+                              Row(
+                                children: [
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      final requestId = user['requestId']!;
+                                      Provider.of<NotificationViewModel>(context, listen: false)
+                                          .acceptFriendRequest(requestId);
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: const Color(0xFF4B67D3),
+                                      foregroundColor: Colors.white,
+                                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      textStyle: const TextStyle(fontSize: 14),
+                                    ),
+                                    child: const Text("Chấp nhận"),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  OutlinedButton(
+                                    onPressed: () {
+                                      final requestId = user['requestId']!;
+                                      Provider.of<NotificationViewModel>(context, listen: false)
+                                          .rejectFriendRequest(requestId);
+                                    },
+                                    style: OutlinedButton.styleFrom(
+                                      foregroundColor: const Color(0xFF4B67D3),
+                                      side: const BorderSide(color: Color(0xFF4B67D3)),
+                                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      textStyle: const TextStyle(fontSize: 14),
+                                    ),
+                                    child: const Text("Từ chối"),
+                                  ),
+                                ],
+                              )
                             ],
                           ),
                         );

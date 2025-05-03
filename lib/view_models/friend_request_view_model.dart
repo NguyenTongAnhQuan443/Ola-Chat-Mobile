@@ -14,7 +14,11 @@ class FriendRequestViewModel extends ChangeNotifier {
 
   Set<String> sentRequestIds = {};
   Set<String> receivedRequestIds = {};
-  Map<String, String> receivedRequestMap = {};
+
+  /// Lưu cả requestId và displayName
+  Map<String, Map<String, String>> receivedRequestMap = {};
+
+  Map<String, String?> friendRequestLoadingMap = {};
 
   Future<String?> getToken() async {
     final prefs = await SharedPreferences.getInstance();
@@ -30,7 +34,7 @@ class FriendRequestViewModel extends ChangeNotifier {
     Future.microtask(() => notifyListeners());
 
     final request =
-        FriendRequestModel(senderId: senderId, receiverId: receiverId);
+    FriendRequestModel(senderId: senderId, receiverId: receiverId);
     final success = await _service.sendFriendRequest(request);
 
     isLoading = false;
@@ -111,8 +115,8 @@ class FriendRequestViewModel extends ChangeNotifier {
 
       if (response.statusCode == 200) {
         final raw = jsonDecode(utf8.decode(response.bodyBytes));
-
         final data = raw['data'];
+
         if (data is! List) {
           debugPrint("❌ Data không phải là List!");
           return;
@@ -124,10 +128,14 @@ class FriendRequestViewModel extends ChangeNotifier {
         for (var item in data) {
           final userId = item['userId']?.toString();
           final requestId = item['requestId']?.toString();
+          final displayName = item['displayName']?.toString() ?? "Ẩn danh";
 
           if (userId != null && requestId != null) {
             receivedRequestIds.add(userId);
-            receivedRequestMap[userId] = requestId;
+            receivedRequestMap[userId] = {
+              'requestId': requestId,
+              'displayName': displayName,
+            };
           }
         }
 
@@ -141,14 +149,19 @@ class FriendRequestViewModel extends ChangeNotifier {
   }
 
   bool isRequestSent(String userId) => sentRequestIds.contains(userId);
+
   bool isReceivedRequestFrom(String userId) =>
       receivedRequestIds.contains(userId);
+
+  String getDisplayName(String userId) {
+    return receivedRequestMap[userId]?['displayName'] ?? "Ẩn danh";
+  }
 
   Future<String> findRequestIdFrom(String senderId) async {
     if (!receivedRequestMap.containsKey(senderId)) {
       throw Exception("Không tìm thấy lời mời từ $senderId");
     }
-    return receivedRequestMap[senderId]!;
+    return receivedRequestMap[senderId]!['requestId']!;
   }
 
   Future<void> acceptRequest(String senderId, BuildContext context) async {
@@ -169,12 +182,7 @@ class FriendRequestViewModel extends ChangeNotifier {
           'Authorization': 'Bearer $token',
           'Content-Type': 'application/json',
         },
-        // Nếu API cần body rỗng, bạn có thể thử mở comment dòng dưới:
-        // body: jsonEncode({}),
       );
-
-      debugPrint("📥 Status code: ${response.statusCode}");
-      debugPrint("📥 Response body: ${response.body}");
 
       if (response.statusCode == 200) {
         showSuccessSnackBar(context, "Đã xác nhận kết bạn!");
@@ -187,7 +195,6 @@ class FriendRequestViewModel extends ChangeNotifier {
       showErrorSnackBar(context, "Lỗi hệ thống");
     }
   }
-
 
   Future<void> rejectRequest(String senderId, BuildContext context) async {
     try {
@@ -214,6 +221,14 @@ class FriendRequestViewModel extends ChangeNotifier {
     } catch (e) {
       debugPrint("❌ rejectRequest error: $e");
     }
+  }
+
+  bool isButtonLoading(String userId, String action) =>
+      friendRequestLoadingMap[userId] == action;
+
+  void setButtonLoading(String userId, String? action) {
+    friendRequestLoadingMap[userId] = action;
+    notifyListeners();
   }
 
   Future<String?> getCurrentUserId() async {

@@ -5,6 +5,7 @@ import 'package:olachat_mobile/ui/widgets/app_logo_header_two.dart';
 import 'package:olachat_mobile/view_models/notification_view_model.dart';
 import 'package:olachat_mobile/view_models/friend_request_view_model.dart';
 import '../../data/services/token_service.dart';
+import 'all_friend_requests_screen.dart';
 import 'all_notifications_screen.dart';
 
 class NotificationsScreen extends StatelessWidget {
@@ -97,7 +98,14 @@ class NotificationsScreen extends StatelessWidget {
                   SliverToBoxAdapter(
                     child: sectionHeader(
                       title: "Lời mời kết bạn",
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const AllFriendRequestsScreen(),
+                          ),
+                        );
+                      },
                     ),
                   ),
                   vm.visibleFriendRequests.isEmpty

@@ -236,13 +236,12 @@ class LoginViewModel extends ChangeNotifier {
       }
 
       final payload = {
-        'userId': userId,
-        'token': fcmToken,
-        'deviceId': deviceId,
+        'userId': userId.toString(),
+        'token': fcmToken.toString(),
+        'deviceId': deviceId.toString(),
       };
 
-      debugPrint("📡 [FCM] Gửi yêu cầu đăng ký:");
-      debugPrint("Payload: $payload");
+      debugPrint(" [FCM] Gửi yêu cầu đăng ký - Payload: $payload");
 
       final response = await http.post(
         Uri.parse(ApiConfig.registerDevice),

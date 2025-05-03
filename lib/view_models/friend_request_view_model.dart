@@ -29,7 +29,8 @@ class FriendRequestViewModel extends ChangeNotifier {
     isLoading = true;
     Future.microtask(() => notifyListeners());
 
-    final request = FriendRequestModel(senderId: senderId, receiverId: receiverId);
+    final request =
+        FriendRequestModel(senderId: senderId, receiverId: receiverId);
     final success = await _service.sendFriendRequest(request);
 
     isLoading = false;
@@ -140,7 +141,8 @@ class FriendRequestViewModel extends ChangeNotifier {
   }
 
   bool isRequestSent(String userId) => sentRequestIds.contains(userId);
-  bool isReceivedRequestFrom(String userId) => receivedRequestIds.contains(userId);
+  bool isReceivedRequestFrom(String userId) =>
+      receivedRequestIds.contains(userId);
 
   Future<String> findRequestIdFrom(String senderId) async {
     if (!receivedRequestMap.containsKey(senderId)) {
@@ -152,7 +154,11 @@ class FriendRequestViewModel extends ChangeNotifier {
   Future<void> acceptRequest(String senderId, BuildContext context) async {
     try {
       final token = await getToken();
-      if (token == null) return;
+      if (token == null) {
+        debugPrint("❌ Token không tồn tại khi xác nhận lời mời từ $senderId");
+        showErrorSnackBar(context, "Token không hợp lệ");
+        return;
+      }
 
       final requestId = await findRequestIdFrom(senderId);
       final url = ApiConfig.acceptFriendRequest(requestId);
@@ -163,7 +169,12 @@ class FriendRequestViewModel extends ChangeNotifier {
           'Authorization': 'Bearer $token',
           'Content-Type': 'application/json',
         },
+        // Nếu API cần body rỗng, bạn có thể thử mở comment dòng dưới:
+        // body: jsonEncode({}),
       );
+
+      debugPrint("📥 Status code: ${response.statusCode}");
+      debugPrint("📥 Response body: ${response.body}");
 
       if (response.statusCode == 200) {
         showSuccessSnackBar(context, "Đã xác nhận kết bạn!");
@@ -173,8 +184,10 @@ class FriendRequestViewModel extends ChangeNotifier {
       }
     } catch (e) {
       debugPrint("❌ acceptRequest error: $e");
+      showErrorSnackBar(context, "Lỗi hệ thống");
     }
   }
+
 
   Future<void> rejectRequest(String senderId, BuildContext context) async {
     try {

@@ -189,7 +189,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     ),
                                     CustomTextField(
                                       labelText:
-                                      "Host (ví dụ: http://192.168.1.10:8080)",
+                                      "Host (ví dụ: http://192.168.1.4:8080)",
                                       controller: hostController,
                                       isPassword: false,
                                       enabled: true,

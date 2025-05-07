@@ -54,6 +54,7 @@ class LoginViewModel extends ChangeNotifier {
     try {
       _authResponse = await loginMethod();
       _errorMessage = null;
+      notifyListeners();
 
       await TokenService.saveTokens(
         _authResponse!.accessToken,
@@ -63,7 +64,6 @@ class LoginViewModel extends ChangeNotifier {
       final userInfo = await _authService.getMyInfo(_authResponse!.accessToken);
       _userInfo = userInfo;
       // Đăng ký FCM
-      debugPrint("👤 [INFO] userInfo: $userInfo"); // 🔍 kiểm tra key đúng không
       final userId = userInfo['userId'];
       await registerDeviceForNotification(userId);
 
@@ -252,7 +252,8 @@ class LoginViewModel extends ChangeNotifier {
       );
 
       final responseBody = utf8.decode(response.bodyBytes);
-      debugPrint("✅ [FCM] Phản hồi server (${response.statusCode}): $responseBody");
+      debugPrint(
+          "✅ [FCM] Phản hồi server (${response.statusCode}): $responseBody");
 
       if (response.statusCode != 200) {
         throw Exception("Đăng ký FCM thất bại: ${response.statusCode}");

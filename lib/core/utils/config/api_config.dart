@@ -1,5 +1,5 @@
 class ApiConfig {
-  static String host = "http://192.168.1.4:8080";
+  static String host = "http://192.168.100.135:8080";
   static String get base => "$host/ola-chat";
 
   // OTP
@@ -44,5 +44,17 @@ class ApiConfig {
   static String getNotifications({required int page, int size = 10, String sort = 'desc'}) {
     return "$base/api/notifications?page=$page&size=$size&sort=$sort";
   }
+
+  // WebSocket URL động
+  static String get socketUrl {
+    final uri = Uri.parse(host);
+    final scheme = uri.scheme == 'https' ? 'wss' : 'ws';
+    final wsHost = uri.host;
+    final port = uri.hasPort ? ':${uri.port}' : '';
+    return "$scheme://$wsHost$port/ola-chat/ws";
+  }
+
+  // Conversation
+  static String get getConversations => "$base/api/conversations";
 
 }

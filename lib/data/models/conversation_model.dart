@@ -15,11 +15,11 @@ class ConversationModel {
 
   factory ConversationModel.fromJson(Map<String, dynamic> json) {
     return ConversationModel(
-      id: json['id'],
+      id: json['id'] ?? '',
       name: json['name'] ?? 'Không tên',
       avatarUrl: json['avatar'] ?? '',
       lastMessage: json['lastMessage']?['content'] ?? '',
-      isOnline: true,
+      isOnline: true, // tạm thời hardcode
     );
   }
 }

@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:olachat_mobile/ui/views/messages_conversation_screen.dart';
 import 'package:olachat_mobile/view_models/conversation_view_model.dart';
 import 'package:olachat_mobile/view_models/friend_request_view_model.dart';
+import 'package:olachat_mobile/view_models/message_view_model.dart';
 import 'package:olachat_mobile/view_models/notification_view_model.dart';
 
 import 'appInterceptors.dart';
@@ -83,6 +85,15 @@ Future<void> main() async {
         ChangeNotifierProvider(create: (_) => FriendRequestViewModel()),
         ChangeNotifierProvider(create: (_) => NotificationViewModel()),
         ChangeNotifierProvider(create: (_) => ConversationViewModel()),
+        ChangeNotifierProvider(
+          create: (_) => MessageViewModel(),
+          child: MessagesConversationScreen(
+            conversationId: "...",
+            conversationName: "...",
+            avatarUrl: "...",
+          ),
+        )
+
       ],
       child: const MyApp(),
     ),

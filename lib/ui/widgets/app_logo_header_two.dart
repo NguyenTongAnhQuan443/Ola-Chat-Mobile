@@ -29,14 +29,14 @@ class AppLogoHeaderTwo extends StatelessWidget {
                   const Text(AppStyles.nameApp, style: AppStyles.socialTextStyle),
                 ],
               ),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => MessagesConversationScreen(),
-                  ),
-                );
-              },
+              // onTap: () {
+              //   Navigator.push(
+              //     context,
+              //     MaterialPageRoute(
+              //       builder: (context) => MessagesConversationScreen(),
+              //     ),
+              //   );
+              // },
             ),
             InkWell(
               onTap: () {

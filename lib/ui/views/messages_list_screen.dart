@@ -16,7 +16,10 @@ class _MessagesListScreenState extends State<MessagesListScreen> {
   @override
   void initState() {
     super.initState();
-    Provider.of<ConversationViewModel>(context, listen: false).fetchConversations();
+    // Trì hoãn gọi fetchConversations sau khi build xong
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<ConversationViewModel>(context, listen: false).fetchConversations();
+    });
   }
 
   @override
@@ -87,14 +90,27 @@ class _MessagesListScreenState extends State<MessagesListScreen> {
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                         ),
+                        // onTap: () {
+                        //   Navigator.push(
+                        //     context,
+                        //     MaterialPageRoute(
+                        //       builder: (context) => const MessagesConversationScreen(),
+                        //     ),
+                        //   );
+                        // },
                         onTap: () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => const MessagesConversationScreen(),
+                              builder: (context) => MessagesConversationScreen(
+                                conversationId: message.id,
+                                conversationName: message.name,
+                                avatarUrl: message.avatarUrl,
+                              ),
                             ),
                           );
                         },
+
                       ),
                     ),
                   );

@@ -56,5 +56,8 @@ class ApiConfig {
 
   // Conversation
   static String get getConversations => "$base/api/conversations";
+  static String getMessagesByConversation(String conversationId) =>
+      "$base/api/conversations/$conversationId/messages";
+
 
 }

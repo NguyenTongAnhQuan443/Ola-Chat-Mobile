@@ -1,14 +1,13 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:olachat_mobile/core/utils/config/api_config.dart';
 import 'package:olachat_mobile/data/services/token_service.dart';
 import 'package:provider/provider.dart';
-import 'package:stomp_dart_client/stomp_dart_client.dart';
 import '../../data/enum/message_type.dart';
-import '../../data/models/message_model.dart';
 import '../../data/services/socket_service.dart';
 import '../../view_models/message_conversation_view_model.dart';
 import 'package:giphy_get/giphy_get.dart';
+import 'package:file_picker/file_picker.dart';
 
 class MessagesConversationScreen extends StatefulWidget {
   final String conversationId;
@@ -33,6 +32,7 @@ class _MessagesConversationScreenState
   final ScrollController _scrollController = ScrollController();
   String? _accessToken;
   String? _userId;
+  List<PlatformFile> _selectedFiles = [];
 
   @override
   void initState() {
@@ -51,14 +51,30 @@ class _MessagesConversationScreenState
 
       SocketService().init(token!);
 
-      final vm = Provider.of<MessageConversationViewModel>(context, listen: false);
+      final vm =
+          Provider.of<MessageConversationViewModel>(context, listen: false);
       await vm.init(widget.conversationId);
 
       _jumpToBottom();
     });
   }
 
+  // Send MEDIA
+  Future<void> _pickMediaFiles() async {
+    final result = await FilePicker.platform.pickFiles(
+      allowMultiple: true,
+      type: FileType.custom,
+      allowedExtensions: ['jpg', 'png', 'jpeg', 'mp4', 'mov', 'webm'],
+    );
 
+    if (result != null) {
+      setState(() {
+        _selectedFiles = result.files;
+      });
+    }
+  }
+
+  // Send Message
   void _sendMessage() {
     final content = _messageController.text.trim();
     if (content.isNotEmpty) {
@@ -142,46 +158,43 @@ class _MessagesConversationScreenState
         ),
       );
     }
+    if (type == MessageType.MEDIA.name) {
+      try {
+        final urls = jsonDecode(content);
+        if (urls is List) {
+          return Wrap(
+            spacing: 6,
+            runSpacing: 6,
+            children: urls.map<Widget>((url) {
+              final isVideo = url.toString().endsWith('.mp4') || url.toString().endsWith('.mov');
+              return isVideo
+                  ? Container(
+                width: 160,
+                height: 160,
+                color: Colors.black12,
+                child: const Icon(Icons.videocam),
+              )
+                  : Image.network(
+                url,
+                width: 160,
+                height: 160,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) =>
+                const Icon(Icons.broken_image),
+              );
+            }).toList(),
+          );
+        }
+      } catch (e) {
+        print('❌ [DEBUG] Lỗi decode mediaUrls: $e');
+      }
+    }
+
+
 
     return Text(content, style: const TextStyle(fontSize: 15));
   }
 
-  // Widget _buildSentMessage(String message, String type, String time) {
-  //   return Padding(
-  //     padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-  //     child: Row(
-  //       mainAxisAlignment: MainAxisAlignment.end,
-  //       crossAxisAlignment: CrossAxisAlignment.end,
-  //       children: [
-  //         Flexible(
-  //           child: Column(
-  //             crossAxisAlignment: CrossAxisAlignment.end,
-  //             children: [
-  //               if (type == MessageType.STICKER.name)
-  //                 _buildMessageContent(message, type)
-  //               else
-  //                 Container(
-  //                   padding: const EdgeInsets.all(12),
-  //                   decoration: const BoxDecoration(
-  //                     color: Color(0xFF4C68D5),
-  //                     borderRadius: BorderRadius.only(
-  //                       topLeft: Radius.circular(16),
-  //                       topRight: Radius.circular(16),
-  //                       bottomLeft: Radius.circular(16),
-  //                     ),
-  //                   ),
-  //                   child: _buildMessageContent(message, type),
-  //                 ),
-  //               const SizedBox(height: 4),
-  //               Text(time,
-  //                   style: const TextStyle(color: Colors.grey, fontSize: 11)),
-  //             ],
-  //           ),
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
   Widget _buildSentMessage(String message, String type, String time) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
@@ -218,7 +231,6 @@ class _MessagesConversationScreenState
       ),
     );
   }
-
 
   Widget _buildReceivedMessage(String message, String type, String time) {
     return Padding(
@@ -273,13 +285,61 @@ class _MessagesConversationScreenState
       ),
       child: Row(
         children: [
-          // Gỡ bỏ icon file và gif
           IconButton(
             icon: const Icon(Icons.emoji_emotions_outlined),
             onPressed: () {
               _openGiphyStickerPicker();
             },
           ),
+          // IconButton(
+          //   icon: const Icon(Icons.image_outlined),
+          //   onPressed: () async {
+          //     await _pickMediaFiles();
+          //     if (_selectedFiles.isNotEmpty) {
+          //       await Provider.of<MessageConversationViewModel>(context, listen: false)
+          //           .sendMediaMessage(widget.conversationId, _selectedFiles);
+          //       setState(() {
+          //         _selectedFiles.clear(); // reset sau khi gửi
+          //       });
+          //       _scrollToBottom();
+          //     }
+          //   },
+          // ),
+          IconButton(
+            icon: const Icon(Icons.image_outlined),
+            onPressed: () async {
+              print('🖼️ [DEBUG] Bắt đầu chọn media...');
+              await _pickMediaFiles();
+
+              if (_selectedFiles.isEmpty) {
+                print('⚠️ [DEBUG] Không có file nào được chọn.');
+                return;
+              }
+
+              print('📁 [DEBUG] Số file đã chọn: ${_selectedFiles.length}');
+              for (var file in _selectedFiles) {
+                print('📄 [DEBUG] File: ${file.name}, path: ${file.path}');
+              }
+
+              try {
+                final vm = Provider.of<MessageConversationViewModel>(context, listen: false);
+                print('🚀 [DEBUG] Gửi mediaMessage tới conversation: ${widget.conversationId}');
+                await vm.sendMediaMessage(widget.conversationId, _selectedFiles);
+
+                setState(() {
+                  _selectedFiles.clear(); // reset sau khi gửi
+                });
+
+                print('✅ [DEBUG] Gửi media thành công, scroll xuống dưới');
+                _scrollToBottom();
+              } catch (e) {
+                print('❌ [DEBUG] Lỗi khi gửi media: $e');
+              }
+            },
+          ),
+
+
+
           Expanded(
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -380,13 +440,24 @@ class _MessagesConversationScreenState
                           horizontal: 8, vertical: 8),
                       itemCount: messages.length,
                       itemBuilder: (context, index) {
+                        // final msg = messages[index];
+                        // final isMe = msg.senderId == _userId;
+                        // return isMe
+                        //     ? _buildSentMessage(msg.content, msg.type.name,
+                        //         _formatTime(msg.createdAt))
+                        //     : _buildReceivedMessage(msg.content, msg.type.name,
+                        //         _formatTime(msg.createdAt));
                         final msg = messages[index];
                         final isMe = msg.senderId == _userId;
+                        final content = msg.type == MessageType.MEDIA
+                            ? jsonEncode(msg.mediaUrls ?? [])
+                            : msg.content;
+
+
                         return isMe
-                            ? _buildSentMessage(msg.content, msg.type.name,
-                                _formatTime(msg.createdAt))
-                            : _buildReceivedMessage(msg.content, msg.type.name,
-                                _formatTime(msg.createdAt));
+                            ? _buildSentMessage(content, msg.type.name, _formatTime(msg.createdAt))
+                            : _buildReceivedMessage(content, msg.type.name, _formatTime(msg.createdAt));
+
                       },
                     ),
             ),

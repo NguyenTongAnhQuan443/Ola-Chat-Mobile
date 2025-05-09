@@ -60,4 +60,6 @@ class ApiConfig {
       "$base/api/conversations/$conversationId/messages";
 
 
+  // File
+  static String get upFile => "$base/files/upload";
 }

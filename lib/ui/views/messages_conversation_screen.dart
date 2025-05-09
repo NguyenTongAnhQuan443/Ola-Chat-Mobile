@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:olachat_mobile/data/services/token_service.dart';
 import 'package:provider/provider.dart';
@@ -133,31 +134,97 @@ class _MessagesConversationScreenState
   }
 
   Widget _buildMessageContent(String content, String type) {
+    void _showImagePreview(String imageUrl) {
+      final screenSize = MediaQuery.of(context).size;
+      final dialogWidth = screenSize.width * 0.8;
+      final dialogHeight = screenSize.height * 0.8;
+
+      showDialog(
+        context: context,
+        barrierColor: Colors.transparent,
+        builder: (_) => Stack(
+          children: [
+            // Nền blur
+            BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+              child: Container(
+                color: Colors.black.withOpacity(0.2),
+              ),
+            ),
+
+            // Center để giữ khung dialog
+            Center(
+              child: Stack(
+                alignment: Alignment.topRight,
+                children: [
+                  // 🎯 Giữ khung kích thước 80% như yêu cầu
+                  Container(
+                    width: dialogWidth,
+                    height: dialogHeight,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      color: Colors.transparent,
+                    ),
+                    clipBehavior: Clip.hardEdge,
+                    child: InteractiveViewer(
+                      maxScale: 4.0,
+                      child: Center(
+                        child: Image.network(
+                          imageUrl,
+                          fit: BoxFit.contain,
+                          errorBuilder: (_, __, ___) => const Icon(
+                            Icons.broken_image,
+                            size: 100,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  // Nút X
+                  Positioned(
+                    top: 0,
+                    right: 0,
+                    child: IconButton(
+                      icon: const Icon(Icons.close,
+                          color: Colors.white, size: 28),
+                      onPressed: () => Navigator.of(context).pop(),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
     if (type == MessageType.STICKER.name) {
-      return ClipRRect(
-        borderRadius: BorderRadius.circular(12),
+      return GestureDetector(
+        onTap: () => _showImagePreview(content),
         child: Image.network(
           content,
-          width: 160,
-          height: 160,
+          width: 100,
+          height: 100,
           fit: BoxFit.cover,
           errorBuilder: (context, error, stackTrace) =>
               const Icon(Icons.broken_image, size: 48),
           loadingBuilder: (context, child, loadingProgress) {
             if (loadingProgress == null) {
-              // Ảnh đã load xong
               Future.microtask(() => _scrollToBottom());
               return child;
             }
             return const SizedBox(
-                width: 140,
-                height: 140,
-                child:
-                    Center(child: CircularProgressIndicator(strokeWidth: 2)));
+              width: 100,
+              height: 100,
+              child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
+            );
           },
         ),
       );
     }
+
     if (type == MessageType.MEDIA.name) {
       try {
         final urls = jsonDecode(content);
@@ -168,21 +235,37 @@ class _MessagesConversationScreenState
             children: urls.map<Widget>((url) {
               final isVideo = url.toString().endsWith('.mp4') ||
                   url.toString().endsWith('.mov');
-              return isVideo
-                  ? Container(
-                      width: 160,
-                      height: 160,
-                      color: Colors.black12,
-                      child: const Icon(Icons.videocam),
-                    )
-                  : Image.network(
-                      url,
-                      width: 160,
-                      height: 160,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) =>
-                          const Icon(Icons.broken_image),
-                    );
+
+              return GestureDetector(
+                onTap: () => _showImagePreview(url),
+                child: isVideo
+                    ? SizedBox(
+                        width: 100,
+                        height: 100,
+                        child: const Icon(Icons.videocam),
+                      )
+                    : Image.network(
+                        url,
+                        width: 100,
+                        height: 100,
+                        fit: BoxFit.cover,
+                        errorBuilder: (_, __, ___) =>
+                            const Icon(Icons.broken_image),
+                        loadingBuilder: (context, child, loadingProgress) {
+                          if (loadingProgress == null) {
+                            Future.microtask(() => _scrollToBottom());
+                            return child;
+                          }
+                          return const SizedBox(
+                            width: 100,
+                            height: 100,
+                            child: Center(
+                                child:
+                                    CircularProgressIndicator(strokeWidth: 2)),
+                          );
+                        },
+                      ),
+              );
             }).toList(),
           );
         }
@@ -191,6 +274,7 @@ class _MessagesConversationScreenState
       }
     }
 
+    // Text bình thường
     return Text(content, style: const TextStyle(fontSize: 15));
   }
 
@@ -232,6 +316,9 @@ class _MessagesConversationScreenState
   }
 
   Widget _buildReceivedMessage(String message, String type, String time) {
+    final isMediaOrSticker =
+        type == MessageType.MEDIA.name || type == MessageType.STICKER.name;
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
       child: Row(
@@ -249,24 +336,25 @@ class _MessagesConversationScreenState
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (type == MessageType.STICKER.name)
-                  _buildMessageContent(message, type)
-                else
-                  Container(
-                    padding: const EdgeInsets.all(12),
-                    decoration: const BoxDecoration(
-                      color: Color(0xFFF1F4F9),
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(16),
-                        topRight: Radius.circular(16),
-                        bottomRight: Radius.circular(16),
+                isMediaOrSticker
+                    ? _buildMessageContent(message, type)
+                    : Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: const BoxDecoration(
+                          color: Color(0xFFF1F4F9),
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(16),
+                            topRight: Radius.circular(16),
+                            bottomRight: Radius.circular(16),
+                          ),
+                        ),
+                        child: _buildMessageContent(message, type),
                       ),
-                    ),
-                    child: _buildMessageContent(message, type),
-                  ),
                 const SizedBox(height: 4),
-                Text(time,
-                    style: const TextStyle(color: Colors.grey, fontSize: 11)),
+                Text(
+                  time,
+                  style: const TextStyle(color: Colors.grey, fontSize: 11),
+                ),
               ],
             ),
           ),

@@ -129,14 +129,55 @@ class MessageConversationViewModel extends ChangeNotifier {
     _socketService.sendMessage('/app/private-message', tempMessage.toJson());
   }
 
+  // Future<void> sendMediaMessage(
+  //     String conversationId, List<PlatformFile> files) async {
+  //   if (_currentUserId == null || files.isEmpty) return;
+  //
+  //   try {
+  //     final accessToken = await TokenService.getAccessToken();
+  //     final mediaUrls =
+  //         await FileUploadService.uploadFilesIndividually(files, accessToken!);
+  //
+  //     final now = DateTime.now();
+  //
+  //     final tempMessage = MessageModel(
+  //       id: null,
+  //       senderId: _currentUserId!,
+  //       conversationId: conversationId,
+  //       content: "",
+  //       type: MessageType.MEDIA,
+  //       mediaUrls: mediaUrls,
+  //       status: "SENT",
+  //       deliveryStatus: null,
+  //       readStatus: null,
+  //       createdAt: now,
+  //       recalled: false,
+  //       mentions: null,
+  //     );
+  //
+  //     _messages.add(tempMessage);
+  //     notifyListeners();
+  //
+  //     _socketService.sendMessage('/app/private-message', tempMessage.toJson());
+  //   } catch (e) {
+  //     print("❌ Gửi media thất bại: \$e");
+  //   }
+  // }
   Future<void> sendMediaMessage(
       String conversationId, List<PlatformFile> files) async {
     if (_currentUserId == null || files.isEmpty) return;
 
+    print("📤 [MEDIA] Bắt đầu gửi media, số lượng file: ${files.length}");
+
     try {
       final accessToken = await TokenService.getAccessToken();
+
+      print("🔐 [MEDIA] Access token: ${accessToken?.substring(0, 10)}...");
+
       final mediaUrls =
-          await FileUploadService.uploadFilesIndividually(files, accessToken!);
+      await FileUploadService.uploadFilesIndividually(files, accessToken!);
+
+      print("✅ [MEDIA] Upload thành công. URLs: $mediaUrls");
 
       final now = DateTime.now();
 
@@ -158,11 +199,15 @@ class MessageConversationViewModel extends ChangeNotifier {
       _messages.add(tempMessage);
       notifyListeners();
 
-      _socketService.sendMessage('/app/private-message', tempMessage.toJson());
+      final json = tempMessage.toJson();
+      print("🚀 [MEDIA] Gửi message qua socket: $json");
+
+      _socketService.sendMessage('/app/private-message', json);
     } catch (e) {
-      print("❌ Gửi media thất bại: \$e");
+      print("❌ Gửi media thất bại: $e");
     }
   }
+
 
   void disposeSocket() {
     _socketService.disconnect();

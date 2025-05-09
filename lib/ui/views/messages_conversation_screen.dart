@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:olachat_mobile/data/services/token_service.dart';
+import 'package:olachat_mobile/ui/views/video_player_screen.dart';
 import 'package:provider/provider.dart';
 import '../../data/enum/message_type.dart';
 import '../../data/services/socket_service.dart';
@@ -86,11 +87,13 @@ class _MessagesConversationScreenState
     }
   }
 
+  // Send Sticker
   void _sendSticker(String url) {
     Provider.of<MessageConversationViewModel>(context, listen: false)
         .sendSticker(widget.conversationId, url);
   }
 
+  // Cuộn
   void _jumpToBottom() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (_scrollController.hasClients) {
@@ -99,6 +102,7 @@ class _MessagesConversationScreenState
     });
   }
 
+  // Cuộn
   void _scrollToBottom() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Future.delayed(const Duration(milliseconds: 50), () {
@@ -113,6 +117,7 @@ class _MessagesConversationScreenState
     });
   }
 
+  // Open Grid Sticker
   Future<void> _openGiphyStickerPicker() async {
     GiphyGif? gif = await GiphyGet.getGif(
       context: context,
@@ -133,6 +138,7 @@ class _MessagesConversationScreenState
     }
   }
 
+  // Widget
   Widget _buildMessageContent(String content, String type) {
     void _showImagePreview(String imageUrl) {
       final screenSize = MediaQuery.of(context).size;
@@ -227,6 +233,7 @@ class _MessagesConversationScreenState
 
     if (type == MessageType.MEDIA.name) {
       try {
+        print("🧩 [MEDIA-RENDER] Nội dung message: $content");
         final urls = jsonDecode(content);
         if (urls is List) {
           return Wrap(
@@ -236,36 +243,69 @@ class _MessagesConversationScreenState
               final isVideo = url.toString().endsWith('.mp4') ||
                   url.toString().endsWith('.mov');
 
-              return GestureDetector(
-                onTap: () => _showImagePreview(url),
-                child: isVideo
-                    ? SizedBox(
+              return isVideo
+                  ? GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => Scaffold(
+                              backgroundColor: Colors.black,
+                              body: Stack(
+                                children: [
+                                  Center(
+                                    child: AspectRatio(
+                                      aspectRatio: 16 / 9,
+                                      child: VideoPlayerScreen(videoUrl: url),
+                                    ),
+                                  ),
+                                  Positioned(
+                                    top: 32,
+                                    right: 16,
+                                    child: IconButton(
+                                      icon: const Icon(Icons.close,
+                                          color: Colors.white),
+                                      onPressed: () =>
+                                          Navigator.of(context).pop(),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                      child: Container(
                         width: 100,
                         height: 100,
-                        child: const Icon(Icons.videocam),
-                      )
-                    : Image.network(
-                        url,
-                        width: 100,
-                        height: 100,
-                        fit: BoxFit.cover,
-                        errorBuilder: (_, __, ___) =>
-                            const Icon(Icons.broken_image),
-                        loadingBuilder: (context, child, loadingProgress) {
-                          if (loadingProgress == null) {
-                            Future.microtask(() => _scrollToBottom());
-                            return child;
-                          }
-                          return const SizedBox(
-                            width: 100,
-                            height: 100,
-                            child: Center(
-                                child:
-                                    CircularProgressIndicator(strokeWidth: 2)),
-                          );
-                        },
+                        decoration: BoxDecoration(
+                          color: Colors.black12,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: const Icon(Icons.play_circle_fill,
+                            size: 40, color: Colors.white),
                       ),
-              );
+                    )
+                  : Image.network(
+                      url,
+                      width: 100,
+                      height: 100,
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, __, ___) =>
+                          const Icon(Icons.broken_image),
+                      loadingBuilder: (context, child, loadingProgress) {
+                        if (loadingProgress == null) {
+                          Future.microtask(() => _scrollToBottom());
+                          return child;
+                        }
+                        return const SizedBox(
+                          width: 100,
+                          height: 100,
+                          child: Center(
+                              child: CircularProgressIndicator(strokeWidth: 2)),
+                        );
+                      },
+                    );
             }).toList(),
           );
         }

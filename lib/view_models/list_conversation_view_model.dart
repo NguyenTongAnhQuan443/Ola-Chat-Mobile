@@ -5,7 +5,7 @@ import '../../core/utils/config/api_config.dart';
 import '../../data/models/conversation_model.dart';
 import '../../data/services/token_service.dart';
 
-class ConversationViewModel extends ChangeNotifier {
+class ListConversationViewModel extends ChangeNotifier {
   List<ConversationModel> _conversations = [];
   bool _isLoading = true;
 

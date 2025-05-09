@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:stomp_dart_client/stomp_dart_client.dart';
 import '../../data/enum/message_type.dart';
 import '../../data/models/message_model.dart';
+import '../../data/services/socket_service.dart';
 import '../../view_models/message_conversation_view_model.dart';
 import 'package:giphy_get/giphy_get.dart';
 
@@ -30,20 +31,47 @@ class _MessagesConversationScreenState
     extends State<MessagesConversationScreen> {
   final TextEditingController _messageController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
-  StompClient? _stompClient;
   String? _accessToken;
   String? _userId;
 
   @override
   void initState() {
     super.initState();
-    _initSocket();
+
     Future.microtask(() async {
-      final vm =
-          Provider.of<MessageConversationViewModel>(context, listen: false);
-      await vm.loadMessages(widget.conversationId);
+      final token = await TokenService.getAccessToken();
+      final userInfo = await TokenService.getUserInfo();
+
+      if (userInfo != null) {
+        final userMap = jsonDecode(userInfo);
+        setState(() {
+          _userId = userMap['userId'];
+        });
+      }
+
+      SocketService().init(token!);
+
+      final vm = Provider.of<MessageConversationViewModel>(context, listen: false);
+      await vm.init(widget.conversationId);
+
       _jumpToBottom();
     });
+  }
+
+
+  void _sendMessage() {
+    final content = _messageController.text.trim();
+    if (content.isNotEmpty) {
+      Provider.of<MessageConversationViewModel>(context, listen: false)
+          .sendTextMessage(widget.conversationId, content);
+      _messageController.clear();
+      _scrollToBottom();
+    }
+  }
+
+  void _sendSticker(String url) {
+    Provider.of<MessageConversationViewModel>(context, listen: false)
+        .sendSticker(widget.conversationId, url);
   }
 
   void _jumpToBottom() {
@@ -68,78 +96,6 @@ class _MessagesConversationScreenState
     });
   }
 
-  Future<void> _initSocket() async {
-    _accessToken = await TokenService.getAccessToken();
-    final userInfoJson = await TokenService.getUserInfo();
-    if (userInfoJson != null) {
-      final userMap = jsonDecode(userInfoJson);
-      _userId = userMap['userId'];
-    }
-
-    _stompClient = StompClient(
-      config: StompConfig(
-        url: ApiConfig.socketUrl,
-        onConnect: _onConnect,
-        beforeConnect: () async {
-          await Future.delayed(const Duration(milliseconds: 200));
-        },
-        onWebSocketError: (error) => print('❌ Socket Error: $error'),
-        stompConnectHeaders: {'Authorization': 'Bearer $_accessToken'},
-        webSocketConnectHeaders: {'Authorization': 'Bearer $_accessToken'},
-        heartbeatOutgoing: const Duration(seconds: 10),
-        heartbeatIncoming: const Duration(seconds: 10),
-        reconnectDelay: const Duration(seconds: 5),
-      ),
-    );
-    _stompClient!.activate();
-  }
-
-  void _onConnect(StompFrame frame) {
-    _stompClient!.subscribe(
-      destination: '/user/${widget.conversationId}/private',
-      callback: _onMessageReceived,
-    );
-  }
-
-  void _onMessageReceived(StompFrame frame) {
-    try {
-      final json = jsonDecode(frame.body!);
-      final msg = MessageModel.fromJson(json);
-      Provider.of<MessageConversationViewModel>(context, listen: false)
-          .addMessage(msg);
-      _scrollToBottom();
-    } catch (e) {
-      print('❌ Lỗi khi parse message: $e');
-      print('📦 Raw body: ${frame.body}');
-    }
-  }
-
-  void _sendMessage() {
-    final content = _messageController.text.trim();
-    if (content.isEmpty || _stompClient?.connected != true || _userId == null) {
-      return;
-    }
-
-    final msg = {
-      'senderId': _userId,
-      'conversationId': widget.conversationId,
-      'content': content,
-      'type': MessageType.TEXT.name,
-    };
-
-    try {
-      _stompClient!.send(
-        destination: '/app/private-message',
-        body: jsonEncode(msg),
-        headers: {'Authorization': 'Bearer $_accessToken'},
-      );
-      _messageController.clear();
-      _scrollToBottom();
-    } catch (e) {
-      print('❌ Gửi tin nhắn thất bại: $e');
-    }
-  }
-
   Future<void> _openGiphyStickerPicker() async {
     GiphyGif? gif = await GiphyGet.getGif(
       context: context,
@@ -157,28 +113,6 @@ class _MessagesConversationScreenState
       } else {
         print('⚠️ Không tìm thấy URL cho sticker.');
       }
-    }
-  }
-
-  void _sendSticker(String stickerUrl) {
-    if (_stompClient?.connected != true || _userId == null) return;
-
-    final msg = {
-      'senderId': _userId,
-      'conversationId': widget.conversationId,
-      'content': stickerUrl,
-      'type': MessageType.STICKER.name,
-    };
-
-    try {
-      _stompClient!.send(
-        destination: '/app/private-message',
-        body: jsonEncode(msg),
-        headers: {'Authorization': 'Bearer $_accessToken'},
-      );
-      _scrollToBottom();
-    } catch (e) {
-      print('❌ Gửi sticker thất bại: $e');
     }
   }
 
@@ -212,6 +146,42 @@ class _MessagesConversationScreenState
     return Text(content, style: const TextStyle(fontSize: 15));
   }
 
+  // Widget _buildSentMessage(String message, String type, String time) {
+  //   return Padding(
+  //     padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+  //     child: Row(
+  //       mainAxisAlignment: MainAxisAlignment.end,
+  //       crossAxisAlignment: CrossAxisAlignment.end,
+  //       children: [
+  //         Flexible(
+  //           child: Column(
+  //             crossAxisAlignment: CrossAxisAlignment.end,
+  //             children: [
+  //               if (type == MessageType.STICKER.name)
+  //                 _buildMessageContent(message, type)
+  //               else
+  //                 Container(
+  //                   padding: const EdgeInsets.all(12),
+  //                   decoration: const BoxDecoration(
+  //                     color: Color(0xFF4C68D5),
+  //                     borderRadius: BorderRadius.only(
+  //                       topLeft: Radius.circular(16),
+  //                       topRight: Radius.circular(16),
+  //                       bottomLeft: Radius.circular(16),
+  //                     ),
+  //                   ),
+  //                   child: _buildMessageContent(message, type),
+  //                 ),
+  //               const SizedBox(height: 4),
+  //               Text(time,
+  //                   style: const TextStyle(color: Colors.grey, fontSize: 11)),
+  //             ],
+  //           ),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
   Widget _buildSentMessage(String message, String type, String time) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
@@ -228,9 +198,9 @@ class _MessagesConversationScreenState
                 else
                   Container(
                     padding: const EdgeInsets.all(12),
-                    decoration: const BoxDecoration(
-                      color: Color(0xFF4C68D5),
-                      borderRadius: BorderRadius.only(
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFE5DEFF), // 💜 tím nhạt
+                      borderRadius: const BorderRadius.only(
                         topLeft: Radius.circular(16),
                         topRight: Radius.circular(16),
                         bottomLeft: Radius.circular(16),
@@ -248,6 +218,7 @@ class _MessagesConversationScreenState
       ),
     );
   }
+
 
   Widget _buildReceivedMessage(String message, String type, String time) {
     return Padding(
@@ -430,7 +401,6 @@ class _MessagesConversationScreenState
   void dispose() {
     _messageController.dispose();
     _scrollController.dispose();
-    _stompClient?.deactivate();
     super.dispose();
   }
 }

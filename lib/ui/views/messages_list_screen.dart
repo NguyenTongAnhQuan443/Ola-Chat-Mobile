@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../view_models/conversation_view_model.dart';
+import '../../view_models/list_conversation_view_model.dart';
 import '../widgets/custom_sliver_to_box_adapter.dart';
 import '../widgets/app_logo_header_two.dart';
 import 'messages_conversation_screen.dart';
@@ -18,14 +18,14 @@ class _MessagesListScreenState extends State<MessagesListScreen> {
     super.initState();
     // Trì hoãn gọi fetchConversations sau khi build xong
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<ConversationViewModel>(context, listen: false)
+      Provider.of<ListConversationViewModel>(context, listen: false)
           .fetchConversations();
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final vm = Provider.of<ConversationViewModel>(context);
+    final vm = Provider.of<ListConversationViewModel>(context);
     final messages = vm.conversations;
 
     return SafeArea(

@@ -12,7 +12,7 @@ class SocketService {
   StompClient? _client;
   String? _accessToken;
 
-  void init(String accessToken) {
+  void init(String accessToken, {Function()? onConnectCallback}) {
     _accessToken = accessToken;
 
     final socketUrl = ApiConfig.socketUrl;
@@ -20,7 +20,10 @@ class SocketService {
     _client = StompClient(
       config: StompConfig(
         url: socketUrl,
-        onConnect: _onConnect,
+        onConnect: (frame) {
+          print('✅ Socket connected');
+          if (onConnectCallback != null) onConnectCallback();
+        },
         beforeConnect: () async {
           print('📡 Connecting socket...');
           await Future.delayed(const Duration(milliseconds: 200));
@@ -39,10 +42,6 @@ class SocketService {
     );
 
     _client!.activate();
-  }
-
-  void _onConnect(StompFrame frame) {
-    print('✅ Socket connected');
   }
 
   void subscribe(String destination, Function(Map<String, dynamic>) callback) {

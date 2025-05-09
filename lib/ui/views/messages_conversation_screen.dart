@@ -166,22 +166,23 @@ class _MessagesConversationScreenState
             spacing: 6,
             runSpacing: 6,
             children: urls.map<Widget>((url) {
-              final isVideo = url.toString().endsWith('.mp4') || url.toString().endsWith('.mov');
+              final isVideo = url.toString().endsWith('.mp4') ||
+                  url.toString().endsWith('.mov');
               return isVideo
                   ? Container(
-                width: 160,
-                height: 160,
-                color: Colors.black12,
-                child: const Icon(Icons.videocam),
-              )
+                      width: 160,
+                      height: 160,
+                      color: Colors.black12,
+                      child: const Icon(Icons.videocam),
+                    )
                   : Image.network(
-                url,
-                width: 160,
-                height: 160,
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) =>
-                const Icon(Icons.broken_image),
-              );
+                      url,
+                      width: 160,
+                      height: 160,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) =>
+                          const Icon(Icons.broken_image),
+                    );
             }).toList(),
           );
         }
@@ -189,8 +190,6 @@ class _MessagesConversationScreenState
         print('❌ [DEBUG] Lỗi decode mediaUrls: $e');
       }
     }
-
-
 
     return Text(content, style: const TextStyle(fontSize: 15));
   }
@@ -291,55 +290,30 @@ class _MessagesConversationScreenState
               _openGiphyStickerPicker();
             },
           ),
-          // IconButton(
-          //   icon: const Icon(Icons.image_outlined),
-          //   onPressed: () async {
-          //     await _pickMediaFiles();
-          //     if (_selectedFiles.isNotEmpty) {
-          //       await Provider.of<MessageConversationViewModel>(context, listen: false)
-          //           .sendMediaMessage(widget.conversationId, _selectedFiles);
-          //       setState(() {
-          //         _selectedFiles.clear(); // reset sau khi gửi
-          //       });
-          //       _scrollToBottom();
-          //     }
-          //   },
-          // ),
           IconButton(
             icon: const Icon(Icons.image_outlined),
             onPressed: () async {
-              print('🖼️ [DEBUG] Bắt đầu chọn media...');
               await _pickMediaFiles();
 
               if (_selectedFiles.isEmpty) {
                 print('⚠️ [DEBUG] Không có file nào được chọn.');
                 return;
               }
-
-              print('📁 [DEBUG] Số file đã chọn: ${_selectedFiles.length}');
-              for (var file in _selectedFiles) {
-                print('📄 [DEBUG] File: ${file.name}, path: ${file.path}');
-              }
-
               try {
-                final vm = Provider.of<MessageConversationViewModel>(context, listen: false);
-                print('🚀 [DEBUG] Gửi mediaMessage tới conversation: ${widget.conversationId}');
-                await vm.sendMediaMessage(widget.conversationId, _selectedFiles);
+                final vm = Provider.of<MessageConversationViewModel>(context,
+                    listen: false);
+                await vm.sendMediaMessage(
+                    widget.conversationId, _selectedFiles);
 
                 setState(() {
                   _selectedFiles.clear(); // reset sau khi gửi
                 });
-
-                print('✅ [DEBUG] Gửi media thành công, scroll xuống dưới');
                 _scrollToBottom();
               } catch (e) {
                 print('❌ [DEBUG] Lỗi khi gửi media: $e');
               }
             },
           ),
-
-
-
           Expanded(
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -431,6 +405,16 @@ class _MessagesConversationScreenState
         ),
         body: Column(
           children: [
+            // Theo dõi số lượng tin nhắn để focus tin nhắn mới nhất
+            Selector<MessageConversationViewModel, int>(
+              selector: (_, vm) => vm.messages.length,
+              builder: (context, messageCount, child) {
+                WidgetsBinding.instance
+                    .addPostFrameCallback((_) => _autoScrollIfNeeded());
+                return const SizedBox.shrink();
+              },
+            ),
+
             Expanded(
               child: vm.isLoading
                   ? const Center(child: CircularProgressIndicator())
@@ -440,24 +424,17 @@ class _MessagesConversationScreenState
                           horizontal: 8, vertical: 8),
                       itemCount: messages.length,
                       itemBuilder: (context, index) {
-                        // final msg = messages[index];
-                        // final isMe = msg.senderId == _userId;
-                        // return isMe
-                        //     ? _buildSentMessage(msg.content, msg.type.name,
-                        //         _formatTime(msg.createdAt))
-                        //     : _buildReceivedMessage(msg.content, msg.type.name,
-                        //         _formatTime(msg.createdAt));
                         final msg = messages[index];
                         final isMe = msg.senderId == _userId;
                         final content = msg.type == MessageType.MEDIA
                             ? jsonEncode(msg.mediaUrls ?? [])
                             : msg.content;
 
-
                         return isMe
-                            ? _buildSentMessage(content, msg.type.name, _formatTime(msg.createdAt))
-                            : _buildReceivedMessage(content, msg.type.name, _formatTime(msg.createdAt));
-
+                            ? _buildSentMessage(content, msg.type.name,
+                                _formatTime(msg.createdAt))
+                            : _buildReceivedMessage(content, msg.type.name,
+                                _formatTime(msg.createdAt));
                       },
                     ),
             ),
@@ -473,5 +450,21 @@ class _MessagesConversationScreenState
     _messageController.dispose();
     _scrollController.dispose();
     super.dispose();
+  }
+
+  void _autoScrollIfNeeded() {
+    if (!_scrollController.hasClients) return;
+
+    final current = _scrollController.position.pixels;
+    final max = _scrollController.position.maxScrollExtent;
+    final distance = (max - current).abs();
+
+    if (distance < 300) {
+      _scrollController.animateTo(
+        max,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+      );
+    }
   }
 }

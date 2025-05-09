@@ -39,6 +39,41 @@ class MessageConversationViewModel extends ChangeNotifier {
 
     _isLoading = false;
     notifyListeners();
+
+    if (!_socketService.isConnected) {
+      final accessToken = await TokenService.getAccessToken();
+      _socketService.init(accessToken!, onConnectCallback: () {
+        _subscribeToConversation(conversationId);
+      });
+    } else {
+      _subscribeToConversation(conversationId);
+    }
+  }
+
+  void _subscribeToConversation(String conversationId) {
+    _socketService.subscribe(
+      "/user/$conversationId/private",
+      (data) {
+        try {
+          final message = MessageModel.fromJson(data);
+
+          final isDuplicate = _messages.any((m) =>
+              (m.id != null && m.id == message.id) ||
+              (m.id == null &&
+                  m.senderId == message.senderId &&
+                  m.content == message.content &&
+                  m.createdAt?.millisecondsSinceEpoch ==
+                      message.createdAt?.millisecondsSinceEpoch));
+
+          if (!isDuplicate) {
+            _messages.add(message);
+            notifyListeners();
+          }
+        } catch (e) {
+          print("❌ [SOCKET] Lỗi khi parse message: \$e");
+        }
+      },
+    );
   }
 
   Future<void> sendTextMessage(String conversationId, String content) async {
@@ -61,21 +96,18 @@ class MessageConversationViewModel extends ChangeNotifier {
       mentions: null,
     );
 
-    // Hiển thị ngay tin nhắn
-    addMessage(tempMessage);
+    _messages.add(tempMessage);
+    notifyListeners();
 
-    // Gửi lên socket
     final body = tempMessage.toJson();
     _socketService.sendMessage('/app/private-message', body);
   }
-
 
   Future<void> sendSticker(String conversationId, String stickerUrl) async {
     if (_currentUserId == null) return;
 
     final now = DateTime.now();
 
-    // Gửi socket và render UI ngay
     final tempMessage = MessageModel(
       id: null,
       senderId: _currentUserId!,
@@ -91,29 +123,20 @@ class MessageConversationViewModel extends ChangeNotifier {
       mentions: null,
     );
 
-    addMessage(tempMessage); // Hiển thị ngay
-
-    // Gửi socket
-    final body = tempMessage.toJson(); // Đã có createdAt
-
-    SocketService().sendMessage('/app/private-message', body);
-  }
-
-  void addMessage(MessageModel message) {
-    _messages.add(message);
+    _messages.add(tempMessage);
     notifyListeners();
+
+    _socketService.sendMessage('/app/private-message', tempMessage.toJson());
   }
 
-  // Send media
-  Future<void> sendMediaMessage(String conversationId, List<PlatformFile> files) async {
+  Future<void> sendMediaMessage(
+      String conversationId, List<PlatformFile> files) async {
     if (_currentUserId == null || files.isEmpty) return;
 
     try {
       final accessToken = await TokenService.getAccessToken();
-      final mediaUrls = await FileUploadService.uploadFilesIndividually(
-          files, accessToken!);
-      print('📤 [DEBUG] mediaUrls gửi đi: ${mediaUrls}');
-
+      final mediaUrls =
+          await FileUploadService.uploadFilesIndividually(files, accessToken!);
 
       final now = DateTime.now();
 
@@ -132,14 +155,14 @@ class MessageConversationViewModel extends ChangeNotifier {
         mentions: null,
       );
 
-      addMessage(tempMessage); // render ngay
+      _messages.add(tempMessage);
+      notifyListeners();
 
       _socketService.sendMessage('/app/private-message', tempMessage.toJson());
     } catch (e) {
-      print("❌ Gửi media thất bại: $e");
+      print("❌ Gửi media thất bại: \$e");
     }
   }
-
 
   void disposeSocket() {
     _socketService.disconnect();

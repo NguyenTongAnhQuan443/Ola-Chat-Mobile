@@ -36,16 +36,18 @@ class ConversationViewModel extends ChangeNotifier {
           final conversation = ConversationModel.fromJson(item);
 
           if (conversation.type == 'PRIVATE') {
-            final userUrl = Uri.parse('${ApiConfig.base}/api/conversations/${conversation.id}/users');
+            final userUrl = Uri.parse(
+                '${ApiConfig.base}/api/conversations/${conversation.id}/users');
             final userResponse = await http.get(userUrl, headers: {
               'Authorization': 'Bearer $token',
             });
 
             if (userResponse.statusCode == 200) {
-              final List<dynamic> users = jsonDecode(utf8.decode(userResponse.bodyBytes));
+              final List<dynamic> users =
+                  jsonDecode(utf8.decode(userResponse.bodyBytes));
 
               final otherUser = users.firstWhere(
-                    (u) => u['userId'] != currentUserId,
+                (u) => u['userId'] != currentUserId,
                 orElse: () => null,
               );
 

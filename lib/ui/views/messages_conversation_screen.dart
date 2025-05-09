@@ -42,19 +42,29 @@ class _MessagesConversationScreenState
       final vm =
           Provider.of<MessageConversationViewModel>(context, listen: false);
       await vm.loadMessages(widget.conversationId);
-      _scrollToBottom();
+      _jumpToBottom();
+    });
+  }
+
+  void _jumpToBottom() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_scrollController.hasClients) {
+        _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
+      }
     });
   }
 
   void _scrollToBottom() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (_scrollController.hasClients) {
-        _scrollController.animateTo(
-          _scrollController.position.maxScrollExtent,
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeOut,
-        );
-      }
+      Future.delayed(const Duration(milliseconds: 50), () {
+        if (_scrollController.hasClients) {
+          _scrollController.animateTo(
+            _scrollController.position.maxScrollExtent,
+            duration: const Duration(milliseconds: 250),
+            curve: Curves.easeOut,
+          );
+        }
+      });
     });
   }
 
@@ -178,14 +188,27 @@ class _MessagesConversationScreenState
         borderRadius: BorderRadius.circular(12),
         child: Image.network(
           content,
-          width: 140,
-          height: 140,
+          width: 160,
+          height: 160,
           fit: BoxFit.cover,
           errorBuilder: (context, error, stackTrace) =>
               const Icon(Icons.broken_image, size: 48),
+          loadingBuilder: (context, child, loadingProgress) {
+            if (loadingProgress == null) {
+              // Ảnh đã load xong
+              Future.microtask(() => _scrollToBottom());
+              return child;
+            }
+            return const SizedBox(
+                width: 140,
+                height: 140,
+                child:
+                    Center(child: CircularProgressIndicator(strokeWidth: 2)));
+          },
         ),
       );
     }
+
     return Text(content, style: const TextStyle(fontSize: 15));
   }
 
@@ -283,7 +306,6 @@ class _MessagesConversationScreenState
           IconButton(
             icon: const Icon(Icons.emoji_emotions_outlined),
             onPressed: () {
-              Navigator.pop(context);
               _openGiphyStickerPicker();
             },
           ),

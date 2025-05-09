@@ -355,9 +355,22 @@ class _MessagesConversationScreenState
     );
   }
 
-  Widget _buildReceivedMessage(String message, String type, String time) {
+  Widget _buildReceivedMessage({
+    required String message,
+    required String type,
+    required String time,
+    required String senderId,
+  }) {
     final isMediaOrSticker =
         type == MessageType.MEDIA.name || type == MessageType.STICKER.name;
+
+    final vm =
+        Provider.of<MessageConversationViewModel>(context, listen: false);
+    final isGroupChat = vm.userMap.length > 1;
+
+    // Lấy avatar người gửi (ưu tiên từ danh sách user trong GROUP)
+    final avatarUrl =
+        isGroupChat ? (vm.userMap[senderId]?.avatar ?? "") : widget.avatarUrl;
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
@@ -366,8 +379,8 @@ class _MessagesConversationScreenState
         children: [
           CircleAvatar(
             radius: 14,
-            backgroundImage: widget.avatarUrl.isNotEmpty
-                ? NetworkImage(widget.avatarUrl)
+            backgroundImage: avatarUrl.isNotEmpty
+                ? NetworkImage(avatarUrl)
                 : const AssetImage('assets/images/default_avatar.png')
                     as ImageProvider,
           ),
@@ -561,8 +574,12 @@ class _MessagesConversationScreenState
                         return isMe
                             ? _buildSentMessage(content, msg.type.name,
                                 _formatTime(msg.createdAt))
-                            : _buildReceivedMessage(content, msg.type.name,
-                                _formatTime(msg.createdAt));
+                            : _buildReceivedMessage(
+                                message: content,
+                                type: msg.type.name,
+                                time: _formatTime(msg.createdAt),
+                                senderId: msg.senderId,
+                              );
                       },
                     ),
             ),

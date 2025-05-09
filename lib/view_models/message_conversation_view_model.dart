@@ -1,16 +1,22 @@
 import 'dart:convert';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import '../core/utils/config/api_config.dart';
 import '../data/enum/message_type.dart';
 import '../data/models/message_model.dart';
+import '../data/models/user_in_conversation_model.dart';
 import '../data/services/file_upload_service.dart';
 import '../data/services/message_service.dart';
 import '../data/services/socket_service.dart';
 import '../data/services/token_service.dart';
+import 'package:http/http.dart' as http;
 
 class MessageConversationViewModel extends ChangeNotifier {
   final MessageService _messageService = MessageService();
   final SocketService _socketService = SocketService();
+
+  Map<String, UserInConversation> _userMap = {};
+  Map<String, UserInConversation> get userMap => _userMap;
 
   List<MessageModel> _messages = [];
   bool _isLoading = false;
@@ -29,6 +35,9 @@ class MessageConversationViewModel extends ChangeNotifier {
     if (userInfo != null) {
       _currentUserId = jsonDecode(userInfo)['userId'];
     }
+
+    // Gọi API lấy danh sách thành viên
+    await fetchUsersInConversation(conversationId);
 
     try {
       _messages =
@@ -129,56 +138,14 @@ class MessageConversationViewModel extends ChangeNotifier {
     _socketService.sendMessage('/app/private-message', tempMessage.toJson());
   }
 
-  // Future<void> sendMediaMessage(
-  //     String conversationId, List<PlatformFile> files) async {
-  //   if (_currentUserId == null || files.isEmpty) return;
-  //
-  //   try {
-  //     final accessToken = await TokenService.getAccessToken();
-  //     final mediaUrls =
-  //         await FileUploadService.uploadFilesIndividually(files, accessToken!);
-  //
-  //     final now = DateTime.now();
-  //
-  //     final tempMessage = MessageModel(
-  //       id: null,
-  //       senderId: _currentUserId!,
-  //       conversationId: conversationId,
-  //       content: "",
-  //       type: MessageType.MEDIA,
-  //       mediaUrls: mediaUrls,
-  //       status: "SENT",
-  //       deliveryStatus: null,
-  //       readStatus: null,
-  //       createdAt: now,
-  //       recalled: false,
-  //       mentions: null,
-  //     );
-  //
-  //     _messages.add(tempMessage);
-  //     notifyListeners();
-  //
-  //     _socketService.sendMessage('/app/private-message', tempMessage.toJson());
-  //   } catch (e) {
-  //     print("❌ Gửi media thất bại: \$e");
-  //   }
-  // }
   Future<void> sendMediaMessage(
       String conversationId, List<PlatformFile> files) async {
     if (_currentUserId == null || files.isEmpty) return;
 
-    print("📤 [MEDIA] Bắt đầu gửi media, số lượng file: ${files.length}");
-
     try {
       final accessToken = await TokenService.getAccessToken();
-
-      print("🔐 [MEDIA] Access token: ${accessToken?.substring(0, 10)}...");
-
       final mediaUrls =
-      await FileUploadService.uploadFilesIndividually(files, accessToken!);
-
-      print("✅ [MEDIA] Upload thành công. URLs: $mediaUrls");
-
+          await FileUploadService.uploadFilesIndividually(files, accessToken!);
       final now = DateTime.now();
 
       final tempMessage = MessageModel(
@@ -200,7 +167,6 @@ class MessageConversationViewModel extends ChangeNotifier {
       notifyListeners();
 
       final json = tempMessage.toJson();
-      print("🚀 [MEDIA] Gửi message qua socket: $json");
 
       _socketService.sendMessage('/app/private-message', json);
     } catch (e) {
@@ -208,6 +174,30 @@ class MessageConversationViewModel extends ChangeNotifier {
     }
   }
 
+  // Fetch all user in conversation
+  Future<void> fetchUsersInConversation(String conversationId) async {
+    try {
+      final token = await TokenService.getAccessToken();
+      final url = Uri.parse(ApiConfig.getUsersInConversation(conversationId));
+
+      final response = await http.get(url, headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      });
+
+      if (response.statusCode == 200) {
+        final List<dynamic> data = jsonDecode(utf8.decode(response.bodyBytes));
+        _userMap = {
+          for (var json in data)
+            json['userId']: UserInConversation.fromJson(json)
+        };
+      } else {
+        print("❌ Lỗi khi fetch users in conversation: ${response.body}");
+      }
+    } catch (e) {
+      print("❌ Exception khi fetch users in conversation: $e");
+    }
+  }
 
   void disposeSocket() {
     _socketService.disconnect();

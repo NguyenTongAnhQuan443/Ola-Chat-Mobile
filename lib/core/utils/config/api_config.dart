@@ -27,8 +27,10 @@ class ApiConfig {
   static String searchUser(String query) => "$base/users/search?query=$query";
   static String get getMyFriends => "$base/users/my-friends";
 
-  static String loginHistory(String userId) => "$base/api/login-history/$userId";
-  static String setUserOffline(String userId) => "$base/api/login-history/offline/$userId";
+  static String loginHistory(String userId) =>
+      "$base/api/login-history/$userId";
+  static String setUserOffline(String userId) =>
+      "$base/api/login-history/offline/$userId";
   static String get ping => "$base/api/login-history/ping";
 
   static String get registerDevice => "$base/api/notifications/register-device";
@@ -36,13 +38,18 @@ class ApiConfig {
   // Friend
   static String get sendFriendRequest => "$base/api/friends/send-request";
   static String get getSentFriendRequests => "$base/api/friends/requests/sent";
-  static String get getReceivedFriendRequests => "$base/api/friends/requests/received";
-  static String cancelFriendRequest(String receiverId) => "$base/api/friends/requests/$receiverId/cancel";
-  static String acceptFriendRequest(String requestId) => "$base/api/friends/$requestId/accept";
-  static String rejectFriendRequest(String requestId) => "$base/api/friends/$requestId/reject";
+  static String get getReceivedFriendRequests =>
+      "$base/api/friends/requests/received";
+  static String cancelFriendRequest(String receiverId) =>
+      "$base/api/friends/requests/$receiverId/cancel";
+  static String acceptFriendRequest(String requestId) =>
+      "$base/api/friends/$requestId/accept";
+  static String rejectFriendRequest(String requestId) =>
+      "$base/api/friends/$requestId/reject";
 
   // Notification
-  static String getNotifications({required int page, int size = 10, String sort = 'desc'}) {
+  static String getNotifications(
+      {required int page, int size = 10, String sort = 'desc'}) {
     return "$base/api/notifications?page=$page&size=$size&sort=$sort";
   }
 
@@ -59,7 +66,8 @@ class ApiConfig {
   static String get getConversations => "$base/api/conversations";
   static String getMessagesByConversation(String conversationId) =>
       "$base/api/conversations/$conversationId/messages";
-
+  static String getUsersInConversation(String conversationId) =>
+      "$base/api/conversations/$conversationId/users";
 
   // File
   static String get upFile => "$base/files/upload";

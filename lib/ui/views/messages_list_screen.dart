@@ -18,7 +18,8 @@ class _MessagesListScreenState extends State<MessagesListScreen> {
     super.initState();
     // Trì hoãn gọi fetchConversations sau khi build xong
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<ConversationViewModel>(context, listen: false).fetchConversations();
+      Provider.of<ConversationViewModel>(context, listen: false)
+          .fetchConversations();
     });
   }
 
@@ -33,93 +34,91 @@ class _MessagesListScreenState extends State<MessagesListScreen> {
         body: vm.isLoading
             ? const Center(child: CircularProgressIndicator())
             : CustomScrollView(
-          slivers: [
-            AppLogoHeaderTwo(),
-            CustomSliverToBoxAdapter(),
-            SliverToBoxAdapter(
-              child: Container(
-                height: 54,
-                color: Colors.white,
-                child: TextButton(
-                  onPressed: () {},
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
-                      Icon(Icons.create_outlined, size: 20, color: Colors.black54),
-                      SizedBox(width: 10),
-                      Text('New Message', style: TextStyle(fontSize: 14, color: Colors.black54)),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            CustomSliverToBoxAdapter(),
-            SliverList(
-              delegate: SliverChildBuilderDelegate(
-                    (context, index) {
-                  final message = messages[index];
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 6),
-                    child: InkWell(
-                      child: ListTile(
-                        leading: Stack(
-                          children: [
-                            CircleAvatar(
-                              radius: 24,
-                              backgroundImage: message.avatarUrl.isNotEmpty
-                                  ? NetworkImage(message.avatarUrl)
-                                  : const AssetImage('assets/images/default_avatar.png')
-                              as ImageProvider,
-                            ),
-                            const Positioned(
-                              bottom: 0,
-                              right: 0,
-                              child: CircleAvatar(
-                                radius: 6,
-                                backgroundColor: Colors.green,
-                              ),
-                            ),
+                slivers: [
+                  AppLogoHeaderTwo(),
+                  CustomSliverToBoxAdapter(),
+                  SliverToBoxAdapter(
+                    child: Container(
+                      height: 54,
+                      color: Colors.white,
+                      child: TextButton(
+                        onPressed: () {},
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: const [
+                            Icon(Icons.create_outlined,
+                                size: 20, color: Colors.black54),
+                            SizedBox(width: 10),
+                            Text('New Message',
+                                style: TextStyle(
+                                    fontSize: 14, color: Colors.black54)),
                           ],
                         ),
-                        title: Text(
-                          message.name,
-                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
-                        ),
-                        subtitle: Text(
-                          message.lastMessage,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        // onTap: () {
-                        //   Navigator.push(
-                        //     context,
-                        //     MaterialPageRoute(
-                        //       builder: (context) => const MessagesConversationScreen(),
-                        //     ),
-                        //   );
-                        // },
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => MessagesConversationScreen(
-                                conversationId: message.id,
-                                conversationName: message.name,
-                                avatarUrl: message.avatarUrl,
-                              ),
-                            ),
-                          );
-                        },
-
                       ),
                     ),
-                  );
-                },
-                childCount: messages.length,
+                  ),
+                  CustomSliverToBoxAdapter(),
+                  SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) {
+                        final message = messages[index];
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 6),
+                          child: InkWell(
+                            child: ListTile(
+                              leading: Stack(
+                                children: [
+                                  CircleAvatar(
+                                    radius: 24,
+                                    backgroundImage: message
+                                            .avatarUrl.isNotEmpty
+                                        ? NetworkImage(message.avatarUrl)
+                                        : const AssetImage(
+                                                'assets/images/default_avatar.png')
+                                            as ImageProvider,
+                                  ),
+                                  const Positioned(
+                                    bottom: 0,
+                                    right: 0,
+                                    child: CircleAvatar(
+                                      radius: 6,
+                                      backgroundColor: Colors.green,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              title: Text(
+                                message.name,
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 14),
+                              ),
+                              subtitle: Text(
+                                message.lastMessage,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        MessagesConversationScreen(
+                                      conversationId: message.id,
+                                      conversationName: message.name,
+                                      avatarUrl: message.avatarUrl,
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                        );
+                      },
+                      childCount: messages.length,
+                    ),
+                  ),
+                ],
               ),
-            ),
-          ],
-        ),
       ),
     );
   }

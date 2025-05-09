@@ -1,4 +1,5 @@
 import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
 
 class TokenService {
   static const _accessTokenKey = 'access_token';
@@ -36,5 +37,19 @@ class TokenService {
     await prefs.remove(_accessTokenKey);
     await prefs.remove(_refreshTokenKey);
     await prefs.remove(_userInfoKey);
+  }
+
+
+  static Future<String?> getCurrentUserId() async {
+    final userInfoJson = await getUserInfo();
+    if (userInfoJson == null) return null;
+
+    try {
+      final data = jsonDecode(userInfoJson);
+      return data['userId'];
+    } catch (e) {
+      print("Lỗi khi decode user info: $e");
+      return null;
+    }
   }
 }

@@ -16,7 +16,6 @@ class SocketService {
     _accessToken = accessToken;
 
     final socketUrl = ApiConfig.socketUrl;
-    print("🌐 socketUrl used: $socketUrl");
 
     _client = StompClient(
       config: StompConfig(

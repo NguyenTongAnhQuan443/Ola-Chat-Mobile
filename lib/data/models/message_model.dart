@@ -37,9 +37,9 @@ class MessageModel {
       content: json['content'] ?? '',
       type: json['type'] != null
           ? MessageType.values.firstWhere(
-            (e) => e.name == json['type'],
-        orElse: () => MessageType.TEXT,
-      )
+              (e) => e.name == json['type'],
+              orElse: () => MessageType.TEXT,
+            )
           : MessageType.TEXT,
       mediaUrls: json['mediaUrls'] != null
           ? List<String>.from(json['mediaUrls'])
@@ -52,15 +52,14 @@ class MessageModel {
           ? List<Map<String, dynamic>>.from(json['readStatus'])
           : null,
       createdAt: json['createdAt'] != null
-          ? DateTime.tryParse(json['createdAt'])
-          : null,
+          ? DateTime.tryParse(json['createdAt']) ?? DateTime.now()
+          : DateTime.now(),
       recalled: json['recalled'] ?? false,
       mentions: json['mentions'] != null
           ? List<Map<String, dynamic>>.from(json['mentions'])
           : null,
     );
   }
-
   Map<String, dynamic> toJson() {
     return {
       'id': id,

@@ -6,6 +6,7 @@ import '../data/models/message_model.dart';
 import '../data/services/message_service.dart';
 import '../data/services/socket_service.dart';
 import '../data/services/token_service.dart';
+
 class MessageConversationViewModel extends ChangeNotifier {
   final MessageService _messageService = MessageService();
   final SocketService _socketService = SocketService();
@@ -29,7 +30,8 @@ class MessageConversationViewModel extends ChangeNotifier {
     }
 
     try {
-      _messages = await _messageService.fetchMessagesByConversationId(conversationId);
+      _messages =
+          await _messageService.fetchMessagesByConversationId(conversationId);
     } catch (e) {
       _errorMessage = e.toString();
     }
@@ -54,14 +56,35 @@ class MessageConversationViewModel extends ChangeNotifier {
   Future<void> sendSticker(String conversationId, String stickerUrl) async {
     if (_currentUserId == null) return;
 
-    final msg = {
-      'senderId': _currentUserId,
-      'conversationId': conversationId,
-      'content': stickerUrl,
-      'type': MessageType.STICKER.name,
-    };
+    final now = DateTime.now();
 
-    _socketService.sendMessage('/app/private-message', msg);
+    // Gửi socket và render UI ngay
+    final tempMessage = MessageModel(
+      id: null,
+      senderId: _currentUserId!,
+      conversationId: conversationId,
+      content: stickerUrl,
+      type: MessageType.STICKER,
+      mediaUrls: null,
+      status: "SENT",
+      deliveryStatus: null,
+      readStatus: null,
+      createdAt: now,
+      recalled: false,
+      mentions: null,
+    );
+
+    addMessage(tempMessage); // Hiển thị ngay
+
+    // Gửi socket
+    final body = tempMessage.toJson(); // Đã có createdAt
+
+    SocketService().sendMessage('/app/private-message', body);
+  }
+
+  void addMessage(MessageModel message) {
+    _messages.add(message);
+    notifyListeners();
   }
 
   void disposeSocket() {

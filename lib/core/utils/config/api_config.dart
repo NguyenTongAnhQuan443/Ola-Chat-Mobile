@@ -25,6 +25,7 @@ class ApiConfig {
   static String get sendEmailUpdateOtp => "$base/users/update-email";
   static String get verifyEmailUpdateOtp => "$base/users/verify-update-email";
   static String searchUser(String query) => "$base/users/search?query=$query";
+  static String get getMyFriends => "$base/users/my-friends";
 
   static String loginHistory(String userId) => "$base/api/login-history/$userId";
   static String setUserOffline(String userId) => "$base/api/login-history/offline/$userId";
@@ -62,4 +63,7 @@ class ApiConfig {
 
   // File
   static String get upFile => "$base/files/upload";
+
+  // Group
+  static String get createGroup => "$base/api/groups";
 }

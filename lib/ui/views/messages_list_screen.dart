@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../../view_models/list_conversation_view_model.dart';
 import '../widgets/custom_sliver_to_box_adapter.dart';
 import '../widgets/app_logo_header_two.dart';
+import 'create_group_screen.dart';
 import 'messages_conversation_screen.dart';
 
 class MessagesListScreen extends StatefulWidget {
@@ -42,14 +43,22 @@ class _MessagesListScreenState extends State<MessagesListScreen> {
                       height: 54,
                       color: Colors.white,
                       child: TextButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const CreateGroupScreen(),
+                            ),
+                          );
+                        },
+
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: const [
                             Icon(Icons.create_outlined,
                                 size: 20, color: Colors.black54),
                             SizedBox(width: 10),
-                            Text('New Message',
+                            Text('Tạo nhóm chat',
                                 style: TextStyle(
                                     fontSize: 14, color: Colors.black54)),
                           ],

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../data/models/message_model.dart';
 import '../data/services/message_service.dart';
 
-class MessageViewModel extends ChangeNotifier {
+class MessageConversationViewModel extends ChangeNotifier {
   final MessageService _messageService = MessageService();
 
   List<MessageModel> _messages = [];

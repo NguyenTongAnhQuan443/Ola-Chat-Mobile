@@ -1,14 +1,13 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:olachat_mobile/core/utils/config/api_config.dart';
 import 'package:olachat_mobile/data/services/token_service.dart';
 import 'package:provider/provider.dart';
 import 'package:stomp_dart_client/stomp_dart_client.dart';
-
 import '../../data/enum/message_type.dart';
 import '../../data/models/message_model.dart';
-import '../../view_models/message_view_model.dart';
+import '../../view_models/message_conversation_view_model.dart';
+import 'package:giphy_get/giphy_get.dart';
 
 class MessagesConversationScreen extends StatefulWidget {
   final String conversationId;
@@ -40,7 +39,8 @@ class _MessagesConversationScreenState
     super.initState();
     _initSocket();
     Future.microtask(() async {
-      final vm = Provider.of<MessageViewModel>(context, listen: false);
+      final vm =
+          Provider.of<MessageConversationViewModel>(context, listen: false);
       await vm.loadMessages(widget.conversationId);
       _scrollToBottom();
     });
@@ -60,15 +60,10 @@ class _MessagesConversationScreenState
 
   Future<void> _initSocket() async {
     _accessToken = await TokenService.getAccessToken();
-
     final userInfoJson = await TokenService.getUserInfo();
     if (userInfoJson != null) {
-      try {
-        final userMap = jsonDecode(userInfoJson);
-        _userId = userMap['userId'];
-      } catch (e) {
-        print('❌ Lỗi khi parse user info: $e');
-      }
+      final userMap = jsonDecode(userInfoJson);
+      _userId = userMap['userId'];
     }
 
     _stompClient = StompClient(
@@ -76,7 +71,6 @@ class _MessagesConversationScreenState
         url: ApiConfig.socketUrl,
         onConnect: _onConnect,
         beforeConnect: () async {
-          print('📡 Connecting to socket...');
           await Future.delayed(const Duration(milliseconds: 200));
         },
         onWebSocketError: (error) => print('❌ Socket Error: $error'),
@@ -87,12 +81,10 @@ class _MessagesConversationScreenState
         reconnectDelay: const Duration(seconds: 5),
       ),
     );
-
     _stompClient!.activate();
   }
 
   void _onConnect(StompFrame frame) {
-    print('✅ Socket connected');
     _stompClient!.subscribe(
       destination: '/user/${widget.conversationId}/private',
       callback: _onMessageReceived,
@@ -100,57 +92,179 @@ class _MessagesConversationScreenState
   }
 
   void _onMessageReceived(StompFrame frame) {
-    final json = jsonDecode(frame.body!);
-    final msg = MessageModel.fromJson(json);
-    Provider.of<MessageViewModel>(context, listen: false).addMessage(msg);
-    _scrollToBottom();
+    try {
+      final json = jsonDecode(frame.body!);
+      final msg = MessageModel.fromJson(json);
+      Provider.of<MessageConversationViewModel>(context, listen: false)
+          .addMessage(msg);
+      _scrollToBottom();
+    } catch (e) {
+      print('❌ Lỗi khi parse message: $e');
+      print('📦 Raw body: ${frame.body}');
+    }
   }
 
-  @override
-  void dispose() {
-    _messageController.dispose();
-    _stompClient?.deactivate();
-    _scrollController.dispose();
-    super.dispose();
+  void _sendMessage() {
+    final content = _messageController.text.trim();
+    if (content.isEmpty || _stompClient?.connected != true || _userId == null) {
+      return;
+    }
+
+    final msg = {
+      'senderId': _userId,
+      'conversationId': widget.conversationId,
+      'content': content,
+      'type': MessageType.TEXT.name,
+    };
+
+    try {
+      _stompClient!.send(
+        destination: '/app/private-message',
+        body: jsonEncode(msg),
+        headers: {'Authorization': 'Bearer $_accessToken'},
+      );
+      _messageController.clear();
+      _scrollToBottom();
+    } catch (e) {
+      print('❌ Gửi tin nhắn thất bại: $e');
+    }
   }
 
-  Widget _buildReceivedMessage(String message, String time) {
+  Future<void> _openGiphyStickerPicker() async {
+    GiphyGif? gif = await GiphyGet.getGif(
+      context: context,
+      apiKey: 'sniETMI61J0tfBMaFQHAcHURYG1Jn02N',
+      tabColor: Colors.blue,
+      showStickers: true,
+      searchText: 'Tìm sticker...',
+      modal: true,
+    );
+
+    if (gif != null) {
+      final stickerUrl = gif.images?.original?.url;
+      if (stickerUrl != null) {
+        _sendSticker(stickerUrl);
+      } else {
+        print('⚠️ Không tìm thấy URL cho sticker.');
+      }
+    }
+  }
+
+  void _sendSticker(String stickerUrl) {
+    if (_stompClient?.connected != true || _userId == null) return;
+
+    final msg = {
+      'senderId': _userId,
+      'conversationId': widget.conversationId,
+      'content': stickerUrl,
+      'type': MessageType.STICKER.name,
+    };
+
+    try {
+      _stompClient!.send(
+        destination: '/app/private-message',
+        body: jsonEncode(msg),
+        headers: {'Authorization': 'Bearer $_accessToken'},
+      );
+      _scrollToBottom();
+    } catch (e) {
+      print('❌ Gửi sticker thất bại: $e');
+    }
+  }
+
+  Widget _buildMessageContent(String content, String type) {
+    if (type == MessageType.STICKER.name) {
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(12),
+        child: Image.network(
+          content,
+          width: 140,
+          height: 140,
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) =>
+              const Icon(Icons.broken_image, size: 48),
+        ),
+      );
+    }
+    return Text(content, style: const TextStyle(fontSize: 15));
+  }
+
+  Widget _buildSentMessage(String message, String type, String time) {
     return Padding(
-      padding: const EdgeInsets.only(right: 50, bottom: 16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: const Color(0xFFF1F4F9),
-              borderRadius: BorderRadius.circular(12),
+          Flexible(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                if (type == MessageType.STICKER.name)
+                  _buildMessageContent(message, type)
+                else
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: const BoxDecoration(
+                      color: Color(0xFF4C68D5),
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(16),
+                        topRight: Radius.circular(16),
+                        bottomLeft: Radius.circular(16),
+                      ),
+                    ),
+                    child: _buildMessageContent(message, type),
+                  ),
+                const SizedBox(height: 4),
+                Text(time,
+                    style: const TextStyle(color: Colors.grey, fontSize: 11)),
+              ],
             ),
-            child: Text(message, style: const TextStyle(fontSize: 14)),
           ),
-          const SizedBox(height: 4),
-          Text(time, style: const TextStyle(color: Colors.grey, fontSize: 12)),
         ],
       ),
     );
   }
 
-  Widget _buildSentMessage(String message, String time) {
+  Widget _buildReceivedMessage(String message, String type, String time) {
     return Padding(
-      padding: const EdgeInsets.only(left: 50, bottom: 16),
-      child: Column(
+      padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+      child: Row(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: const Color(0xFF4C68D5),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Text(message, style: const TextStyle(color: Colors.white, fontSize: 14)),
+          CircleAvatar(
+            radius: 14,
+            backgroundImage: widget.avatarUrl.isNotEmpty
+                ? NetworkImage(widget.avatarUrl)
+                : const AssetImage('assets/images/default_avatar.png')
+                    as ImageProvider,
           ),
-          const SizedBox(height: 4),
-          Text(time, style: const TextStyle(color: Colors.grey, fontSize: 12)),
+          const SizedBox(width: 8),
+          Flexible(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (type == MessageType.STICKER.name)
+                  _buildMessageContent(message, type)
+                else
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: const BoxDecoration(
+                      color: Color(0xFFF1F4F9),
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(16),
+                        topRight: Radius.circular(16),
+                        bottomRight: Radius.circular(16),
+                      ),
+                    ),
+                    child: _buildMessageContent(message, type),
+                  ),
+                const SizedBox(height: 4),
+                Text(time,
+                    style: const TextStyle(color: Colors.grey, fontSize: 11)),
+              ],
+            ),
+          ),
         ],
       ),
     );
@@ -158,85 +272,50 @@ class _MessagesConversationScreenState
 
   Widget _buildMessageInput() {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       decoration: BoxDecoration(
         color: Colors.white,
         border: Border(top: BorderSide(color: Colors.grey.shade200)),
       ),
       child: Row(
         children: [
-          CircleAvatar(
-            radius: 16,
-            backgroundImage: widget.avatarUrl.isNotEmpty
-                ? NetworkImage(widget.avatarUrl)
-                : const AssetImage('assets/images/default_avatar.png') as ImageProvider,
+          // Gỡ bỏ icon file và gif
+          IconButton(
+            icon: const Icon(Icons.emoji_emotions_outlined),
+            onPressed: () {
+              Navigator.pop(context);
+              _openGiphyStickerPicker();
+            },
           ),
-          const SizedBox(width: 12),
           Expanded(
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 12),
               decoration: BoxDecoration(
                 color: Colors.grey[100],
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(20),
               ),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      controller: _messageController,
-                      decoration: const InputDecoration(
-                        hintText: "Message ...",
-                        hintStyle: TextStyle(color: Colors.grey),
-                        border: InputBorder.none,
-                        isDense: true,
-                        contentPadding: EdgeInsets.zero,
-                      ),
-                    ),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.send, color: Color(0xFF6174D9)),
-                    padding: EdgeInsets.zero,
-                    constraints: const BoxConstraints(),
-                    onPressed: () {
-                      final content = _messageController.text.trim();
-                      if (content.isNotEmpty && _stompClient?.connected == true && _userId != null) {
-                        final msg = {
-                          'senderId': _userId,
-                          'conversationId': widget.conversationId,
-                          'content': content,
-                          'type': MessageType.TEXT.name,
-                        };
-                        try {
-                          _stompClient!.send(
-                            destination: '/app/private-message',
-                            body: jsonEncode(msg),
-                            headers: {'Authorization': 'Bearer $_accessToken'},
-                          );
-
-                          final model = MessageModel(
-                            id: '',
-                            senderId: _userId!,
-                            conversationId: widget.conversationId,
-                            content: content,
-                            type: MessageType.TEXT,
-                            createdAt: DateTime.now(),
-                            recalled: false,
-                          );
-
-                          Provider.of<MessageViewModel>(context, listen: false).addMessage(model);
-                          print('📤 Đã gửi (chờ xác nhận): $content');
-                          _scrollToBottom();
-                        } catch (e) {
-                          print('❌ Gửi tin nhắn thất bại: $e');
-                        }
-                        _messageController.clear();
-                      } else {
-                        print('⚠️ Không thể gửi: thiếu nội dung hoặc chưa lấy được userId');
-                      }
-                    },
-                  ),
-                ],
+              child: TextField(
+                controller: _messageController,
+                decoration: const InputDecoration(
+                  hintText: "Nhập tin nhắn...",
+                  border: InputBorder.none,
+                ),
+                minLines: 1,
+                maxLines: 5,
+                onSubmitted: (_) => _sendMessage(),
               ),
+            ),
+          ),
+          const SizedBox(width: 8),
+          GestureDetector(
+            onTap: _sendMessage,
+            child: Container(
+              padding: const EdgeInsets.all(10),
+              decoration: const BoxDecoration(
+                shape: BoxShape.circle,
+                color: Color(0xFF4C68D5),
+              ),
+              child: const Icon(Icons.send, color: Colors.white, size: 20),
             ),
           ),
         ],
@@ -252,7 +331,7 @@ class _MessagesConversationScreenState
 
   @override
   Widget build(BuildContext context) {
-    final vm = Provider.of<MessageViewModel>(context);
+    final vm = Provider.of<MessageConversationViewModel>(context);
     final messages = vm.messages;
 
     return SafeArea(
@@ -271,7 +350,8 @@ class _MessagesConversationScreenState
                 radius: 16,
                 backgroundImage: widget.avatarUrl.isNotEmpty
                     ? NetworkImage(widget.avatarUrl)
-                    : const AssetImage('assets/images/default_avatar.png') as ImageProvider,
+                    : const AssetImage('assets/images/default_avatar.png')
+                        as ImageProvider,
               ),
               const SizedBox(width: 8),
               Expanded(
@@ -288,7 +368,8 @@ class _MessagesConversationScreenState
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    const Text("Online", style: TextStyle(color: Colors.grey, fontSize: 12)),
+                    const Text("Online",
+                        style: TextStyle(color: Colors.grey, fontSize: 12)),
                   ],
                 ),
               ),
@@ -301,22 +382,33 @@ class _MessagesConversationScreenState
               child: vm.isLoading
                   ? const Center(child: CircularProgressIndicator())
                   : ListView.builder(
-                controller: _scrollController,
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                itemCount: messages.length,
-                itemBuilder: (context, index) {
-                  final msg = messages[index];
-                  final isMe = msg.senderId == _userId;
-                  return isMe
-                      ? _buildSentMessage(msg.content, _formatTime(msg.createdAt))
-                      : _buildReceivedMessage(msg.content, _formatTime(msg.createdAt));
-                },
-              ),
+                      controller: _scrollController,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 8),
+                      itemCount: messages.length,
+                      itemBuilder: (context, index) {
+                        final msg = messages[index];
+                        final isMe = msg.senderId == _userId;
+                        return isMe
+                            ? _buildSentMessage(msg.content, msg.type.name,
+                                _formatTime(msg.createdAt))
+                            : _buildReceivedMessage(msg.content, msg.type.name,
+                                _formatTime(msg.createdAt));
+                      },
+                    ),
             ),
             _buildMessageInput(),
           ],
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _messageController.dispose();
+    _scrollController.dispose();
+    _stompClient?.deactivate();
+    super.dispose();
   }
 }

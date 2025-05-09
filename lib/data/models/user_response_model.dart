@@ -1,50 +1,34 @@
 class UserResponseModel {
   final String userId;
   final String email;
-  final String username;
   final String displayName;
-  final String nickname;
+  final String? nickname;
   final String avatar;
-  final String bio;
-  final DateTime dob;
-  final String status;
-  final String authProvider;
-  final DateTime createdAt;
-  final DateTime updatedAt;
-  final String role;
+  final String? bio;
+  final String dob;
+  final String friendAction;
 
   UserResponseModel({
     required this.userId,
     required this.email,
-    required this.username,
     required this.displayName,
-    required this.nickname,
+    this.nickname,
     required this.avatar,
-    required this.bio,
+    this.bio,
     required this.dob,
-    required this.status,
-    required this.authProvider,
-    required this.createdAt,
-    required this.updatedAt,
-    required this.role,
+    required this.friendAction,
   });
 
   factory UserResponseModel.fromJson(Map<String, dynamic> json) {
     return UserResponseModel(
-      userId: json['userId'],
-      email: json['email'],
-      username: json['username'],
-      displayName: json['displayName'],
-      nickname: json['nickname'] ?? '',
+      userId: json['userId'] ?? '',
+      email: json['email'] ?? '',
+      displayName: json['displayName'] ?? '',
+      nickname: json['nickname'],
       avatar: json['avatar'] ?? '',
-      bio: json['bio'] ?? '',
-      dob: json['dob'] != null ? DateTime.parse(json['dob']) : DateTime(2000),
-      status: json['status'],
-      authProvider: json['authProvider'],
-      createdAt: DateTime.parse(json['createdAt']),
-      updatedAt: DateTime.parse(json['updatedAt']),
-      role: json['role'],
+      bio: json['bio'],
+      dob: json['dob'] ?? '',
+      friendAction: json['friendAction'] ?? '',
     );
   }
-
 }

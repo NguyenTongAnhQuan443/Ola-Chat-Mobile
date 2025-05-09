@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import '../../core/utils/config/api_config.dart';
+import '../models/user_response_model.dart';
 
 class UserService {
   Future<void> uploadAvatar(File imageFile) async {
@@ -100,4 +101,24 @@ class UserService {
     }
   }
 
+  // Tìm kiếm
+  static Future<UserResponseModel?> search(String query, String token) async {
+    final url = ApiConfig.searchUser(query);
+    final response = await http.get(
+      Uri.parse(url),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+    );
+
+    final decoded = utf8.decode(response.bodyBytes);
+    final data = jsonDecode(decoded);
+
+    if (response.statusCode == 200 && data['data'] != null) {
+      return UserResponseModel.fromJson(data['data']);
+    } else {
+      throw Exception(data['message'] ?? 'Không tìm thấy người dùng');
+    }
+  }
 }

@@ -120,15 +120,15 @@ class _UserProfileInfoScreenState extends State<UserProfileInfomationScreen> {
                     //   style: const TextStyle(color: Colors.grey),
                     // ),
                     const SizedBox(height: 6),
-                    if (user.nickname.isNotEmpty)
+                    if (user.nickname?.isNotEmpty == true)
                       Text(
-                        user.nickname,
+                        user.nickname!,
                         style: const TextStyle(color: Colors.black87),
                       ),
                     const SizedBox(height: 8),
-                    if (user.bio.isNotEmpty)
+                    if (user.bio?.isNotEmpty == true)
                       Text(
-                        user.bio,
+                        user.bio!,
                         style: const TextStyle(color: Colors.black54),
                         textAlign: TextAlign.center,
                       ),

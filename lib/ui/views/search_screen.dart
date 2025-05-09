@@ -136,9 +136,9 @@ class _SearchScreenState extends State<SearchScreen> {
                     subtitle: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(viewModel.result!.nickname),
+                        Text(viewModel.result!.nickname ?? ''),
                         SizedBox(height: 4),
-                        Text(viewModel.result!.bio,
+                        Text(viewModel.result!.bio ?? '',
                             style: TextStyle(fontSize: 12, color: Colors.grey)),
                       ],
                     ),

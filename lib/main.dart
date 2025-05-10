@@ -7,6 +7,8 @@ import 'package:olachat_mobile/ui/views/messages_conversation_screen.dart';
 import 'package:olachat_mobile/view_models/add_group_members_view_model.dart';
 import 'package:olachat_mobile/view_models/create_group_view_model.dart';
 import 'package:olachat_mobile/view_models/group_management_view_model.dart';
+import 'package:olachat_mobile/view_models/group_members_role_view_model.dart';
+import 'package:olachat_mobile/view_models/group_members_view_model.dart';
 import 'package:olachat_mobile/view_models/list_conversation_view_model.dart';
 import 'package:olachat_mobile/view_models/friend_request_view_model.dart';
 import 'package:olachat_mobile/view_models/message_conversation_view_model.dart';
@@ -91,6 +93,8 @@ Future<void> main() async {
         ChangeNotifierProvider(create: (_) => CreateGroupViewModel()),
         ChangeNotifierProvider(create: (_) => GroupManagementViewModel()),
         ChangeNotifierProvider(create: (_) => AddGroupMembersViewModel()),
+        ChangeNotifierProvider(create: (_) => GroupMembersViewModel()),
+        ChangeNotifierProvider(create: (_) => GroupMembersRoleViewModel()),
 
         ChangeNotifierProvider(
           create: (_) => MessageConversationViewModel(),

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:olachat_mobile/data/services/token_service.dart';
 import 'package:provider/provider.dart';
 
 import '../../core/utils/constants.dart';
 import '../../view_models/group_management_view_model.dart';
 import '../widgets/app_logo_header_one.dart';
 import 'add_group_members_screen.dart';
+import 'group_members_screen.dart';
 
 class GroupManagementScreen extends StatefulWidget {
   final String conversationId;
@@ -98,7 +100,18 @@ class _GroupManagementScreenState extends State<GroupManagementScreen> {
                   _buildActionRow(
                     icon: Icons.people_alt_outlined,
                     title: "Xem thành viên",
-                    onTap: () {},
+                    onTap: () async {
+                      final currentUserId = await TokenService.getCurrentUserId();
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => GroupMembersScreen(
+                            conversationId: widget.conversationId,
+                            currentUserId: currentUserId ?? '', // Handle null case
+                          ),
+                        ),
+                      );
+                    },
                   ),
                   _buildActionRow(
                     icon: Icons.person_add_alt,

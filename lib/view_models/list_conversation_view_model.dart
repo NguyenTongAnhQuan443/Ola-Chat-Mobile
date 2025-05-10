@@ -15,6 +15,7 @@ class ListConversationViewModel extends ChangeNotifier {
   Future<void> fetchConversations() async {
     _isLoading = true;
     notifyListeners();
+    print("🌀 [VM] Bắt đầu fetch conversations");
 
     try {
       final token = await TokenService.getAccessToken();
@@ -60,9 +61,12 @@ class ListConversationViewModel extends ChangeNotifier {
 
           _conversations.add(conversation);
         }
-      } else {
-        throw Exception('Failed to load conversations');
       }
+      else {
+        throw Exception('❌ Failed to load conversations');
+      }
+      print("✅ [VM] Fetch thành công ${_conversations.length} cuộc trò chuyện");
+
     } catch (e) {
       debugPrint("❌ Error loading conversations: $e");
     } finally {
@@ -70,4 +74,49 @@ class ListConversationViewModel extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+//   Fetch lại conversation đó
+  void updateConversationFromMessage(Map<String, dynamic> messageData) async {
+    try {
+      final String conversationId = messageData['conversationId'];
+      final String content = messageData['content'];
+      final String messageType = messageData['type']; // TEXT, MEDIA...
+      final DateTime now = DateTime.now();
+
+      // Tìm xem đã có cuộc trò chuyện này chưa
+      final index = _conversations.indexWhere((c) => c.id == conversationId);
+
+      if (index != -1) {
+        // ✅ Cập nhật cuộc trò chuyện hiện có
+        final updated = _conversations[index];
+        updated.lastMessage = messageType == 'TEXT' ? content : '[Media]';
+        updated.updatedAt = now;
+
+        // Đưa lên đầu danh sách
+        _conversations.removeAt(index);
+        _conversations.insert(0, updated);
+      } else {
+        // ❗ Nếu chưa có (ví dụ vừa tạo), gọi API để lấy 1 conversation mới
+        final token = await TokenService.getAccessToken();
+        final res = await http.get(
+          Uri.parse('${ApiConfig.base}/api/conversations/$conversationId'),
+          headers: {
+            'Authorization': 'Bearer $token',
+          },
+        );
+
+        if (res.statusCode == 200) {
+          final data = jsonDecode(utf8.decode(res.bodyBytes));
+          final newConversation = ConversationModel.fromJson(data);
+
+          _conversations.insert(0, newConversation);
+        }
+      }
+
+      notifyListeners();
+    } catch (e) {
+      debugPrint("❌ updateConversationFromMessage error: $e");
+    }
+  }
+
 }

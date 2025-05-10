@@ -1,7 +1,11 @@
 import 'dart:convert';
+import 'package:provider/provider.dart';
 import 'package:stomp_dart_client/stomp_dart_client.dart';
 
 import '../../core/utils/config/api_config.dart';
+import '../../main.dart';
+import '../../view_models/list_conversation_view_model.dart';
+import '../models/message_model.dart';
 
 class SocketService {
   static final SocketService _instance = SocketService._internal();
@@ -49,7 +53,11 @@ class SocketService {
       destination: destination,
       callback: (frame) {
         final body = jsonDecode(frame.body!);
+        // Gọi callback do bạn truyền vào (nếu có)
         callback(body);
+
+        // Gọi hàm xử lý fetch lại danh sách hội thoại
+        onMessageReceived(body);
       },
     );
   }
@@ -60,6 +68,25 @@ class SocketService {
       body: jsonEncode(body),
     );
   }
+
+  // Fetch conversation khi có tin nhắn mới
+  void onMessageReceived(Map<String, dynamic> messageData) {
+    print("📩 [SOCKET] Gọi onMessageReceived");
+
+    final context = navigatorKey.currentContext;
+    if (context != null) {
+      print("📩 [SOCKET] Có context, chuẩn bị gọi fetchConversations");
+
+      // final vm = Provider.of<ListConversationViewModel>(context, listen: false);
+      // vm.fetchConversations();
+      final vm = Provider.of<ListConversationViewModel>(context, listen: false);
+      vm.updateConversationFromMessage(messageData); // ✅ không fetch toàn bộ
+    } else {
+      print("❌ [SOCKET] Không tìm thấy context để gọi fetchConversations");
+    }
+  }
+
+
 
   void disconnect() {
     _client?.deactivate();

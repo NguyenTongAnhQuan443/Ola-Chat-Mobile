@@ -5,6 +5,7 @@ import 'package:olachat_mobile/ui/views/phone_verification_screen.dart';
 import 'package:olachat_mobile/ui/widgets/custom_social_button.dart';
 import 'package:provider/provider.dart';
 import '../../data/services/socket_service.dart';
+import '../../data/services/token_service.dart';
 import '../../main.dart';
 import '../../view_models/login_view_model.dart';
 import '../widgets/app_logo_header_one.dart';
@@ -39,20 +40,42 @@ class _LoginScreenState extends State<LoginScreen> {
     final viewModel = Provider.of<LoginViewModel>(context, listen: false);
     await loginMethod();
 
+    // if (viewModel.authResponse != null) {
+    //   // Connect WS
+    //   final accessToken = viewModel.authResponse!.accessToken;
+    //   if (accessToken.isNotEmpty) {
+    //     SocketService().init(accessToken);
+    //   }
+    //
+    //   // Đảm bảo vẫn chuyển trang
+    //   Future.microtask(() {
+    //     navigatorKey.currentState?.pushReplacement(
+    //       MaterialPageRoute(builder: (_) => const BottomNavigationBarScreen()),
+    //     );
+    //   });
+    // }
     if (viewModel.authResponse != null) {
-      // Connect WS
       final accessToken = viewModel.authResponse!.accessToken;
       if (accessToken.isNotEmpty) {
-        SocketService().init(accessToken);
+        SocketService().init(
+          accessToken,
+          onConnectCallback: () async {
+            final userId = await TokenService.getCurrentUserId();
+            SocketService().subscribe('/user/$userId/private', (messageData) {
+              print('📩 [SOCKET] Nhận tin nhắn mới: $messageData');
+            });
+          },
+        );
       }
 
-      // Đảm bảo vẫn chuyển trang
       Future.microtask(() {
         navigatorKey.currentState?.pushReplacement(
           MaterialPageRoute(builder: (_) => const BottomNavigationBarScreen()),
         );
       });
-    } else {
+    }
+
+    else {
       showErrorSnackBar(context, viewModel.errorMessage ?? 'Có lỗi xảy ra');
     }
   }
@@ -76,19 +99,44 @@ class _LoginScreenState extends State<LoginScreen> {
     }
     await viewModel.loginWithPhone(phone, password);
 
+    // if (viewModel.authResponse != null) {
+    //   // Connect WS
+    //   final accessToken = viewModel.authResponse!.accessToken;
+    //   if (accessToken.isNotEmpty) {
+    //     SocketService().init(accessToken);
+    //   }
+    //   // Đảm bảo vẫn chuyển trang
+    //   Future.microtask(() {
+    //     navigatorKey.currentState?.pushReplacement(
+    //       MaterialPageRoute(builder: (_) => const BottomNavigationBarScreen()),
+    //     );
+    //   });
+    // }
     if (viewModel.authResponse != null) {
-      // Connect WS
+      // Connect WebSocket kèm subscribe
       final accessToken = viewModel.authResponse!.accessToken;
       if (accessToken.isNotEmpty) {
-        SocketService().init(accessToken);
+        SocketService().init(
+          accessToken,
+          onConnectCallback: () async {
+            final userId = await TokenService.getCurrentUserId(); // 👈 Lấy userId
+            SocketService().subscribe('/user/$userId/private', (messageData) {
+              print('📩 [SOCKET] Nhận tin nhắn mới: $messageData');
+              // `onMessageReceived` trong socket sẽ tự fetch lại conversation
+            });
+          },
+        );
       }
-      // Đảm bảo vẫn chuyển trang
+
+      // Điều hướng sang màn hình chính
       Future.microtask(() {
         navigatorKey.currentState?.pushReplacement(
           MaterialPageRoute(builder: (_) => const BottomNavigationBarScreen()),
         );
       });
-    } else {
+    }
+
+    else {
       showErrorSnackBar(context, viewModel.errorMessage ?? 'Có lỗi xảy ra');
     }
   }

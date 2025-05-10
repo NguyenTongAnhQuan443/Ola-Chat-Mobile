@@ -10,6 +10,9 @@ class AppStyles {
   );
   static const double logoIconSize = 32;
   static const String nameApp = "OLA SOCIAL";
+
+  static const Color primaryColor = Color(0xFF4C68D5);
+
 }
 
 // const App Colors

@@ -11,6 +11,8 @@ import '../../view_models/message_conversation_view_model.dart';
 import 'package:giphy_get/giphy_get.dart';
 import 'package:file_picker/file_picker.dart';
 
+import 'group_management_screen.dart';
+
 class MessagesConversationScreen extends StatefulWidget {
   final String conversationId;
   final String conversationName;
@@ -335,7 +337,7 @@ class _MessagesConversationScreenState
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFE5DEFF), // 💜 tím nhạt
+                      color: const Color(0xFFE5DEFF),
                       borderRadius: const BorderRadius.only(
                         topLeft: Radius.circular(16),
                         topRight: Radius.circular(16),
@@ -512,6 +514,37 @@ class _MessagesConversationScreenState
             icon: const Icon(Icons.arrow_back, color: Colors.black87),
             onPressed: () => Navigator.pop(context),
           ),
+          // title: Row(
+          //   children: [
+          //     CircleAvatar(
+          //       radius: 16,
+          //       backgroundImage: widget.avatarUrl.isNotEmpty
+          //           ? NetworkImage(widget.avatarUrl)
+          //           : const AssetImage('assets/images/default_avatar.png')
+          //               as ImageProvider,
+          //     ),
+          //     const SizedBox(width: 8),
+          //     Expanded(
+          //       child: Column(
+          //         crossAxisAlignment: CrossAxisAlignment.start,
+          //         children: [
+          //           Text(
+          //             widget.conversationName,
+          //             maxLines: 1,
+          //             overflow: TextOverflow.ellipsis,
+          //             style: const TextStyle(
+          //               color: Colors.black87,
+          //               fontSize: 16,
+          //               fontWeight: FontWeight.w600,
+          //             ),
+          //           ),
+          //           const Text("Online",
+          //               style: TextStyle(color: Colors.grey, fontSize: 12)),
+          //         ],
+          //       ),
+          //     ),
+          //   ],
+          // ),
           title: Row(
             children: [
               CircleAvatar(
@@ -519,7 +552,7 @@ class _MessagesConversationScreenState
                 backgroundImage: widget.avatarUrl.isNotEmpty
                     ? NetworkImage(widget.avatarUrl)
                     : const AssetImage('assets/images/default_avatar.png')
-                        as ImageProvider,
+                as ImageProvider,
               ),
               const SizedBox(width: 8),
               Expanded(
@@ -543,6 +576,31 @@ class _MessagesConversationScreenState
               ),
             ],
           ),
+          actions: [
+            PopupMenuButton<String>(
+              onSelected: (value) {
+                if (value == 'manage') {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => GroupManagementScreen(
+                        conversationId: widget.conversationId,
+                        groupName: widget.conversationName,
+                        groupAvatar: widget.avatarUrl,
+                      ),
+                    ),
+                  );
+                }
+              },
+              itemBuilder: (context) => [
+                const PopupMenuItem<String>(
+                  value: 'manage',
+                  child: Text('Thông tin nhóm'),
+                ),
+              ],
+            ),
+          ],
+
         ),
         body: Column(
           children: [

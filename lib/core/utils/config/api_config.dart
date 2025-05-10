@@ -73,5 +73,6 @@ class ApiConfig {
   static String get upFile => "$base/files/upload";
 
   // Group
+  static String updateGroup(String groupId) => "$base/api/groups/$groupId";
   static String get createGroup => "$base/api/groups";
 }

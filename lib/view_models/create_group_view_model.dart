@@ -35,7 +35,7 @@ class CreateGroupViewModel extends ChangeNotifier {
 
       if (res.statusCode == 200) {
         final json = jsonDecode(utf8.decode(res.bodyBytes));
-        final data = json['data'];
+        final List<dynamic> data = json['data'];
 
         _friends = data.map((e) => FriendModel.fromJson(e)).toList();
       } else {

@@ -43,14 +43,21 @@ class _MessagesListScreenState extends State<MessagesListScreen> {
                       height: 54,
                       color: Colors.white,
                       child: TextButton(
-                        onPressed: () {
-                          Navigator.push(
+                        onPressed: () async {
+                          final result = await Navigator.push(
                             context,
                             MaterialPageRoute(
                               builder: (context) => const CreateGroupScreen(),
                             ),
                           );
+
+                          // Nếu kết quả trả về là true (tạo nhóm thành công), load lại danh sách
+                          if (result == true && mounted) {
+                            Provider.of<ListConversationViewModel>(context, listen: false)
+                                .fetchConversations();
+                          }
                         },
+
 
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,

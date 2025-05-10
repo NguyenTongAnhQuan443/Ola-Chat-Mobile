@@ -99,14 +99,37 @@ class _GroupMembersScreenState extends State<GroupMembersScreen> {
                     trailing: (currentUserRole == "ADMIN" &&
                         member.userId != widget.currentUserId)
                         ? PopupMenuButton<String>(
-                      onSelected: (value) {
-                        // TODO: xử lý theo action
+                      onSelected: (value) async {
                         if (value == 'kick') {
-                          // Xoá thành viên
-                        } else if (value == 'mod') {
-                          // Phân quyền làm nhóm phó
+                          final confirmed = await showDialog<bool>(
+                            context: context,
+                            builder: (_) => AlertDialog(
+                              title: const Text("Xác nhận"),
+                              content: Text("Bạn có chắc muốn xoá ${member.displayName} khỏi nhóm?"),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.pop(context, false),
+                                  child: const Text("Huỷ"),
+                                ),
+                                ElevatedButton(
+                                  onPressed: () => Navigator.pop(context, true),
+                                  child: const Text("Xoá"),
+                                ),
+                              ],
+                            ),
+                          );
+
+                          if (confirmed == true) {
+                            final success = await vm.removeMember(widget.conversationId, member.userId);
+                            if (context.mounted && success) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text("✅ Đã xoá thành viên")),
+                              );
+                            }
+                          }
                         }
                       },
+
                       itemBuilder: (context) => [
                         const PopupMenuItem(
                           value: 'kick',

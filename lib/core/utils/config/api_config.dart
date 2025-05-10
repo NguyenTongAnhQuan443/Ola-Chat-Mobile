@@ -1,5 +1,5 @@
 class ApiConfig {
-  static String host = "http://192.168.100.135:8080";
+  static String host = "http://172.20.10.3:8080";
   static String get base => "$host/ola-chat";
 
   // OTP
@@ -76,5 +76,7 @@ class ApiConfig {
   static String updateGroup(String groupId) => "$base/api/groups/$groupId";
   static String get createGroup => "$base/api/groups";
   static String addMembersToGroup(String groupId) => "$base/api/groups/$groupId/add-member";
+  static String removeMemberFromGroup(String groupId, String userId) =>
+      "$base/api/groups/$groupId/remove/$userId";
 
 }

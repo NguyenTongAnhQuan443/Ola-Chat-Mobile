@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:olachat_mobile/ui/views/messages_conversation_screen.dart';
+import 'package:olachat_mobile/view_models/add_group_members_view_model.dart';
 import 'package:olachat_mobile/view_models/create_group_view_model.dart';
 import 'package:olachat_mobile/view_models/group_management_view_model.dart';
 import 'package:olachat_mobile/view_models/list_conversation_view_model.dart';
@@ -89,6 +90,8 @@ Future<void> main() async {
         ChangeNotifierProvider(create: (_) => ListConversationViewModel()),
         ChangeNotifierProvider(create: (_) => CreateGroupViewModel()),
         ChangeNotifierProvider(create: (_) => GroupManagementViewModel()),
+        ChangeNotifierProvider(create: (_) => AddGroupMembersViewModel()),
+
         ChangeNotifierProvider(
           create: (_) => MessageConversationViewModel(),
           child: MessagesConversationScreen(

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import '../core/utils/config/api_config.dart';
+import '../data/services/api_service.dart';
 import '../data/services/token_service.dart';
 
 class GroupManagementViewModel extends ChangeNotifier {
@@ -40,6 +41,20 @@ class GroupManagementViewModel extends ChangeNotifier {
       return true;
     } else {
       debugPrint("❌ Cập nhật nhóm thất bại: ${response.body}");
+      return false;
+    }
+  }
+
+//
+  Future<bool> addMembersToGroup(String groupId, List<String> userIds) async {
+    try {
+      final response = await ApiService().post(
+        ApiConfig.addMembersToGroup(groupId),
+        data: {'userIds': userIds},
+      );
+      return response.statusCode == 200;
+    } catch (e) {
+      print("❌ Lỗi khi thêm thành viên vào nhóm: $e");
       return false;
     }
   }

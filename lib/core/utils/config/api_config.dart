@@ -75,4 +75,6 @@ class ApiConfig {
   // Group
   static String updateGroup(String groupId) => "$base/api/groups/$groupId";
   static String get createGroup => "$base/api/groups";
+  static String addMembersToGroup(String groupId) => "$base/api/groups/$groupId/add-member";
+
 }

@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../../core/utils/constants.dart';
 import '../../view_models/group_management_view_model.dart';
 import '../widgets/app_logo_header_one.dart';
+import 'add_group_members_screen.dart';
 
 class GroupManagementScreen extends StatefulWidget {
   final String conversationId;
@@ -102,7 +103,17 @@ class _GroupManagementScreenState extends State<GroupManagementScreen> {
                   _buildActionRow(
                     icon: Icons.person_add_alt,
                     title: "Thêm thành viên",
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => AddGroupMembersScreen(
+                            groupId: widget.conversationId,
+                          ),
+                        ),
+                      );
+                    },
+
                   ),
                   _buildActionRow(
                     icon: Icons.photo,

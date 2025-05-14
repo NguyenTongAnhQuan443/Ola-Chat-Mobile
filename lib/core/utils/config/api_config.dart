@@ -1,5 +1,5 @@
 class ApiConfig {
-  static String host = "http://172.20.10.3:8080";
+  static String host = "http://192.168.100.135:8080";
   static String get base => "$host/ola-chat";
 
   // OTP

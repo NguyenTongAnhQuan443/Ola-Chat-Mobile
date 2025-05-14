@@ -135,7 +135,7 @@ class _MessagesConversationScreenState
       if (stickerUrl != null) {
         _sendSticker(stickerUrl);
       } else {
-        print('⚠️ Không tìm thấy URL cho sticker.');
+        print('Không tìm thấy URL cho sticker.');
       }
     }
   }
@@ -165,7 +165,6 @@ class _MessagesConversationScreenState
               child: Stack(
                 alignment: Alignment.topRight,
                 children: [
-                  // 🎯 Giữ khung kích thước 80% như yêu cầu
                   Container(
                     width: dialogWidth,
                     height: dialogHeight,
@@ -235,7 +234,6 @@ class _MessagesConversationScreenState
 
     if (type == MessageType.MEDIA.name) {
       try {
-        print("🧩 [MEDIA-RENDER] Nội dung message: $content");
         final urls = jsonDecode(content);
         if (urls is List) {
           return Wrap(
@@ -312,7 +310,7 @@ class _MessagesConversationScreenState
           );
         }
       } catch (e) {
-        print('❌ [DEBUG] Lỗi decode mediaUrls: $e');
+        print('[DEBUG] Lỗi decode mediaUrls: $e');
       }
     }
 
@@ -439,7 +437,7 @@ class _MessagesConversationScreenState
               await _pickMediaFiles();
 
               if (_selectedFiles.isEmpty) {
-                print('⚠️ [DEBUG] Không có file nào được chọn.');
+                print('[DEBUG] Không có file nào được chọn.');
                 return;
               }
               try {
@@ -453,7 +451,7 @@ class _MessagesConversationScreenState
                 });
                 _scrollToBottom();
               } catch (e) {
-                print('❌ [DEBUG] Lỗi khi gửi media: $e');
+                print('[DEBUG] Lỗi khi gửi media: $e');
               }
             },
           ),
@@ -514,37 +512,6 @@ class _MessagesConversationScreenState
             icon: const Icon(Icons.arrow_back, color: Colors.black87),
             onPressed: () => Navigator.pop(context),
           ),
-          // title: Row(
-          //   children: [
-          //     CircleAvatar(
-          //       radius: 16,
-          //       backgroundImage: widget.avatarUrl.isNotEmpty
-          //           ? NetworkImage(widget.avatarUrl)
-          //           : const AssetImage('assets/images/default_avatar.png')
-          //               as ImageProvider,
-          //     ),
-          //     const SizedBox(width: 8),
-          //     Expanded(
-          //       child: Column(
-          //         crossAxisAlignment: CrossAxisAlignment.start,
-          //         children: [
-          //           Text(
-          //             widget.conversationName,
-          //             maxLines: 1,
-          //             overflow: TextOverflow.ellipsis,
-          //             style: const TextStyle(
-          //               color: Colors.black87,
-          //               fontSize: 16,
-          //               fontWeight: FontWeight.w600,
-          //             ),
-          //           ),
-          //           const Text("Online",
-          //               style: TextStyle(color: Colors.grey, fontSize: 12)),
-          //         ],
-          //       ),
-          //     ),
-          //   ],
-          // ),
           title: Row(
             children: [
               CircleAvatar(

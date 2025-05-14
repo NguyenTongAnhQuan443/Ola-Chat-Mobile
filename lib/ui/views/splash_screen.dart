@@ -49,7 +49,7 @@ class _SplashScreenState extends State<SplashScreen> {
         final body = jsonDecode(res.body);
         isValid = body['success'] == true;
       } catch (e) {
-        debugPrint('❌ Lỗi introspect token: $e');
+        debugPrint('Lỗi introspect token: $e');
       }
     }
 

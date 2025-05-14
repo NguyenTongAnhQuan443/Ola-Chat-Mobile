@@ -39,10 +39,10 @@ class CreateGroupViewModel extends ChangeNotifier {
 
         _friends = data.map((e) => FriendModel.fromJson(e)).toList();
       } else {
-        print("⚠️ fetchFriends failed with status: ${res.statusCode}");
+        print("fetchFriends failed with status: ${res.statusCode}");
       }
     } catch (e) {
-      print("❌ Error fetchFriends: $e");
+      print("Error fetchFriends: $e");
     }
 
     _isLoading = false;
@@ -72,7 +72,7 @@ class CreateGroupViewModel extends ChangeNotifier {
 
       return res.statusCode == 200 || res.statusCode == 201;
     } catch (e) {
-      print("❌ [GROUP] Lỗi tạo nhóm: $e");
+      print("[GROUP] Lỗi tạo nhóm: $e");
       return false;
     }
   }

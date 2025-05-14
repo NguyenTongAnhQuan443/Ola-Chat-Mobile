@@ -40,7 +40,7 @@ class GroupManagementViewModel extends ChangeNotifier {
     if (response.statusCode == 200) {
       return true;
     } else {
-      debugPrint("❌ Cập nhật nhóm thất bại: ${response.body}");
+      debugPrint("Cập nhật nhóm thất bại: ${response.body}");
       return false;
     }
   }
@@ -54,7 +54,7 @@ class GroupManagementViewModel extends ChangeNotifier {
       );
       return response.statusCode == 200;
     } catch (e) {
-      print("❌ Lỗi khi thêm thành viên vào nhóm: $e");
+      print("Lỗi khi thêm thành viên vào nhóm: $e");
       return false;
     }
   }

@@ -72,7 +72,7 @@ class FriendRequestViewModel extends ChangeNotifier {
         showErrorSnackBar(context, "Hủy lời mời thất bại");
       }
     } catch (e) {
-      debugPrint("❌ cancelRequest error: $e");
+      debugPrint("cancelRequest error: $e");
       showErrorSnackBar(context, "Lỗi hệ thống");
     }
   }
@@ -96,7 +96,7 @@ class FriendRequestViewModel extends ChangeNotifier {
         Future.microtask(() => notifyListeners());
       }
     } catch (e) {
-      debugPrint("❌ fetchSentRequests error: $e");
+      debugPrint("fetchSentRequests error: $e");
     }
   }
 
@@ -118,7 +118,7 @@ class FriendRequestViewModel extends ChangeNotifier {
         final data = raw['data'];
 
         if (data is! List) {
-          debugPrint("❌ Data không phải là List!");
+          debugPrint("Data không phải là List!");
           return;
         }
 
@@ -141,10 +141,10 @@ class FriendRequestViewModel extends ChangeNotifier {
 
         Future.microtask(() => notifyListeners());
       } else {
-        debugPrint("⚠️ fetchReceivedRequests lỗi: ${response.statusCode}");
+        debugPrint("fetchReceivedRequests lỗi: ${response.statusCode}");
       }
     } catch (e) {
-      debugPrint("❌ fetchReceivedRequests error: $e");
+      debugPrint("fetchReceivedRequests error: $e");
     }
   }
 
@@ -168,7 +168,7 @@ class FriendRequestViewModel extends ChangeNotifier {
     try {
       final token = await getToken();
       if (token == null) {
-        debugPrint("❌ Token không tồn tại khi xác nhận lời mời từ $senderId");
+        debugPrint("Token không tồn tại khi xác nhận lời mời từ $senderId");
         showErrorSnackBar(context, "Token không hợp lệ");
         return;
       }
@@ -191,7 +191,7 @@ class FriendRequestViewModel extends ChangeNotifier {
         showErrorSnackBar(context, "Xác nhận thất bại");
       }
     } catch (e) {
-      debugPrint("❌ acceptRequest error: $e");
+      debugPrint("acceptRequest error: $e");
       showErrorSnackBar(context, "Lỗi hệ thống");
     }
   }
@@ -219,7 +219,7 @@ class FriendRequestViewModel extends ChangeNotifier {
         showErrorSnackBar(context, "Từ chối lời mời thất bại!");
       }
     } catch (e) {
-      debugPrint("❌ rejectRequest error: $e");
+      debugPrint("rejectRequest error: $e");
     }
   }
 

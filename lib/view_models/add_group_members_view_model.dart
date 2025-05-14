@@ -41,7 +41,7 @@ class AddGroupMembersViewModel extends ChangeNotifier {
         _friends = data.map((e) => FriendModel.fromJson(e)).toList();
       }
     } catch (e) {
-      print("❌ fetchFriends error: $e");
+      print("fetchFriends error: $e");
     }
 
     _isLoading = false;
@@ -70,7 +70,7 @@ class AddGroupMembersViewModel extends ChangeNotifier {
       notifyListeners();
       return res.statusCode == 200;
     } catch (e) {
-      print("❌ addMembersToGroup error: $e");
+      print("addMembersToGroup error: $e");
       _isSubmitting = false;
       notifyListeners();
       return false;

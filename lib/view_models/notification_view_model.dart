@@ -44,7 +44,7 @@ class NotificationViewModel extends ChangeNotifier {
       topNotifications = result;
       notifyListeners();
     } catch (e) {
-      debugPrint("❌ Lỗi fetchTopNotifications: $e");
+      debugPrint("Lỗi fetchTopNotifications: $e");
     } finally {
       isLoadingTop = false;
       notifyListeners();
@@ -76,7 +76,7 @@ class NotificationViewModel extends ChangeNotifier {
         notifyListeners();
       }
     } catch (e) {
-      debugPrint("❌ Lỗi fetchFriendRequests: $e");
+      debugPrint("Lỗi fetchFriendRequests: $e");
     }
   }
 
@@ -105,7 +105,7 @@ class NotificationViewModel extends ChangeNotifier {
       currentPage++;
       if (result.length < 10) hasMore = false;
     } catch (e) {
-      debugPrint("❌ Lỗi fetchMoreNotifications: $e");
+      debugPrint("Lỗi fetchMoreNotifications: $e");
     } finally {
       isLoadingFullList = false;
       notifyListeners();

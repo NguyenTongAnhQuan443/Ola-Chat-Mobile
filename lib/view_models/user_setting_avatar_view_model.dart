@@ -40,10 +40,10 @@ class UserSettingAvatarViewModel extends ChangeNotifier {
       final response = await http.Response.fromStream(streamedResponse);
 
       if (response.statusCode == 200) {
-        // 👉 Làm mới dữ liệu user từ LoginViewModel
+        // Làm mới dữ liệu user từ LoginViewModel
         await Provider.of<LoginViewModel>(context, listen: false).refreshUserInfo();
 
-        // 👉 Reset hình đã chọn
+        // Reset hình đã chọn
         selectedImage = null;
         showSuccessSnackBar(context, "Cập nhật ảnh đại diện thành công");
       } else {

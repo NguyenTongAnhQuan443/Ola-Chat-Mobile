@@ -58,7 +58,6 @@ class _MessagesListScreenState extends State<MessagesListScreen> {
                           }
                         },
 
-
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: const [

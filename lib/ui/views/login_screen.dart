@@ -98,20 +98,6 @@ class _LoginScreenState extends State<LoginScreen> {
       return;
     }
     await viewModel.loginWithPhone(phone, password);
-
-    // if (viewModel.authResponse != null) {
-    //   // Connect WS
-    //   final accessToken = viewModel.authResponse!.accessToken;
-    //   if (accessToken.isNotEmpty) {
-    //     SocketService().init(accessToken);
-    //   }
-    //   // Đảm bảo vẫn chuyển trang
-    //   Future.microtask(() {
-    //     navigatorKey.currentState?.pushReplacement(
-    //       MaterialPageRoute(builder: (_) => const BottomNavigationBarScreen()),
-    //     );
-    //   });
-    // }
     if (viewModel.authResponse != null) {
       // Connect WebSocket kèm subscribe
       final accessToken = viewModel.authResponse!.accessToken;

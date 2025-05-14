@@ -23,8 +23,8 @@ class SearchViewModel extends ChangeNotifier {
 
       result = await UserService.search(query, token);
     } catch (e, stackTrace) {
-      debugPrint('❌ Lỗi searchUser: $e');
-      debugPrint('🧱 Stack trace: $stackTrace');
+      debugPrint('Lỗi searchUser: $e');
+      debugPrint('Stack trace: $stackTrace');
       error = 'Lỗi kết nối máy chủ';
       result = null;
     }

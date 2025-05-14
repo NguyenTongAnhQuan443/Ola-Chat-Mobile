@@ -29,10 +29,9 @@ class SocketService {
           if (onConnectCallback != null) onConnectCallback();
         },
         beforeConnect: () async {
-          print('📡 Connecting socket...');
           await Future.delayed(const Duration(milliseconds: 200));
         },
-        onWebSocketError: (dynamic error) => print('❌ Socket Error: $error'),
+        onWebSocketError: (dynamic error) => print('Socket Error: $error'),
         stompConnectHeaders: {
           'Authorization': 'Bearer $accessToken',
         },
@@ -53,10 +52,8 @@ class SocketService {
       destination: destination,
       callback: (frame) {
         final body = jsonDecode(frame.body!);
-        // Gọi callback do bạn truyền vào (nếu có)
         callback(body);
 
-        // Gọi hàm xử lý fetch lại danh sách hội thoại
         onMessageReceived(body);
       },
     );
@@ -71,18 +68,18 @@ class SocketService {
 
   // Fetch conversation khi có tin nhắn mới
   void onMessageReceived(Map<String, dynamic> messageData) {
-    print("📩 [SOCKET] Gọi onMessageReceived");
+    print("[SOCKET] Gọi onMessageReceived");
 
     final context = navigatorKey.currentContext;
     if (context != null) {
-      print("📩 [SOCKET] Có context, chuẩn bị gọi fetchConversations");
+      print("[SOCKET] Có context, chuẩn bị gọi fetchConversations");
 
       // final vm = Provider.of<ListConversationViewModel>(context, listen: false);
       // vm.fetchConversations();
       final vm = Provider.of<ListConversationViewModel>(context, listen: false);
-      vm.updateConversationFromMessage(messageData); // ✅ không fetch toàn bộ
+      vm.updateConversationFromMessage(messageData); // không fetch toàn bộ
     } else {
-      print("❌ [SOCKET] Không tìm thấy context để gọi fetchConversations");
+      print("[SOCKET] Không tìm thấy context để gọi fetchConversations");
     }
   }
 

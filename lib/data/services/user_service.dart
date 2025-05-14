@@ -10,7 +10,7 @@ class UserService {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('access_token');
 
-    final uri = Uri.parse(ApiConfig.updateAvatar); // /users/my-avatar
+    final uri = Uri.parse(ApiConfig.updateAvatar);
     final request = http.MultipartRequest('PUT', uri)
       ..headers['Authorization'] = 'Bearer $token'
       ..files.add(await http.MultipartFile.fromPath('avatar', imageFile.path));

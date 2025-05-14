@@ -12,6 +12,9 @@ class AppStyles {
   static const String nameApp = "OLA SOCIAL";
 
   static const Color primaryColor = Color(0xFF4C68D5);
+  static const String warningIcon = "⚠️ - ";
+  static const String successIcon = "✅ - ";
+  static const String failureIcon = "❌ - ";
 
 }
 

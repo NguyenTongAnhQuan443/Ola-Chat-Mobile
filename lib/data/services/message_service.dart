@@ -22,10 +22,10 @@ class MessageService {
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body) as List;
       final messages = data.map((e) => MessageModel.fromJson(e)).toList();
-      print("✅ [fetchMessages] ${messages.length} messages fetched");
+      print("[FetchMessages TRUE] ${messages.length} messages fetched");
       return messages;
     } else {
-      print("❌ [fetchMessages] Failed to fetch: ${response.body}");
+      print("[FetchMessages FALSE] Failed to fetch: ${response.body}");
       throw Exception('Failed to fetch messages');
     }
   }

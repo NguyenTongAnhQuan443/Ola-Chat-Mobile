@@ -21,9 +21,9 @@ class ApiClient {
       return response;
     } on DioException catch (e) {
       final msg = e.response?.data?['message'] ?? e.message;
-      throw Exception('❌ Lỗi API: $msg');
+      throw Exception('Lỗi API: $msg');
     } catch (e) {
-      throw Exception('❌ Lỗi không xác định: $e');
+      throw Exception('Lỗi không xác định: $e');
     }
   }
 }

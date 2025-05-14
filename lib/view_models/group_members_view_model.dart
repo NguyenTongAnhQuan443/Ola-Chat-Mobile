@@ -29,10 +29,10 @@ class GroupMembersViewModel extends ChangeNotifier {
         final List<dynamic> data = jsonDecode(utf8.decode(response.bodyBytes));
         _members = data.map((e) => FriendModel.fromJson(e)).toList();
       } else {
-        print("⚠️ Lỗi lấy thành viên nhóm: ${response.statusCode}");
+        print("Lỗi lấy thành viên nhóm: ${response.statusCode}");
       }
     } catch (e) {
-      print("❌ Exception: $e");
+      print("Exception: $e");
     }
 
     _isLoading = false;

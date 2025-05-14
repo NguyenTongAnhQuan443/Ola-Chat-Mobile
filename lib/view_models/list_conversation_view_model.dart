@@ -15,7 +15,7 @@ class ListConversationViewModel extends ChangeNotifier {
   Future<void> fetchConversations() async {
     _isLoading = true;
     notifyListeners();
-    print("🌀 [VM] Bắt đầu fetch conversations");
+    print("[VM] Bắt đầu fetch conversations");
 
     try {
       final token = await TokenService.getAccessToken();
@@ -63,12 +63,12 @@ class ListConversationViewModel extends ChangeNotifier {
         }
       }
       else {
-        throw Exception('❌ Failed to load conversations');
+        throw Exception('Failed to load conversations');
       }
-      print("✅ [VM] Fetch thành công ${_conversations.length} cuộc trò chuyện");
+      print("[VM] Fetch thành công ${_conversations.length} cuộc trò chuyện");
 
     } catch (e) {
-      debugPrint("❌ Error loading conversations: $e");
+      debugPrint("Error loading conversations: $e");
     } finally {
       _isLoading = false;
       notifyListeners();
@@ -87,7 +87,7 @@ class ListConversationViewModel extends ChangeNotifier {
       final index = _conversations.indexWhere((c) => c.id == conversationId);
 
       if (index != -1) {
-        // ✅ Cập nhật cuộc trò chuyện hiện có
+        // Cập nhật cuộc trò chuyện hiện có
         final updated = _conversations[index];
         updated.lastMessage = messageType == 'TEXT' ? content : '[Media]';
         updated.updatedAt = now;
@@ -96,7 +96,7 @@ class ListConversationViewModel extends ChangeNotifier {
         _conversations.removeAt(index);
         _conversations.insert(0, updated);
       } else {
-        // ❗ Nếu chưa có (ví dụ vừa tạo), gọi API để lấy 1 conversation mới
+        // Nếu chưa có (ví dụ vừa tạo), gọi API để lấy 1 conversation mới
         final token = await TokenService.getAccessToken();
         final res = await http.get(
           Uri.parse('${ApiConfig.base}/api/conversations/$conversationId'),
@@ -115,7 +115,7 @@ class ListConversationViewModel extends ChangeNotifier {
 
       notifyListeners();
     } catch (e) {
-      debugPrint("❌ updateConversationFromMessage error: $e");
+      debugPrint("updateConversationFromMessage error: $e");
     }
   }
 

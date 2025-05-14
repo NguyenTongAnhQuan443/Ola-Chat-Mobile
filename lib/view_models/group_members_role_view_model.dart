@@ -29,10 +29,10 @@ class GroupMembersRoleViewModel extends ChangeNotifier {
         final List<dynamic> data = jsonDecode(utf8.decode(response.bodyBytes));
         _members = data.map((e) => GroupMemberModel.fromJson(e)).toList();
       } else {
-        print('❌ Lỗi lấy danh sách thành viên: ${response.body}');
+        print('Lỗi lấy danh sách thành viên: ${response.body}');
       }
     } catch (e) {
-      print('❌ Lỗi khi fetch thành viên: $e');
+      print('Lỗi khi fetch thành viên: $e');
     }
 
     _isLoading = false;
@@ -54,11 +54,11 @@ class GroupMembersRoleViewModel extends ChangeNotifier {
         notifyListeners();
         return true;
       } else {
-        print("❌ Xoá thành viên thất bại: ${response.statusCode}");
+        print("Xoá thành viên thất bại: ${response.statusCode}");
         return false;
       }
     } catch (e) {
-      print("❌ Lỗi khi xoá thành viên: $e");
+      print("Lỗi khi xoá thành viên: $e");
       return false;
     }
   }

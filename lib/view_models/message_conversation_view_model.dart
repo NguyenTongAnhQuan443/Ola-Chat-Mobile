@@ -79,7 +79,7 @@ class MessageConversationViewModel extends ChangeNotifier {
             notifyListeners();
           }
         } catch (e) {
-          print("❌ [SOCKET] Lỗi khi parse message: \$e");
+          print("[SOCKET] Lỗi khi parse message: \$e");
         }
       },
     );
@@ -170,7 +170,7 @@ class MessageConversationViewModel extends ChangeNotifier {
 
       _socketService.sendMessage('/app/private-message', json);
     } catch (e) {
-      print("❌ Gửi media thất bại: $e");
+      print("Gửi media thất bại: $e");
     }
   }
 
@@ -192,10 +192,10 @@ class MessageConversationViewModel extends ChangeNotifier {
             json['userId']: UserInConversation.fromJson(json)
         };
       } else {
-        print("❌ Lỗi khi fetch users in conversation: ${response.body}");
+        print("Lỗi khi fetch users in conversation: ${response.body}");
       }
     } catch (e) {
-      print("❌ Exception khi fetch users in conversation: $e");
+      print("Exception khi fetch users in conversation: $e");
     }
   }
 

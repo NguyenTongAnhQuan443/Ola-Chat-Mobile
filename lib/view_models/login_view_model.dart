@@ -223,7 +223,7 @@ class LoginViewModel extends ChangeNotifier {
   Future<void> registerDeviceForNotification(String userId) async {
     try {
       if (Firebase.apps.isEmpty) {
-        debugPrint("⚠️ Firebase chưa được khởi tạo. Đang khởi tạo lại...");
+        debugPrint("Firebase chưa được khởi tạo. Đang khởi tạo lại...");
         await Firebase.initializeApp(
           options: DefaultFirebaseOptions.currentPlatform,
         );
@@ -231,7 +231,7 @@ class LoginViewModel extends ChangeNotifier {
 
       final fcmToken = await FirebaseMessaging.instance.getToken();
       if (fcmToken == null) {
-        debugPrint("⚠️ [FCM] Không lấy được token.");
+        debugPrint("[FCM] Không lấy được token.");
         return;
       }
 
@@ -253,13 +253,13 @@ class LoginViewModel extends ChangeNotifier {
 
       final responseBody = utf8.decode(response.bodyBytes);
       debugPrint(
-          "✅ [FCM] Phản hồi server (${response.statusCode}): $responseBody");
+          " [FCM] Phản hồi server (${response.statusCode}): $responseBody");
 
       if (response.statusCode != 200) {
         throw Exception("Đăng ký FCM thất bại: ${response.statusCode}");
       }
     } catch (e) {
-      debugPrint("❌ [FCM] Lỗi khi đăng ký: $e");
+      debugPrint("[FCM] Lỗi khi đăng ký: $e");
     }
   }
 }

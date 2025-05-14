@@ -40,20 +40,6 @@ class _LoginScreenState extends State<LoginScreen> {
     final viewModel = Provider.of<LoginViewModel>(context, listen: false);
     await loginMethod();
 
-    // if (viewModel.authResponse != null) {
-    //   // Connect WS
-    //   final accessToken = viewModel.authResponse!.accessToken;
-    //   if (accessToken.isNotEmpty) {
-    //     SocketService().init(accessToken);
-    //   }
-    //
-    //   // Đảm bảo vẫn chuyển trang
-    //   Future.microtask(() {
-    //     navigatorKey.currentState?.pushReplacement(
-    //       MaterialPageRoute(builder: (_) => const BottomNavigationBarScreen()),
-    //     );
-    //   });
-    // }
     if (viewModel.authResponse != null) {
       final accessToken = viewModel.authResponse!.accessToken;
       if (accessToken.isNotEmpty) {
@@ -62,7 +48,7 @@ class _LoginScreenState extends State<LoginScreen> {
           onConnectCallback: () async {
             final userId = await TokenService.getCurrentUserId();
             SocketService().subscribe('/user/$userId/private', (messageData) {
-              print('📩 [SOCKET] Nhận tin nhắn mới: $messageData');
+              print('[SOCKET] Nhận tin nhắn mới: $messageData');
             });
           },
         );
@@ -105,9 +91,9 @@ class _LoginScreenState extends State<LoginScreen> {
         SocketService().init(
           accessToken,
           onConnectCallback: () async {
-            final userId = await TokenService.getCurrentUserId(); // 👈 Lấy userId
+            final userId = await TokenService.getCurrentUserId(); // Lấy userId
             SocketService().subscribe('/user/$userId/private', (messageData) {
-              print('📩 [SOCKET] Nhận tin nhắn mới: $messageData');
+              print('[SOCKET] Nhận tin nhắn mới: $messageData');
               // `onMessageReceived` trong socket sẽ tự fetch lại conversation
             });
           },

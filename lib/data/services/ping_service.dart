@@ -3,33 +3,34 @@ import 'dart:ui';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import '../../core/utils/config/api_config.dart';
+import '../../core/utils/constants.dart';
 
 class PingService {
   static Timer? _pingTimer;
 
-  /// Bắt đầu gửi ping mỗi 3 phút
+  /// Bắt đầu gửi ping mỗi 5 phút
   static void start() {
-    print("[PingService] STARTED");
     _pingTimer?.cancel();
     _pingTimer = Timer.periodic(const Duration(minutes: 5), (_) {
       _ping();
     });
-    _ping();
+    _ping(); // Ping ngay lập tức khi start
   }
 
   /// Ngưng gửi ping
   static void stop() {
     _pingTimer?.cancel();
     _pingTimer = null;
+    print("${AppStyles.warningIcon}[PING STOPPED] Đã ngừng gửi ping.");
   }
 
   static Future<void> _ping() async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('access_token');
-    print("[TOKEN PING]: $token");
+    print("${AppStyles.warningIcon}[TOKEN PING]: $token");
 
     if (token == null) {
-      print("⚠Không tìm thấy access_token, không gửi ping");
+      print("${AppStyles.failureIcon}[PING ERROR] Không tìm thấy access_token, không gửi ping.");
       return;
     }
 
@@ -43,12 +44,12 @@ class PingService {
       );
 
       if (response.statusCode == 200) {
-        print("[Ping thành công]");
+        print("${AppStyles.successIcon}[PING SUCCESS] Ping thành công.");
       } else {
-        print("⚠Ping thất bại: ${response.statusCode}");
+        print("${AppStyles.failureIcon}[PING FAILED] Mã trạng thái: ${response.statusCode}");
       }
     } catch (e) {
-      print("Ping exception: $e");
+      print("${AppStyles.failureIcon}[PING EXCEPTION] Lỗi khi gửi ping: $e");
     }
   }
 }

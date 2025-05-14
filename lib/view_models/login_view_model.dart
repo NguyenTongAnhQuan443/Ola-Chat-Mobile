@@ -5,6 +5,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import '../core/utils/constants.dart';
 import '../data/models/auth_response_model.dart';
 import '../data/services/token_service.dart';
 import '../data/services/auth_service.dart';
@@ -164,7 +165,7 @@ class LoginViewModel extends ChangeNotifier {
         return true;
       }
     } catch (e) {
-      debugPrint('Refresh token lỗi: $e');
+      debugPrint('${AppStyles.failureIcon}Refresh token lỗi: $e');
     }
     return false;
   }
@@ -186,7 +187,7 @@ class LoginViewModel extends ChangeNotifier {
 
       if (isValid) return true;
     } catch (e) {
-      debugPrint('Introspect token lỗi: $e');
+      debugPrint('${AppStyles.failureIcon}Introspect token lỗi: $e');
     }
 
     return await tryRefreshToken();
@@ -205,7 +206,7 @@ class LoginViewModel extends ChangeNotifier {
       await TokenService.saveUserInfo(jsonEncode(userInfo));
       notifyListeners();
     } catch (e) {
-      debugPrint('refreshUserInfo thất bại: $e');
+      debugPrint('${AppStyles.failureIcon}refreshUserInfo thất bại: $e');
       throw Exception("Lấy thông tin người dùng thất bại");
     }
   }
@@ -223,7 +224,7 @@ class LoginViewModel extends ChangeNotifier {
   Future<void> registerDeviceForNotification(String userId) async {
     try {
       if (Firebase.apps.isEmpty) {
-        debugPrint("Firebase chưa được khởi tạo. Đang khởi tạo lại...");
+        debugPrint("${AppStyles.failureIcon}Firebase chưa được khởi tạo. Đang khởi tạo lại...");
         await Firebase.initializeApp(
           options: DefaultFirebaseOptions.currentPlatform,
         );
@@ -231,7 +232,7 @@ class LoginViewModel extends ChangeNotifier {
 
       final fcmToken = await FirebaseMessaging.instance.getToken();
       if (fcmToken == null) {
-        debugPrint("[FCM] Không lấy được token.");
+        debugPrint('${AppStyles.warningIcon}[FCM] Không lấy được token.');
         return;
       }
 
@@ -240,9 +241,7 @@ class LoginViewModel extends ChangeNotifier {
         'token': fcmToken.toString(),
         'deviceId': deviceId.toString(),
       };
-
-      debugPrint(" [FCM] Gửi yêu cầu đăng ký - Payload: $payload");
-
+      debugPrint('${AppStyles.successIcon}[FCM] Gửi yêu cầu đăng ký - Payload: $payload');
       final response = await http.post(
         Uri.parse(ApiConfig.registerDevice),
         headers: {
@@ -252,14 +251,12 @@ class LoginViewModel extends ChangeNotifier {
       );
 
       final responseBody = utf8.decode(response.bodyBytes);
-      debugPrint(
-          " [FCM] Phản hồi server (${response.statusCode}): $responseBody");
-
+      debugPrint('${AppStyles.successIcon}[FCM] Phản hồi server (${response.statusCode}): $responseBody');
       if (response.statusCode != 200) {
         throw Exception("Đăng ký FCM thất bại: ${response.statusCode}");
       }
     } catch (e) {
-      debugPrint("[FCM] Lỗi khi đăng ký: $e");
+      debugPrint('${AppStyles.failureIcon}[FCM] Lỗi khi đăng ký: $e');
     }
   }
 }

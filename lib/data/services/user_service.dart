@@ -117,8 +117,15 @@ class UserService {
 
     if (response.statusCode == 200 && data['data'] != null) {
       return UserResponseModel.fromJson(data['data']);
-    } else {
-      throw Exception(data['message'] ?? 'Không tìm thấy người dùng');
     }
+
+    if (response.statusCode == 404 || data['message']?.contains("không tìm thấy") == true) {
+      // Trả về null để ViewModel tự xử lý
+      return null;
+    }
+
+    // Những lỗi khác vẫn ném ra
+    throw Exception(data['message'] ?? 'Lỗi không xác định khi tìm kiếm người dùng');
   }
+
 }

@@ -1,6 +1,5 @@
 import 'package:flutter/widgets.dart';
-
-import '../../data/services/ping_service.dart';
+import 'package:olachat_mobile/services/ping_service.dart';
 
 class AppLifecycleHandler extends WidgetsBindingObserver {
   @override

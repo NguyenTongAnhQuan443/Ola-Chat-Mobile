@@ -1,9 +1,9 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import '../core/utils/config/api_config.dart';
-import '../data/services/api_service.dart';
-import '../data/services/token_service.dart';
+import 'package:olachat_mobile/config/api_config.dart';
+import 'package:olachat_mobile/services/api_service.dart';
+import 'package:olachat_mobile/services/token_service.dart';
 
 class GroupManagementViewModel extends ChangeNotifier {
   bool _isUpdating = false;

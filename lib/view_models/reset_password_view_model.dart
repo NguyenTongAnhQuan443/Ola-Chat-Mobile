@@ -2,8 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-
-import '../core/utils/config/api_config.dart';
+import 'package:olachat_mobile/config/api_config.dart';
 import '../ui/views/login_screen.dart';
 import '../ui/widgets/show_snack_bar.dart';
 class ResetPasswordViewModel with ChangeNotifier {

@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
-
-import 'config/api_config.dart';
+import 'package:olachat_mobile/config/api_config.dart';
 
 class ApiClient {
   final Dio dio;

@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:olachat_mobile/core/utils/config/api_config.dart';
-import 'package:olachat_mobile/data/models/message_model.dart';
-import 'package:olachat_mobile/data/services/token_service.dart';
+import 'package:olachat_mobile/config/api_config.dart';
+import 'package:olachat_mobile/models/message_model.dart';
+import 'package:olachat_mobile/services/token_service.dart';
 
 class MessageService {
   Future<List<MessageModel>> fetchMessagesByConversationId(String conversationId) async {

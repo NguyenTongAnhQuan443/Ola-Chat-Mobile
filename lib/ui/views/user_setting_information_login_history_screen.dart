@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
-import 'package:olachat_mobile/core/utils/constants.dart';
 import 'package:olachat_mobile/ui/widgets/app_logo_header_one.dart';
+import 'package:olachat_mobile/utils/app_styles.dart';
 import 'package:provider/provider.dart';
 import 'package:olachat_mobile/view_models/user_setting_information_login_history_view_model.dart';
 import 'package:olachat_mobile/view_models/login_view_model.dart';
@@ -27,7 +27,7 @@ class UserSettingInformationLoginHistoryScreen extends StatelessWidget {
         builder: (context, vm, _) {
           return SafeArea(
             child: Scaffold(
-              backgroundColor: AppColors.backgroundColor,
+              backgroundColor: AppStyles.backgroundColor,
               body: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24),
                 child: Column(

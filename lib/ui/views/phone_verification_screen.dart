@@ -2,11 +2,11 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:http/http.dart' as http;
-import 'package:olachat_mobile/core/utils/constants.dart';
+import 'package:olachat_mobile/config/api_config.dart';
 import 'package:olachat_mobile/ui/views/signup_screen.dart';
 import 'package:olachat_mobile/ui/widgets/app_logo_header_one.dart';
 import 'package:olachat_mobile/ui/widgets/custom_textfield.dart';
-import '../../core/utils/config/api_config.dart';
+import 'package:olachat_mobile/utils/app_styles.dart';
 import '../../main.dart';
 import '../widgets/show_snack_bar.dart';
 
@@ -106,7 +106,7 @@ class _PhoneVerificationScreenState extends State<PhoneVerificationScreen> {
         onTap: () => FocusScope.of(context).unfocus(),
         child: Scaffold(
           resizeToAvoidBottomInset: true,
-          backgroundColor: AppColors.backgroundColor,
+          backgroundColor: AppStyles.backgroundColor,
           body: LayoutBuilder(
             builder: (context, constraints) {
               return SingleChildScrollView(

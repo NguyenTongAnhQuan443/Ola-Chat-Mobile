@@ -3,12 +3,12 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart'
 as dp;
 import 'package:intl/intl.dart';
+import 'package:olachat_mobile/services/user_service.dart';
 import 'package:olachat_mobile/ui/widgets/app_logo_header_one.dart';
 import 'package:olachat_mobile/ui/widgets/show_snack_bar.dart';
+import 'package:olachat_mobile/utils/app_styles.dart';
 import 'package:olachat_mobile/view_models/login_view_model.dart';
 import 'package:provider/provider.dart';
-import '../../core/utils/constants.dart';
-import '../../data/services/user_service.dart';
 
 class UserSettingInfomationUpdateDobScreen extends StatefulWidget {
   const UserSettingInfomationUpdateDobScreen({super.key});
@@ -80,7 +80,7 @@ class _UpdateDobScreenState extends State<UserSettingInfomationUpdateDobScreen> 
         onTap: () => FocusScope.of(context).unfocus(),
         child: Scaffold(
           resizeToAvoidBottomInset: true,
-          backgroundColor: AppColors.backgroundColor,
+          backgroundColor: AppStyles.backgroundColor,
           body: LayoutBuilder(
             builder: (context, constraints) {
               return SingleChildScrollView(

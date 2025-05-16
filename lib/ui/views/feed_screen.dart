@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:olachat_mobile/models/post_model.dart';
+import 'package:olachat_mobile/models/user_model.dart';
 import 'package:olachat_mobile/ui/widgets/custom_sliver_to_box_adapter.dart';
 import 'package:olachat_mobile/ui/widgets/list_post.dart';
 import 'package:olachat_mobile/ui/widgets/app_logo_header_two.dart';
-
-import '../../data/models/post_model.dart';
-import '../../data/models/user_model.dart';
 
 class FeedScreen extends StatefulWidget {
   const FeedScreen({super.key});

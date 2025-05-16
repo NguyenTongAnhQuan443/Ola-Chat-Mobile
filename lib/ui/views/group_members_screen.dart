@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:olachat_mobile/models/group_member_model.dart';
+import 'package:olachat_mobile/utils/app_styles.dart';
 import 'package:provider/provider.dart';
-
-import '../../core/utils/constants.dart';
 import '../../view_models/group_members_role_view_model.dart';
-import '../../data/models/group_member_model.dart';
 import '../widgets/app_logo_header_one.dart';
 
 class GroupMembersScreen extends StatefulWidget {

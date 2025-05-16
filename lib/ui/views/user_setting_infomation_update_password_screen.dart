@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:olachat_mobile/core/utils/constants.dart';
 import 'package:olachat_mobile/ui/widgets/app_logo_header_one.dart';
 import 'package:olachat_mobile/ui/widgets/custom_textfield.dart';
+import 'package:olachat_mobile/utils/app_styles.dart';
 import 'package:olachat_mobile/view_models/update_password_view_model.dart';
 import 'package:provider/provider.dart';
 
@@ -29,7 +29,7 @@ class _UpdatePasswordScreenState extends State<UserSettingInfomationUpdatePasswo
               onTap: () => FocusScope.of(context).unfocus(),
               child: Scaffold(
                 resizeToAvoidBottomInset: true,
-                backgroundColor: AppColors.backgroundColor,
+                backgroundColor: AppStyles.backgroundColor,
                 body: LayoutBuilder(
                   builder: (context, constraints) {
                     return SingleChildScrollView(

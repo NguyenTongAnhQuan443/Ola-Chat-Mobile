@@ -1,11 +1,10 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:olachat_mobile/models/user_response_model.dart';
+import 'package:olachat_mobile/services/user_service.dart';
+import 'package:olachat_mobile/utils/app_styles.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../core/utils/config/api_config.dart';
-import '../core/utils/constants.dart';
-import '../data/models/user_response_model.dart';
-import '../data/services/user_service.dart';
 
 class SearchViewModel extends ChangeNotifier {
   UserResponseModel? result;

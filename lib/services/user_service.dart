@@ -1,8 +1,8 @@
 import 'dart:io';
 import 'package:http/http.dart' as http;
+import 'package:olachat_mobile/config/api_config.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
-import '../../core/utils/config/api_config.dart';
 import '../models/user_response_model.dart';
 
 class UserService {

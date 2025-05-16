@@ -1,4 +1,6 @@
-import 'package:olachat_mobile/data/models/user_model.dart';
+
+
+import 'package:olachat_mobile/models/user_model.dart';
 
 class PostModel {
   final UserModel user;

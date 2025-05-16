@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:olachat_mobile/core/utils/constants.dart';
 import 'package:olachat_mobile/ui/widgets/custom_textfield.dart';
+import 'package:olachat_mobile/utils/app_styles.dart';
 import 'package:olachat_mobile/view_models/forgot_password_view_model.dart';
 import 'package:provider/provider.dart';
 import '../widgets/app_logo_header_one.dart';
@@ -23,7 +23,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
     return SafeArea(
       child: Scaffold(
-        backgroundColor: AppColors.backgroundColor,
+        backgroundColor: AppStyles.backgroundColor,
         resizeToAvoidBottomInset: true,
         body: LayoutBuilder(
           builder: (context, constraints) {

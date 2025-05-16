@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:olachat_mobile/data/services/token_service.dart';
-import 'package:olachat_mobile/data/services/notification_service.dart';
 import 'package:http/http.dart' as http;
+import 'package:olachat_mobile/config/api_config.dart';
 import 'dart:convert';
-import 'package:olachat_mobile/core/utils/config/api_config.dart';
-import '../data/models/notification_model.dart';
+
+import 'package:olachat_mobile/models/notification_model.dart';
+import 'package:olachat_mobile/services/notification_service.dart';
+import 'package:olachat_mobile/services/token_service.dart';
 
 class NotificationViewModel extends ChangeNotifier {
   List<NotificationModel> topNotifications = [];

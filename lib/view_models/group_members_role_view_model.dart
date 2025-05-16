@@ -2,10 +2,9 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-
-import '../core/utils/config/api_config.dart';
-import '../data/models/group_member_model.dart';
-import '../data/services/token_service.dart';
+import 'package:olachat_mobile/config/api_config.dart';
+import 'package:olachat_mobile/models/group_member_model.dart';
+import 'package:olachat_mobile/services/token_service.dart';
 
 class GroupMembersRoleViewModel extends ChangeNotifier {
   List<GroupMemberModel> _members = [];

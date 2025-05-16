@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:olachat_mobile/services/token_service.dart';
 import 'dart:convert';
 import 'package:provider/provider.dart';
 import 'package:olachat_mobile/ui/widgets/app_logo_header_two.dart';
 import 'package:olachat_mobile/view_models/notification_view_model.dart';
 import 'package:olachat_mobile/view_models/friend_request_view_model.dart';
-import '../../data/services/token_service.dart';
 import 'all_friend_requests_screen.dart';
 import 'all_notifications_screen.dart';
 

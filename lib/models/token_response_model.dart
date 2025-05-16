@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
-
-import '../../core/utils/config/api_config.dart';
+import 'package:olachat_mobile/config/api_config.dart';
 
 class TokenResponseModel {
   final String accessToken;

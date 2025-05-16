@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:olachat_mobile/config/api_config.dart';
+import 'package:olachat_mobile/services/ping_service.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:olachat_mobile/ui/views/login_screen.dart';
@@ -6,9 +8,6 @@ import 'package:olachat_mobile/ui/views/bottom_navigationbar_screen.dart';
 import 'package:olachat_mobile/view_models/login_view_model.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:olachat_mobile/core/utils/config/api_config.dart';
-
-import '../../data/services/ping_service.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});

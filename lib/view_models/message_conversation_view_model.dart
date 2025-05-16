@@ -1,14 +1,14 @@
 import 'dart:convert';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import '../core/utils/config/api_config.dart';
-import '../data/enum/message_type.dart';
-import '../data/models/message_model.dart';
-import '../data/models/user_in_conversation_model.dart';
-import '../data/services/file_upload_service.dart';
-import '../data/services/message_service.dart';
-import '../data/services/socket_service.dart';
-import '../data/services/token_service.dart';
+import 'package:olachat_mobile/config/api_config.dart';
+import 'package:olachat_mobile/models/enum/message_type.dart';
+import 'package:olachat_mobile/models/message_model.dart';
+import 'package:olachat_mobile/models/user_in_conversation_model.dart';
+import 'package:olachat_mobile/services/file_upload_service.dart';
+import 'package:olachat_mobile/services/message_service.dart';
+import 'package:olachat_mobile/services/socket_service.dart';
+import 'package:olachat_mobile/services/token_service.dart';
 import 'package:http/http.dart' as http;
 
 class MessageConversationViewModel extends ChangeNotifier {

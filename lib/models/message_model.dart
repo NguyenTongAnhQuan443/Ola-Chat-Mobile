@@ -1,5 +1,4 @@
-import '../enum/message_type.dart';
-
+import 'package:olachat_mobile/models/enum/message_type.dart';
 class MessageModel {
   final String? id;
   final String senderId;

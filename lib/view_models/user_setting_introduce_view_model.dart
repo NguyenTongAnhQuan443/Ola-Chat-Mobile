@@ -1,9 +1,9 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:olachat_mobile/services/user_service.dart';
 import 'package:olachat_mobile/ui/widgets/show_snack_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../data/services/user_service.dart';
 import 'login_view_model.dart';
 
 class UserSettingIntroduceViewModel extends ChangeNotifier {

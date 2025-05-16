@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:olachat_mobile/ui/views/messages_conversation_screen.dart';
 import 'package:olachat_mobile/ui/views/messages_list_screen.dart';
-
-import '../../core/utils/constants.dart';
+import 'package:olachat_mobile/utils/app_styles.dart';
 
 class AppLogoHeaderTwo extends StatelessWidget {
   // DÀNH CHO CÁC TRANG HOME KHI ĐĂNG NHẬP THÀNH CÔNG

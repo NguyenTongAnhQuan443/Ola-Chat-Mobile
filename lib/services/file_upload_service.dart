@@ -1,9 +1,9 @@
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:http_parser/http_parser.dart'; // Bắt buộc để MediaType
+import 'package:http_parser/http_parser.dart';
 import 'package:mime/mime.dart';
-import '../../core/utils/config/api_config.dart';
+import 'package:olachat_mobile/config/api_config.dart';
 
 class FileUploadService {
   static Future<List<String>> uploadFilesIndividually(

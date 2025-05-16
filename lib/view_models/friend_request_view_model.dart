@@ -1,11 +1,10 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:olachat_mobile/config/api_config.dart';
+import 'package:olachat_mobile/models/friend_request_model.dart';
+import 'package:olachat_mobile/services/friend_request_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
-
-import '../core/utils/config/api_config.dart';
-import '../data/models/friend_request_model.dart';
-import '../data/services/friend_request_service.dart';
 import '../ui/widgets/show_snack_bar.dart';
 
 class FriendRequestViewModel extends ChangeNotifier {

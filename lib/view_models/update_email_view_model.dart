@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:olachat_mobile/services/user_service.dart';
 import 'package:provider/provider.dart';
-import '../../data/services/user_service.dart';
 import '../ui/widgets/show_snack_bar.dart';
 import 'login_view_model.dart';
 

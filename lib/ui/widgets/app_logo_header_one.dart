@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:olachat_mobile/core/utils/constants.dart';
+import 'package:olachat_mobile/utils/app_styles.dart';
 
 class AppLogoHeaderOne extends StatelessWidget {
   // DÀNH CHO CÁC TRANG ĐĂNG NHẬP ĐĂNG KÝ V.V

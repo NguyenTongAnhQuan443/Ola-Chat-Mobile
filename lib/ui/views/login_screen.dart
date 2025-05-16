@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:olachat_mobile/core/utils/config/api_config.dart';
-import 'package:olachat_mobile/core/utils/constants.dart';
+import 'package:olachat_mobile/config/api_config.dart';
+import 'package:olachat_mobile/services/socket_service.dart';
+import 'package:olachat_mobile/services/token_service.dart';
 import 'package:olachat_mobile/ui/views/phone_verification_screen.dart';
 import 'package:olachat_mobile/ui/widgets/custom_social_button.dart';
+import 'package:olachat_mobile/utils/app_styles.dart';
 import 'package:provider/provider.dart';
-import '../../data/services/socket_service.dart';
-import '../../data/services/token_service.dart';
 import '../../main.dart';
 import '../../view_models/login_view_model.dart';
 import '../widgets/app_logo_header_one.dart';
@@ -119,7 +119,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
     return SafeArea(
       child: Scaffold(
-        backgroundColor: AppColors.backgroundColor,
+        backgroundColor: AppStyles.backgroundColor,
         resizeToAvoidBottomInset: true,
         body: LayoutBuilder(
           builder: (context, constraints) {

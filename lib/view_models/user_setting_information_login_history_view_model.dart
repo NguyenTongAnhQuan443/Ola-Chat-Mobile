@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:olachat_mobile/core/utils/config/api_config.dart';
 import 'package:http/http.dart' as http;
+import 'package:olachat_mobile/config/api_config.dart';
+import 'package:olachat_mobile/models/login_history_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
-
-import '../data/models/login_history_model.dart';
 
 class UserSettingInformationLoginHistoryViewModel extends ChangeNotifier {
   List<LoginHistoryModel> _items = [];

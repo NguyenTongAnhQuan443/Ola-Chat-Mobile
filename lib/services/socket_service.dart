@@ -1,8 +1,7 @@
 import 'dart:convert';
+import 'package:olachat_mobile/config/api_config.dart';
 import 'package:provider/provider.dart';
 import 'package:stomp_dart_client/stomp_dart_client.dart';
-
-import '../../core/utils/config/api_config.dart';
 import '../../main.dart';
 import '../../view_models/list_conversation_view_model.dart';
 import '../models/message_model.dart';

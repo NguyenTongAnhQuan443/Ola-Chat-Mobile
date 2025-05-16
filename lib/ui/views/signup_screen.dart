@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:olachat_mobile/core/utils/constants.dart';
 import 'package:olachat_mobile/ui/views/bottom_navigationbar_screen.dart';
 import 'package:olachat_mobile/ui/widgets/custom_social_button.dart';
 import 'package:olachat_mobile/ui/widgets/custom_textfield.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart'
 as dp;
+import 'package:olachat_mobile/utils/app_styles.dart';
 import 'package:provider/provider.dart';
 
 import '../../view_models/signup_view_model.dart';
@@ -142,7 +142,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: AppColors.backgroundColor,
+        backgroundColor: AppStyles.backgroundColor,
         body: Padding(
           padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
           child: Column(

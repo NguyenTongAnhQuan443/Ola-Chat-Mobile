@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
-import 'package:olachat_mobile/core/utils/constants.dart';
-import '../../core/utils/config/api_config.dart';
+import 'package:olachat_mobile/config/api_config.dart';
+import 'package:olachat_mobile/utils/app_styles.dart';
 
 class ApiService {
   final Dio _dio = Dio(BaseOptions(

@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:olachat_mobile/core/utils/constants.dart';
-import 'package:olachat_mobile/data/models/post_model.dart';
+import 'package:olachat_mobile/models/post_model.dart';
+import 'package:olachat_mobile/models/user_response_model.dart';
 import 'package:olachat_mobile/ui/views/user_settings_screen.dart';
+import 'package:olachat_mobile/utils/app_styles.dart';
 import 'package:provider/provider.dart';
-
-import '../../data/models/user_response_model.dart';
 import '../../view_models/friend_request_view_model.dart';
 import '../../view_models/login_view_model.dart';
 import '../widgets/custom_sliver_to_box_adapter.dart';

@@ -5,15 +5,15 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import '../core/utils/constants.dart';
-import '../data/models/auth_response_model.dart';
-import '../data/services/token_service.dart';
-import '../data/services/auth_service.dart';
-import '../core/utils/config/api_config.dart';
 import 'package:http/http.dart' as http;
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:olachat_mobile/config/api_config.dart';
+import 'package:olachat_mobile/models/auth_response_model.dart';
+import 'package:olachat_mobile/services/auth_service.dart';
+import 'package:olachat_mobile/services/token_service.dart';
+import 'package:olachat_mobile/utils/app_styles.dart';
 
-import '../firebase_options.dart';
+import '../utils/firebase_options.dart';
 
 class LoginViewModel extends ChangeNotifier {
   final AuthService _authService;

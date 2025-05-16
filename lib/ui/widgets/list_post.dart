@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import '../../data/models/post_model.dart';
+import 'package:olachat_mobile/models/post_model.dart';
 import '../views/comments_screen.dart';
 class ListPost extends StatefulWidget {
   final List<PostModel> posts;

@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-
-import '../../core/utils/config/api_config.dart';
+import 'package:olachat_mobile/config/api_config.dart';
 import '../models/friend_request_model.dart';
 
 class FriendRequestService {

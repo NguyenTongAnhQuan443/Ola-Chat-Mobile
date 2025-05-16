@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'dart:ui';
+import 'package:olachat_mobile/config/api_config.dart';
+import 'package:olachat_mobile/utils/app_styles.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
-import '../../core/utils/config/api_config.dart';
-import '../../core/utils/constants.dart';
 
 class PingService {
   static Timer? _pingTimer;

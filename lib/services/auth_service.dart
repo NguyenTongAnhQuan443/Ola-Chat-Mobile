@@ -1,14 +1,26 @@
+import 'dart:convert';
+import 'package:dio/dio.dart';
 import 'package:olachat_mobile/config/api_config.dart';
-import 'package:olachat_mobile/services/dio_client.dart';
+import 'package:olachat_mobile/models/auth_response_model.dart';
+import 'package:olachat_mobile/services/api_service.dart';
+import 'package:olachat_mobile/services/token_service.dart';
 import 'package:olachat_mobile/utils/app_styles.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'api_service.dart';
-import '../models/auth_response_model.dart';
 
 class AuthService {
   final ApiService _api = ApiService();
 
-  // Login Phone
+  // Gộp chung xử lý login response
+  Future<AuthResponseModel> _processLoginResponse(Response response) async {
+    final rawData = response.data['data'];
+    if (rawData == null) {
+      throw Exception(response.data['message'] ?? 'Không nhận được dữ liệu từ máy chủ.');
+    }
+    final auth = AuthResponseModel.fromJson(rawData);
+    await TokenService.saveTokens(auth.accessToken, auth.refreshToken);
+    return auth;
+  }
+
+  // Đăng nhập bằng số điện thoại
   Future<AuthResponseModel> loginWithPhone(
       String username, String password, String deviceId) async {
     final response = await _api.post(ApiConfig.authLoginPhone, data: {
@@ -16,51 +28,31 @@ class AuthService {
       'password': password,
       'deviceId': deviceId,
     });
-    final rawData = response.data['data'];
-    if (rawData == null) {
-      throw Exception(
-          "${AppStyles.failureIcon}Không nhận được dữ liệu người dùng từ máy chủ.");
-    }
-    final auth = AuthResponseModel.fromJson(rawData);
-    await _saveTokens(auth);
-    return auth;
+    return await _processLoginResponse(response);
   }
 
-  // Login Google
-  Future<AuthResponseModel> loginWithGoogle(
-      String idToken, String deviceId) async {
+  // Đăng nhập bằng Google
+  Future<AuthResponseModel> loginWithGoogle(String idToken, String deviceId) async {
     final response = await _api.post(
       "${ApiConfig.authLoginGoogle}?deviceId=$deviceId",
       data: {'idToken': idToken},
+      useFormUrlEncoded: true,
     );
-    final rawData = response.data['data'];
-    if (rawData == null) {
-      throw Exception(
-          response.data['message'] ?? "Không nhận được dữ liệu từ máy chủ.");
-    }
-    final auth = AuthResponseModel.fromJson(rawData);
-    await _saveTokens(auth);
-    return auth;
+    return await _processLoginResponse(response);
   }
 
-  // Login Facebook
+  // Đăng nhập bằng Facebook
   Future<AuthResponseModel> loginWithFacebook(
       String accessToken, String deviceId) async {
     final response = await _api.post(
       "${ApiConfig.authLoginFacebook}?deviceId=$deviceId",
       data: {'accessToken': accessToken},
+      useFormUrlEncoded: true,
     );
-    final rawData = response.data['data'];
-    if (rawData == null) {
-      throw Exception(
-          response.data['message'] ?? "Không nhận được dữ liệu từ máy chủ.");
-    }
-    final auth = AuthResponseModel.fromJson(rawData);
-    await _saveTokens(auth);
-    return auth;
+    return await _processLoginResponse(response);
   }
 
-  // Gửi OTP với provider
+  // Gửi OTP
   Future<void> sendOtp(String phone, {String provider = "vonage"}) async {
     await _api.post(ApiConfig.otpSend, data: {
       "phone": phone,
@@ -68,9 +60,8 @@ class AuthService {
     });
   }
 
-  // Xác minh OTP với provider
-  Future<void> verifyOtp(String phone, String otp,
-      {String provider = "vonage"}) async {
+  // Xác minh OTP
+  Future<void> verifyOtp(String phone, String otp, {String provider = "vonage"}) async {
     await _api.post(ApiConfig.otpVerify, data: {
       "phone": phone,
       "otp": otp,
@@ -78,41 +69,29 @@ class AuthService {
     });
   }
 
-  // Register
+  // Đăng ký tài khoản
   Future<void> register(Map<String, dynamic> data) async {
     await _api.post(ApiConfig.authRegister, data: data);
   }
 
-  // Logout
+  // Đăng xuất
   Future<void> logout(String accessToken, String refreshToken) async {
     await _api.post(ApiConfig.authLogout, data: {
       'accessToken': accessToken,
       'refreshToken': refreshToken,
     });
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.clear();
+    await TokenService.clearAll(); // dùng service thay vì SharedPreferences trực tiếp
   }
 
-  // Save token
-  Future<void> _saveTokens(AuthResponseModel auth) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('access_token', auth.accessToken);
-    await prefs.setString('refresh_token', auth.refreshToken);
-    print("${AppStyles.greenPointIcon}[TOKEN SAVED] Access: $auth.accessToken");
-    print(
-        "${AppStyles.greenPointIcon}[TOKEN SAVED] Refresh: $auth.refreshToken");
-  }
-
-  // Get Info User
+  // Lấy thông tin người dùng
   Future<Map<String, dynamic>> getMyInfo(String accessToken) async {
-    final response = await DioClient().dio.get(ApiConfig.userInfo);
+    final response = await _api.get(ApiConfig.userInfo);
 
     final data = response.data;
     if (response.statusCode == 200 && data['success'] == true) {
       return data['data'];
     } else {
-      throw Exception(
-          '${AppStyles.failureIcon}Lấy thông tin người dùng thất bại');
+      throw Exception('${AppStyles.failureIcon}Lấy thông tin người dùng thất bại');
     }
   }
 }

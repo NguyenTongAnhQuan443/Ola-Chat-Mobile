@@ -5,18 +5,30 @@ import 'dio_client.dart';
 class ApiService {
   final Dio _dio = DioClient().dio;
 
-  Future<Response> post(String path, {Map<String, dynamic>? data}) async {
+  /// [useFormUrlEncoded]: nếu true, sẽ gửi dữ liệu theo dạng form-urlencoded
+  Future<Response> post(String path,
+      {Map<String, dynamic>? data, bool useFormUrlEncoded = false}) async {
     try {
-      final response = await _dio.post(path, data: data);
-      print("[API POST SUCCESS] - $path → ${response.data}");
+      final response = await _dio.post(
+        path,
+        data: useFormUrlEncoded ? FormData.fromMap(data ?? {}) : data,
+        options: useFormUrlEncoded
+            ? Options(contentType: Headers.formUrlEncodedContentType)
+            : null,
+      );
+
+      print("${AppStyles.successIcon}[API POST SUCCESS] - $path → ${response.data}");
       return response;
     } on DioException catch (e) {
       if (e.response != null) {
-        print("[API POST ERROR] - $path → ${e.response?.data}");
+        print("${AppStyles.failureIcon}[API POST ERROR] - $path → ${e.response?.data}");
         throw Exception(e.response?.data['message'] ?? 'Lỗi máy chủ.');
       } else {
-        print(
-            "${AppStyles.warningIcon}[API ERROR - NO RESPONSE] - $path → ${e.message}");
+        print("${AppStyles.warningIcon}[API ERROR - NO RESPONSE] - $path → ${e.message}");
+        print("[DIO EXCEPTION] type: ${e.type}");
+        print("[DIO EXCEPTION] message: ${e.message}");
+        print("[DIO EXCEPTION] request: ${e.requestOptions.uri}");
+        print("[DIO EXCEPTION] error: ${e.error}");
         throw Exception("Không thể kết nối máy chủ: ${e.message}");
       }
     }

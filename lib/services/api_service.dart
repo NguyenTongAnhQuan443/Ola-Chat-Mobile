@@ -17,17 +17,21 @@ class ApiService {
             : null,
       );
 
-      print("${AppStyles.successIcon}[API POST SUCCESS] - $path → ${response.data}");
+      print(
+          "${AppStyles.successIcon}[API POST SUCCESS] - $path → ${response.data}");
       return response;
     } on DioException catch (e) {
       if (e.response != null) {
-        print("${AppStyles.failureIcon}[API POST ERROR] - $path → ${e.response?.data}");
+        print(
+            "${AppStyles.failureIcon}[API POST ERROR] - $path → ${e.response?.data}");
         throw Exception(e.response?.data['message'] ?? 'Lỗi máy chủ.');
       } else {
-        print("${AppStyles.warningIcon}[API ERROR - NO RESPONSE] - $path → ${e.message}");
+        print(
+            "${AppStyles.warningIcon}[API ERROR - NO RESPONSE] - $path → ${e.message}");
         print("${AppStyles.failureIcon}[DIO EXCEPTION] type: ${e.type}");
         print("${AppStyles.failureIcon}[DIO EXCEPTION] message: ${e.message}");
-        print("${AppStyles.failureIcon}[DIO EXCEPTION] request: ${e.requestOptions.uri}");
+        print(
+            "${AppStyles.failureIcon}[DIO EXCEPTION] request: ${e.requestOptions.uri}");
         print("${AppStyles.failureIcon}[DIO EXCEPTION] error: ${e.error}");
         throw Exception("Không thể kết nối máy chủ: ${e.message}");
       }

@@ -4,7 +4,7 @@ import 'package:olachat_mobile/ui/views/bottom_navigationbar_screen.dart';
 import 'package:olachat_mobile/ui/widgets/custom_social_button.dart';
 import 'package:olachat_mobile/ui/widgets/custom_textfield.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart'
-as dp;
+    as dp;
 import 'package:olachat_mobile/utils/app_styles.dart';
 import 'package:provider/provider.dart';
 
@@ -45,7 +45,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     final age = now.year -
         dob.year -
         ((now.month < dob.month ||
-            (now.month == dob.month && now.day < dob.day))
+                (now.month == dob.month && now.day < dob.day))
             ? 1
             : 0);
     return age >= 18;
@@ -243,15 +243,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               ),
                               child: isLoading
                                   ? const SizedBox(
-                                width: 20,
-                                height: 20,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                                ),
-                              )
+                                      width: 20,
+                                      height: 20,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                        valueColor:
+                                            AlwaysStoppedAnimation<Color>(
+                                                Colors.white),
+                                      ),
+                                    )
                                   : const Text("Đăng ký",
-                                  style: TextStyle(fontSize: 14)),
+                                      style: TextStyle(fontSize: 14)),
                             ),
                           ),
                           const SizedBox(height: 30),

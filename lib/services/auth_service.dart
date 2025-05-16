@@ -27,7 +27,8 @@ class AuthService {
   }
 
   // Login Google
-  Future<AuthResponseModel> loginWithGoogle(String idToken, String deviceId) async {
+  Future<AuthResponseModel> loginWithGoogle(
+      String idToken, String deviceId) async {
     final response = await _api.post(
       "${ApiConfig.authLoginGoogle}?deviceId=$deviceId",
       data: {'idToken': idToken},
@@ -109,7 +110,8 @@ class AuthService {
     if (response.statusCode == 200 && data['success'] == true) {
       return data['data'];
     } else {
-      throw Exception('${AppStyles.failureIcon}Lấy thông tin người dùng thất bại');
+      throw Exception(
+          '${AppStyles.failureIcon}Lấy thông tin người dùng thất bại');
     }
   }
 }

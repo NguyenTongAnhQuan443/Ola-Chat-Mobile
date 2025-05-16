@@ -98,6 +98,9 @@ class LoginViewModel extends ChangeNotifier {
 
     final googleAuth = await googleUser.authentication;
     final idToken = googleAuth.idToken;
+    print("🟡 [DEBUG] GOOGLE ID TOKEN = $idToken");
+    print("🟡 [DEBUG] ID TOKEN LENGTH = ${idToken?.length}");
+    print("🟡 [DEBUG] ID TOKEN FORMAT = ${idToken?.split('.').length ?? 0} parts");
 
     if (idToken == null) {
       _errorMessage = 'Không lấy được ID Token';

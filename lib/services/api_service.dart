@@ -25,10 +25,10 @@ class ApiService {
         throw Exception(e.response?.data['message'] ?? 'Lỗi máy chủ.');
       } else {
         print("${AppStyles.warningIcon}[API ERROR - NO RESPONSE] - $path → ${e.message}");
-        print("[DIO EXCEPTION] type: ${e.type}");
-        print("[DIO EXCEPTION] message: ${e.message}");
-        print("[DIO EXCEPTION] request: ${e.requestOptions.uri}");
-        print("[DIO EXCEPTION] error: ${e.error}");
+        print("${AppStyles.failureIcon}[DIO EXCEPTION] type: ${e.type}");
+        print("${AppStyles.failureIcon}[DIO EXCEPTION] message: ${e.message}");
+        print("${AppStyles.failureIcon}[DIO EXCEPTION] request: ${e.requestOptions.uri}");
+        print("${AppStyles.failureIcon}[DIO EXCEPTION] error: ${e.error}");
         throw Exception("Không thể kết nối máy chủ: ${e.message}");
       }
     }

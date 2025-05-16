@@ -14,6 +14,7 @@ import 'package:olachat_mobile/view_models/list_conversation_view_model.dart';
 import 'package:olachat_mobile/view_models/friend_request_view_model.dart';
 import 'package:olachat_mobile/view_models/message_conversation_view_model.dart';
 import 'package:olachat_mobile/view_models/notification_view_model.dart';
+import 'package:olachat_mobile/view_models/phone_verification_view_model.dart';
 import 'package:olachat_mobile/view_models/socket_view_model.dart';
 import 'utils/firebase_options.dart';
 import 'package:provider/provider.dart';
@@ -21,7 +22,6 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'ui/views/splash_screen.dart';
 import 'view_models/login_view_model.dart';
 import 'view_models/forgot_password_view_model.dart';
-import 'view_models/phone_verification_view_model.dart';
 import 'view_models/reset_password_view_model.dart';
 import 'view_models/signup_view_model.dart';
 import 'view_models/search_view_model.dart';
@@ -78,8 +78,8 @@ Future<void> main() async {
       providers: [
         ChangeNotifierProvider(create: (_) => SocketViewModel()),
         ChangeNotifierProvider(create: (_) => LoginViewModel()),
-        // ChangeNotifierProvider(create: (_) => PhoneVerificationViewModel()),
-        // ChangeNotifierProvider(create: (_) => SignUpViewModel()),
+        ChangeNotifierProvider(create: (_) => PhoneVerificationViewModel()),
+        ChangeNotifierProvider(create: (_) => SignUpViewModel()),
         ChangeNotifierProvider(create: (_) => ForgotPasswordViewModel()),
         ChangeNotifierProvider(create: (_) => ResetPasswordViewModel()),
         // ChangeNotifierProvider(create: (_) => UserSettingAvatarViewModel()),

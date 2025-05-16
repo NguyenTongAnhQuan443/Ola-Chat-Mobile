@@ -60,20 +60,22 @@ class AuthService {
   }
 
   // Gửi OTP với provider
-  Future<void> sendOtp(String phone, {String provider = "vonage"}) async {
+  Future<void> sendOtp(String phone, {String provider = "twillio"}) async {
+    // vonage hoặc twillio
     await _api.post(ApiConfig.otpSend, data: {
       "phone": phone,
-      "provider": provider,
+      // "provider": provider,
     });
   }
 
   // Xác minh OTP với provider
   Future<void> verifyOtp(String phone, String otp,
-      {String provider = "vonage"}) async {
+      {String provider = "twillio"}) async {
+    // vonage hoặc twillio
     await _api.post(ApiConfig.otpVerify, data: {
       "phone": phone,
       "otp": otp,
-      "provider": provider,
+      // "provider": provider,
     });
   }
 

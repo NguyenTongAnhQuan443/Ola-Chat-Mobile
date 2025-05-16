@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:olachat_mobile/config/api_config.dart';
 import 'package:olachat_mobile/services/socket_service.dart';
@@ -26,7 +27,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController hostController =
-      TextEditingController(text: ApiConfig.host);
+  TextEditingController(text: ApiConfig.host);
 
   @override
   void dispose() {
@@ -37,26 +38,23 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> _handleSocialLogin(Future<void> Function() loginMethod) async {
-    final context = navigatorKey.currentContext!;
     final viewModel = Provider.of<LoginViewModel>(context, listen: false);
     await loginMethod();
-
     final auth = viewModel.authResponse;
 
     if (auth != null) {
-      await handleAfterLoginSuccess(context, auth.accessToken);
+      await handleAfterLoginSuccess();
     } else {
       showErrorSnackBar(context, viewModel.errorMessage ?? 'Có lỗi xảy ra');
     }
   }
 
   Future<void> _handleLogin() async {
-    final context = navigatorKey.currentContext!;
     final viewModel = Provider.of<LoginViewModel>(context, listen: false);
     final phone = phoneController.text.trim();
     final password = passwordController.text.trim();
 
-    final phoneRegex = RegExp(r'^0\d{9}$');
+    final phoneRegex = RegExp(r'^0\d{9}\$');
     if (!phoneRegex.hasMatch(phone)) {
       showErrorSnackBar(context,
           'Số điện thoại không hợp lệ. Vui lòng nhập 10 số bắt đầu bằng số 0.');
@@ -71,10 +69,23 @@ class _LoginScreenState extends State<LoginScreen> {
     final auth = viewModel.authResponse;
 
     if (auth != null) {
-      await handleAfterLoginSuccess(context, auth.accessToken);
+      await handleAfterLoginSuccess();
     } else {
       showErrorSnackBar(context, viewModel.errorMessage ?? 'Có lỗi xảy ra');
     }
+  }
+
+  Future<void> handleAfterLoginSuccess() async {
+    final loginVM = Provider.of<LoginViewModel>(context, listen: false);
+    final auth = loginVM.authResponse;
+    if (auth?.accessToken.isNotEmpty == true) {
+      final socketVM = Provider.of<SocketViewModel>(context, listen: false);
+      socketVM.initSocketConnection(auth!.accessToken);
+    }
+
+    navigatorKey.currentState?.pushReplacement(
+      MaterialPageRoute(builder: (_) => const BottomNavigationBarScreen()),
+    );
   }
 
   @override
@@ -105,7 +116,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 flex: 1,
                                 child: Column(
                                   mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
+                                  MainAxisAlignment.spaceEvenly,
                                   children: [
                                     const SizedBox(height: 5),
                                     CustomSocialButton(
@@ -113,28 +124,16 @@ class _LoginScreenState extends State<LoginScreen> {
                                       nameButton: "Đăng nhập với Google",
                                       onPressed: viewModel.isLoading
                                           ? null
-                                          : () => _handleSocialLogin(() async {
-                                                await Provider.of<
-                                                            LoginViewModel>(
-                                                        navigatorKey
-                                                            .currentContext!,
-                                                        listen: false)
-                                                    .loginWithGoogle();
-                                              }),
+                                          : () => _handleSocialLogin(
+                                              () => viewModel.loginWithGoogle()),
                                     ),
                                     CustomSocialButton(
                                       iconPath: "assets/icons/Facebook.png",
                                       nameButton: "Đăng nhập với Facebook",
                                       onPressed: viewModel.isLoading
                                           ? null
-                                          : () => _handleSocialLogin(() async {
-                                                await Provider.of<
-                                                            LoginViewModel>(
-                                                        navigatorKey
-                                                            .currentContext!,
-                                                        listen: false)
-                                                    .loginWithFacebook();
-                                              }),
+                                          : () => _handleSocialLogin(
+                                              () => viewModel.loginWithFacebook()),
                                     ),
                                     const SizedBox(height: 5),
                                     Row(
@@ -147,7 +146,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                         const Padding(
                                           padding: EdgeInsets.symmetric(
                                               horizontal: 10),
-                                          child: Text("OR",
+                                          child: Text("OLA SOCICAL",
                                               style: TextStyle(
                                                   fontSize: 14,
                                                   fontWeight: FontWeight.w500,
@@ -168,7 +167,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 flex: 1,
                                 child: Column(
                                   mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
+                                  MainAxisAlignment.spaceEvenly,
                                   children: [
                                     CustomTextField(
                                       labelText: "Số điện thoại",
@@ -182,13 +181,14 @@ class _LoginScreenState extends State<LoginScreen> {
                                       isPassword: true,
                                       enabled: true,
                                     ),
-                                    CustomTextField(
-                                      labelText:
-                                          "Host (ví dụ: http://192.168.1.4:8080)",
-                                      controller: hostController,
-                                      isPassword: false,
-                                      enabled: true,
-                                    ),
+                                    if (kDebugMode)
+                                      CustomTextField(
+                                        labelText:
+                                        "Host (ví dụ: http://192.168.1.4:8080)",
+                                        controller: hostController,
+                                        isPassword: false,
+                                        enabled: true,
+                                      ),
                                     Align(
                                       alignment: Alignment.centerRight,
                                       child: InkWell(
@@ -197,7 +197,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                             context,
                                             MaterialPageRoute(
                                                 builder: (context) =>
-                                                    const ForgotPasswordScreen()),
+                                                const ForgotPasswordScreen()),
                                           );
                                         },
                                         child: const Text("Quên mật khẩu ?",
@@ -221,13 +221,13 @@ class _LoginScreenState extends State<LoginScreen> {
                                       child: ElevatedButton(
                                         onPressed: viewModel.isLoading
                                             ? null
-                                            : () => _handleLogin(),
+                                            : _handleLogin,
                                         style: ElevatedButton.styleFrom(
                                           backgroundColor: Colors.black,
                                           foregroundColor: Colors.white,
                                           shape: RoundedRectangleBorder(
                                             borderRadius:
-                                                BorderRadius.circular(8),
+                                            BorderRadius.circular(8),
                                           ),
                                           side: BorderSide(
                                               color: Colors.grey.shade300),
@@ -235,37 +235,37 @@ class _LoginScreenState extends State<LoginScreen> {
                                         ),
                                         child: viewModel.isLoading
                                             ? const SizedBox(
-                                                width: 20,
-                                                height: 20,
-                                                child:
-                                                    CircularProgressIndicator(
-                                                  strokeWidth: 2,
-                                                  valueColor:
-                                                      AlwaysStoppedAnimation<
-                                                          Color>(Colors.white),
-                                                ),
-                                              )
+                                          width: 20,
+                                          height: 20,
+                                          child:
+                                          CircularProgressIndicator(
+                                            strokeWidth: 2,
+                                            valueColor:
+                                            AlwaysStoppedAnimation<
+                                                Color>(Colors.white),
+                                          ),
+                                        )
                                             : const Text("Đăng nhập",
-                                                style: TextStyle(fontSize: 14)),
+                                            style: TextStyle(fontSize: 14)),
                                       ),
                                     ),
                                     const SizedBox(height: 30),
                                     Row(
                                       mainAxisAlignment:
-                                          MainAxisAlignment.center,
+                                      MainAxisAlignment.center,
                                       children: [
                                         const Text("Bạn chưa có tài khoản?",
                                             style: TextStyle(fontSize: 14)),
                                         const SizedBox(width: 5),
                                         InkWell(
-                                          // onTap: () {
-                                          //   Navigator.push(
-                                          //     context,
-                                          //     MaterialPageRoute(
-                                          //         builder: (context) =>
-                                          //             PhoneVerificationScreen()),
-                                          //   );
-                                          // },
+                                          onTap: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      PhoneVerificationScreen()),
+                                            );
+                                          },
                                           child: const Text("Đăng ký",
                                               style: TextStyle(
                                                   fontSize: 14,
@@ -290,19 +290,5 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
     );
-  }
-
-  Future<void> handleAfterLoginSuccess(
-      BuildContext context, String accessToken) async {
-    if (accessToken.isNotEmpty) {
-      final socketVM = Provider.of<SocketViewModel>(context, listen: false);
-      socketVM.initSocketConnection(accessToken);
-    }
-
-    Future.microtask(() {
-      navigatorKey.currentState?.pushReplacement(
-        MaterialPageRoute(builder: (_) => const BottomNavigationBarScreen()),
-      );
-    });
   }
 }

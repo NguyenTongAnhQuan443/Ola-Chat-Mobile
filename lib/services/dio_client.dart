@@ -1,6 +1,10 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:olachat_mobile/config/api_config.dart';
+import 'package:olachat_mobile/main.dart';
 import 'package:olachat_mobile/services/token_service.dart';
+import 'package:olachat_mobile/services/socket_service.dart';
+import 'package:olachat_mobile/ui/views/login_screen.dart';
 import 'package:olachat_mobile/utils/app_styles.dart';
 
 class DioClient {
@@ -19,8 +23,10 @@ class DioClient {
 
     dio.interceptors.add(InterceptorsWrapper(
       onRequest: (options, handler) async {
-        final List<String> publicEndpoints = [
+        const publicEndpoints = [
           '/auth/login',
+          '/auth/login/google',
+          '/auth/login/facebook',
           '/auth/introspect',
           '/auth/logout',
           '/auth/refresh',
@@ -39,9 +45,8 @@ class DioClient {
           '/api/notifications/register-device',
         ];
 
-        // Kiểm tra xem URL có thuộc danh sách public hay không
         final isPublic = publicEndpoints.any((path) =>
-            options.path.startsWith(path) || options.uri.path.contains(path));
+        options.path.startsWith(path) || options.uri.path.contains(path));
 
         if (!isPublic) {
           final token = await TokenService.getAccessToken();
@@ -52,38 +57,48 @@ class DioClient {
 
         handler.next(options);
       },
-      onError: (error, handler) async {
-        final isUnauthorized = error.response?.statusCode == 401;
 
-        // Trường hợp đặc biệt: không có response mà vẫn phải kiểm tra lại token
-        final isUnknownWithAccessToken =
+      onError: (error, handler) async {
+        final requestOptions = error.requestOptions;
+        final hasRetried = requestOptions.extra['hasRetried'] == true;
+
+        final isUnauthorized = error.response?.statusCode == 401;
+        final isUnknownWithToken =
             error.type == DioExceptionType.unknown &&
                 await TokenService.getAccessToken() != null;
 
-        if (isUnauthorized || isUnknownWithAccessToken) {
+        if ((isUnauthorized || isUnknownWithToken) && !hasRetried) {
           final refreshed = await _refreshToken();
+
           if (refreshed) {
             final newToken = await TokenService.getAccessToken();
-            final options = Options(
-              method: error.requestOptions.method,
+
+            final newOptions = Options(
+              method: requestOptions.method,
               headers: {
-                ...error.requestOptions.headers,
+                ...requestOptions.headers,
                 'Authorization': 'Bearer $newToken',
+              },
+              extra: {
+                ...requestOptions.extra,
+                'hasRetried': true,
               },
             );
 
             try {
               final response = await dio.request(
-                error.requestOptions.path,
-                data: error.requestOptions.data,
-                queryParameters: error.requestOptions.queryParameters,
-                options: options,
+                requestOptions.path,
+                data: requestOptions.data,
+                queryParameters: requestOptions.queryParameters,
+                options: newOptions,
               );
               return handler.resolve(response);
             } catch (_) {
-              // Nếu gọi lại cũng lỗi → tiếp tục trả lỗi
               return handler.next(error);
             }
+          } else {
+            await _forceLogout(); // GỌI NGẮT SOCKET + ĐĂNG XUẤT
+            return handler.reject(error);
           }
         }
 
@@ -102,16 +117,33 @@ class DioClient {
         ApiConfig.authRefresh,
         data: {'refreshToken': refreshToken},
       );
+
       final data = response.data['data'];
       if (response.statusCode == 200 && data != null) {
-        await TokenService.saveTokens(
-            data['accessToken'], data['refreshToken']);
-        print("${AppStyles.greenPointIcon}Token đã được làm mới thành công");
+        await TokenService.saveTokens(data['accessToken'], data['refreshToken']);
+        print("${AppStyles.greenPointIcon} Token đã được làm mới thành công.");
         return true;
       }
     } catch (e) {
-      print('${AppStyles.failureIcon}[DIO] Refresh token failed: $e');
+      print("${AppStyles.failureIcon} Refresh token thất bại: $e");
     }
+
     return false;
+  }
+
+  static Future<void> _forceLogout() async {
+    print('${AppStyles.failureIcon} Token không còn hợp lệ. Đăng xuất người dùng...');
+
+    // Ngắt kết nối socket
+    SocketService().disconnect();
+
+    // Xoá token và dữ liệu liên quan
+    await TokenService.clearAll();
+
+    // Chuyển về màn hình đăng nhập
+    navigatorKey.currentState?.pushAndRemoveUntil(
+      MaterialPageRoute(builder: (_) => const LoginScreen()),
+          (route) => false,
+    );
   }
 }

@@ -192,14 +192,14 @@ class _LoginScreenState extends State<LoginScreen> {
                                     Align(
                                       alignment: Alignment.centerRight,
                                       child: InkWell(
-                                        // onTap: () {
-                                        //   Navigator.push(
-                                        //     context,
-                                        //     MaterialPageRoute(
-                                        //         builder: (context) =>
-                                        //             const ForgotPasswordScreen()),
-                                        //   );
-                                        // },
+                                        onTap: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    const ForgotPasswordScreen()),
+                                          );
+                                        },
                                         child: const Text("Quên mật khẩu ?",
                                             style: TextStyle(
                                                 color: Colors.grey,

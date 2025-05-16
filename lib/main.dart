@@ -14,6 +14,7 @@ import 'package:olachat_mobile/view_models/list_conversation_view_model.dart';
 import 'package:olachat_mobile/view_models/friend_request_view_model.dart';
 import 'package:olachat_mobile/view_models/message_conversation_view_model.dart';
 import 'package:olachat_mobile/view_models/notification_view_model.dart';
+import 'package:olachat_mobile/view_models/socket_view_model.dart';
 import 'utils/firebase_options.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -75,31 +76,31 @@ Future<void> main() async {
   runApp(
     MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (_) => SocketViewModel()),
         ChangeNotifierProvider(create: (_) => LoginViewModel()),
-        ChangeNotifierProvider(create: (_) => PhoneVerificationViewModel()),
-        ChangeNotifierProvider(create: (_) => SignUpViewModel()),
-        ChangeNotifierProvider(create: (_) => ForgotPasswordViewModel()),
-        ChangeNotifierProvider(create: (_) => ResetPasswordViewModel()),
-        ChangeNotifierProvider(create: (_) => UserSettingAvatarViewModel()),
-        ChangeNotifierProvider(create: (_) => SearchViewModel()),
-        ChangeNotifierProvider(create: (_) => FriendRequestViewModel()),
-        ChangeNotifierProvider(create: (_) => NotificationViewModel()),
+        // ChangeNotifierProvider(create: (_) => PhoneVerificationViewModel()),
+        // ChangeNotifierProvider(create: (_) => SignUpViewModel()),
+        // ChangeNotifierProvider(create: (_) => ForgotPasswordViewModel()),
+        // ChangeNotifierProvider(create: (_) => ResetPasswordViewModel()),
+        // ChangeNotifierProvider(create: (_) => UserSettingAvatarViewModel()),
+        // ChangeNotifierProvider(create: (_) => SearchViewModel()),
+        // ChangeNotifierProvider(create: (_) => FriendRequestViewModel()),
+        // ChangeNotifierProvider(create: (_) => NotificationViewModel()),
         ChangeNotifierProvider(create: (_) => ListConversationViewModel()),
-        ChangeNotifierProvider(create: (_) => CreateGroupViewModel()),
-        ChangeNotifierProvider(create: (_) => GroupManagementViewModel()),
-        ChangeNotifierProvider(create: (_) => AddGroupMembersViewModel()),
-        ChangeNotifierProvider(create: (_) => GroupMembersViewModel()),
-        ChangeNotifierProvider(create: (_) => GroupMembersRoleViewModel()),
+        // ChangeNotifierProvider(create: (_) => CreateGroupViewModel()),
+        // ChangeNotifierProvider(create: (_) => GroupManagementViewModel()),
+        // ChangeNotifierProvider(create: (_) => AddGroupMembersViewModel()),
+        // ChangeNotifierProvider(create: (_) => GroupMembersViewModel()),
+        // ChangeNotifierProvider(create: (_) => GroupMembersRoleViewModel()),
 
-        ChangeNotifierProvider(
-          create: (_) => MessageConversationViewModel(),
-          child: MessagesConversationScreen(
-            conversationId: "...",
-            conversationName: "...",
-            avatarUrl: "...",
-          ),
-        )
-
+        // ChangeNotifierProvider(
+        //   create: (_) => MessageConversationViewModel(),
+        //   child: MessagesConversationScreen(
+        //     conversationId: "...",
+        //     conversationName: "...",
+        //     avatarUrl: "...",
+        //   ),
+        // )
       ],
       child: const MyApp(),
     ),

@@ -1,3 +1,4 @@
+import 'package:olachat_mobile/utils/app_styles.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
@@ -6,10 +7,12 @@ class TokenService {
   static const _refreshTokenKey = 'refresh_token';
   static const _userInfoKey = 'user_info';
 
-  static Future<void> saveTokens(String accessToken, String refreshToken) async {
+  static Future<void> saveTokens(
+      String accessToken, String refreshToken) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_accessTokenKey, accessToken);
     await prefs.setString(_refreshTokenKey, refreshToken);
+    print("${AppStyles.greenPointIcon} Token mới đã được lưu: $accessToken");
   }
 
   static Future<String?> getAccessToken() async {
@@ -39,7 +42,6 @@ class TokenService {
     await prefs.remove(_userInfoKey);
   }
 
-
   static Future<String?> getCurrentUserId() async {
     final userInfoJson = await getUserInfo();
     if (userInfoJson == null) return null;
@@ -48,7 +50,7 @@ class TokenService {
       final data = jsonDecode(userInfoJson);
       return data['userId'];
     } catch (e) {
-      print("Lỗi khi decode user info: $e");
+      print("${AppStyles.failureIcon}Lỗi khi decode user info: $e");
       return null;
     }
   }

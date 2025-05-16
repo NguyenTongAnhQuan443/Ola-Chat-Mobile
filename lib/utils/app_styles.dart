@@ -18,5 +18,7 @@ class AppStyles {
   static const String warningIcon = "⚠️ - ";
   static const String successIcon = "✅ - ";
   static const String failureIcon = "❌ - ";
-
+  static const String greenPointIcon = "🟢 - ";
+  static const String redPointIcon = "🔴  - ";
+  static const String phoneIcon = "📱- ";
 }

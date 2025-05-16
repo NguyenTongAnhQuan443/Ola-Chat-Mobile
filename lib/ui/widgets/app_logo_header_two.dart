@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:olachat_mobile/ui/views/messages_conversation_screen.dart';
-import 'package:olachat_mobile/ui/views/messages_list_screen.dart';
 import 'package:olachat_mobile/utils/app_styles.dart';
 
 class AppLogoHeaderTwo extends StatelessWidget {
@@ -38,12 +36,12 @@ class AppLogoHeaderTwo extends StatelessWidget {
               // },
             ),
             InkWell(
-              onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => MessagesListScreen()));
-              },
+              // onTap: () {
+              //   Navigator.push(
+              //       context,
+              //       MaterialPageRoute(
+              //           builder: (context) => MessagesListScreen()));
+              // },
               child: Image.asset(
                 'assets/icons/Send.png',
                 width: 20,

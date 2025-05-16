@@ -29,7 +29,7 @@ class _FeedScreenState extends State<FeedScreen> {
     PostModel(
       user: UserModel(
         avatarUrl:
-        "https://netizenturkey.net/wp-content/uploads/2023/12/1703066681-20231220-gdragon.jpg",
+            "https://netizenturkey.net/wp-content/uploads/2023/12/1703066681-20231220-gdragon.jpg",
         userName: "G-Dragon",
         nickName: "Anh Long !!!",
       ),
@@ -41,7 +41,7 @@ class _FeedScreenState extends State<FeedScreen> {
     PostModel(
       user: UserModel(
         avatarUrl:
-        "https://netizenturkey.net/wp-content/uploads/2023/12/1703066681-20231220-gdragon.jpg",
+            "https://netizenturkey.net/wp-content/uploads/2023/12/1703066681-20231220-gdragon.jpg",
         userName: "G-Dragon",
         nickName: "Anh Long !!!",
       ),
@@ -53,7 +53,7 @@ class _FeedScreenState extends State<FeedScreen> {
     PostModel(
       user: UserModel(
         avatarUrl:
-        "https://netizenturkey.net/wp-content/uploads/2023/12/1703066681-20231220-gdragon.jpg",
+            "https://netizenturkey.net/wp-content/uploads/2023/12/1703066681-20231220-gdragon.jpg",
         userName: "G-Dragon",
         nickName: "Anh Long !!!",
       ),
@@ -65,7 +65,7 @@ class _FeedScreenState extends State<FeedScreen> {
     PostModel(
       user: UserModel(
         avatarUrl:
-        "https://netizenturkey.net/wp-content/uploads/2023/12/1703066681-20231220-gdragon.jpg",
+            "https://netizenturkey.net/wp-content/uploads/2023/12/1703066681-20231220-gdragon.jpg",
         userName: "G-Dragon",
         nickName: "Anh Long !!!",
       ),
@@ -160,7 +160,10 @@ class _FeedScreenState extends State<FeedScreen> {
           CustomSliverToBoxAdapter(),
 
           // View 3 - List Post
-          ListPost(posts: posts, showCommentButton: true,)
+          ListPost(
+            posts: posts,
+            showCommentButton: true,
+          )
         ],
       ),
     );

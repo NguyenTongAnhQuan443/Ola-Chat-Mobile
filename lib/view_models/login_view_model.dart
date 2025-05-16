@@ -10,6 +10,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:olachat_mobile/config/api_config.dart';
 import 'package:olachat_mobile/models/auth_response_model.dart';
 import 'package:olachat_mobile/services/auth_service.dart';
+import 'package:olachat_mobile/services/dio_client.dart';
 import 'package:olachat_mobile/services/token_service.dart';
 import 'package:olachat_mobile/utils/app_styles.dart';
 
@@ -147,59 +148,13 @@ class LoginViewModel extends ChangeNotifier {
     }
   }
 
-  Future<bool> tryRefreshToken() async {
-    final refreshToken = await TokenService.getRefreshToken();
-    if (refreshToken == null) return false;
-
-    try {
-      final response = await http.post(
-        Uri.parse('${ApiConfig.base}/auth/refresh'),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'refreshToken': refreshToken}),
-      );
-      final data = jsonDecode(utf8.decode(response.bodyBytes));
-      if (response.statusCode == 200 && data['success'] == true) {
-        final newAccess = data['data']['accessToken'];
-        final newRefresh = data['data']['refreshToken'];
-        await TokenService.saveTokens(newAccess, newRefresh);
-        return true;
-      }
-    } catch (e) {
-      debugPrint('${AppStyles.failureIcon}Refresh token lỗi: $e');
-    }
-    return false;
-  }
-
-  Future<bool> validateOrRefreshToken() async {
-    final token = await TokenService.getAccessToken();
-
-    if (token == null) return false;
-
-    try {
-      final res = await http.post(
-        Uri.parse(ApiConfig.authIntrospect),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'token': token}),
-      );
-
-      final body = jsonDecode(res.body);
-      final isValid = body['success'] == true;
-
-      if (isValid) return true;
-    } catch (e) {
-      debugPrint('${AppStyles.failureIcon}Introspect token lỗi: $e');
-    }
-
-    return await tryRefreshToken();
-  }
-
   Map<String, dynamic>? _userInfo;
   Map<String, dynamic>? get userInfo => _userInfo;
 
   Future<void> refreshUserInfo() async {
     try {
       final token = await TokenService.getAccessToken();
-      if (token == null) throw Exception("Token không tồn tại");
+      if (token == null) throw Exception("${AppStyles.failureIcon}Token không tồn tại");
 
       final userInfo = await _authService.getMyInfo(token);
       _userInfo = userInfo;
@@ -207,7 +162,7 @@ class LoginViewModel extends ChangeNotifier {
       notifyListeners();
     } catch (e) {
       debugPrint('${AppStyles.failureIcon}refreshUserInfo thất bại: $e');
-      throw Exception("Lấy thông tin người dùng thất bại");
+      throw Exception("${AppStyles.failureIcon}Lấy thông tin người dùng thất bại");
     }
   }
 
@@ -224,7 +179,8 @@ class LoginViewModel extends ChangeNotifier {
   Future<void> registerDeviceForNotification(String userId) async {
     try {
       if (Firebase.apps.isEmpty) {
-        debugPrint("${AppStyles.failureIcon}Firebase chưa được khởi tạo. Đang khởi tạo lại...");
+        debugPrint(
+            "${AppStyles.failureIcon}Firebase chưa được khởi tạo. Đang khởi tạo lại...");
         await Firebase.initializeApp(
           options: DefaultFirebaseOptions.currentPlatform,
         );
@@ -241,7 +197,8 @@ class LoginViewModel extends ChangeNotifier {
         'token': fcmToken.toString(),
         'deviceId': deviceId.toString(),
       };
-      debugPrint('${AppStyles.successIcon}[FCM] Gửi yêu cầu đăng ký - Payload: $payload');
+      debugPrint(
+          '${AppStyles.successIcon}[FCM] Gửi yêu cầu đăng ký - Payload: $payload');
       final response = await http.post(
         Uri.parse(ApiConfig.registerDevice),
         headers: {
@@ -251,12 +208,32 @@ class LoginViewModel extends ChangeNotifier {
       );
 
       final responseBody = utf8.decode(response.bodyBytes);
-      debugPrint('${AppStyles.successIcon}[FCM] Phản hồi server (${response.statusCode}): $responseBody');
+      debugPrint(
+          '${AppStyles.successIcon}[FCM] Phản hồi server (${response.statusCode}): $responseBody');
       if (response.statusCode != 200) {
-        throw Exception("Đăng ký FCM thất bại: ${response.statusCode}");
+        throw Exception("${AppStyles.failureIcon}Đăng ký FCM thất bại: ${response.statusCode}");
       }
     } catch (e) {
       debugPrint('${AppStyles.failureIcon}[FCM] Lỗi khi đăng ký: $e');
     }
+  }
+
+  Future<bool> validateAndFetchUserInfo() async {
+    final accessToken = await TokenService.getAccessToken();
+    final refreshToken = await TokenService.getRefreshToken();
+
+    if (accessToken == null || refreshToken == null) return false;
+
+    try {
+      final res = await DioClient()
+          .dio
+          .post(ApiConfig.authIntrospect, data: {'token': accessToken});
+      final body = res.data;
+      if (body['success'] == true) {
+        await refreshUserInfo();
+        return true;
+      }
+    } catch (_) {}
+    return false;
   }
 }

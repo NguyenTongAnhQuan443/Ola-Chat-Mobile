@@ -1,10 +1,10 @@
 import 'dart:convert';
 import 'package:olachat_mobile/config/api_config.dart';
+import 'package:olachat_mobile/utils/app_styles.dart';
+import 'package:olachat_mobile/view_models/list_conversation_view_model.dart';
 import 'package:provider/provider.dart';
 import 'package:stomp_dart_client/stomp_dart_client.dart';
 import '../../main.dart';
-import '../../view_models/list_conversation_view_model.dart';
-import '../models/message_model.dart';
 
 class SocketService {
   static final SocketService _instance = SocketService._internal();
@@ -24,13 +24,14 @@ class SocketService {
       config: StompConfig(
         url: socketUrl,
         onConnect: (frame) {
-          print('✅ Socket connected');
+          print('${AppStyles.successIcon} Socket connected');
           if (onConnectCallback != null) onConnectCallback();
         },
         beforeConnect: () async {
           await Future.delayed(const Duration(milliseconds: 200));
         },
-        onWebSocketError: (dynamic error) => print('Socket Error: $error'),
+        onWebSocketError: (dynamic error) =>
+            print('${AppStyles.successIcon}Socket Error: $error'),
         stompConnectHeaders: {
           'Authorization': 'Bearer $accessToken',
         },
@@ -67,22 +68,22 @@ class SocketService {
 
   // Fetch conversation khi có tin nhắn mới
   void onMessageReceived(Map<String, dynamic> messageData) {
-    print("[SOCKET] Gọi onMessageReceived");
+    print("${AppStyles.successIcon}[SOCKET] Gọi onMessageReceived");
 
     final context = navigatorKey.currentContext;
     if (context != null) {
-      print("[SOCKET] Có context, chuẩn bị gọi fetchConversations");
+      print(
+          "${AppStyles.successIcon}[SOCKET] Có context, chuẩn bị gọi fetchConversations");
 
       // final vm = Provider.of<ListConversationViewModel>(context, listen: false);
       // vm.fetchConversations();
       final vm = Provider.of<ListConversationViewModel>(context, listen: false);
       vm.updateConversationFromMessage(messageData); // không fetch toàn bộ
     } else {
-      print("[SOCKET] Không tìm thấy context để gọi fetchConversations");
+      print(
+          "${AppStyles.failureIcon}[SOCKET] Không tìm thấy context để gọi fetchConversations");
     }
   }
-
-
 
   void disconnect() {
     _client?.deactivate();

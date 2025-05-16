@@ -1,10 +1,9 @@
-import 'dart:convert';
-import 'dart:io';
 import 'package:olachat_mobile/config/api_config.dart';
+import 'package:olachat_mobile/services/dio_client.dart';
+import 'package:olachat_mobile/utils/app_styles.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'api_service.dart';
 import '../models/auth_response_model.dart';
-import 'package:http/http.dart' as http;
 
 class AuthService {
   final ApiService _api = ApiService();
@@ -19,7 +18,8 @@ class AuthService {
     });
     final rawData = response.data['data'];
     if (rawData == null) {
-      throw Exception("Không nhận được dữ liệu người dùng từ máy chủ.");
+      throw Exception(
+          "${AppStyles.failureIcon}Không nhận được dữ liệu người dùng từ máy chủ.");
     }
     final auth = AuthResponseModel.fromJson(rawData);
     await _saveTokens(auth);
@@ -27,7 +27,8 @@ class AuthService {
   }
 
   // Login Google
-  Future<AuthResponseModel> loginWithGoogle(String idToken, String deviceId) async {
+  Future<AuthResponseModel> loginWithGoogle(
+      String idToken, String deviceId) async {
     final response = await _api.post(
       "${ApiConfig.authLoginGoogle}?deviceId=$deviceId",
       data: {'idToken': idToken},
@@ -97,23 +98,21 @@ class AuthService {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('access_token', auth.accessToken);
     await prefs.setString('refresh_token', auth.refreshToken);
+    print("${AppStyles.greenPointIcon}[TOKEN SAVED] Access: $auth.accessToken");
+    print(
+        "${AppStyles.greenPointIcon}[TOKEN SAVED] Refresh: $auth.refreshToken");
   }
 
   // Get Info User
   Future<Map<String, dynamic>> getMyInfo(String accessToken) async {
-    final response = await http.get(
-      Uri.parse(ApiConfig.userInfo),
-      headers: {
-        'Authorization': 'Bearer $accessToken',
-        'Content-Type': 'application/json',
-      },
-    );
+    final response = await DioClient().dio.get(ApiConfig.userInfo);
 
-    final json = jsonDecode(response.body);
-    if (response.statusCode == 200 && json['success'] == true) {
-      return jsonDecode(utf8.decode(response.bodyBytes))['data'];
+    final data = response.data;
+    if (response.statusCode == 200 && data['success'] == true) {
+      return data['data'];
     } else {
-      throw Exception('Lấy thông tin người dùng thất bại');
+      throw Exception(
+          '${AppStyles.failureIcon}Lấy thông tin người dùng thất bại');
     }
   }
 }

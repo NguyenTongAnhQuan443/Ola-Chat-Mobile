@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:olachat_mobile/config/api_config.dart';
 import 'package:olachat_mobile/models/conversation_model.dart';
 import 'package:olachat_mobile/services/token_service.dart';
+import 'package:olachat_mobile/utils/app_styles.dart';
 
 class ListConversationViewModel extends ChangeNotifier {
   List<ConversationModel> _conversations = [];
@@ -15,7 +16,7 @@ class ListConversationViewModel extends ChangeNotifier {
   Future<void> fetchConversations() async {
     _isLoading = true;
     notifyListeners();
-    print("[VM] Bắt đầu fetch conversations");
+    print("${AppStyles.successIcon}[VM] Bắt đầu fetch conversations");
 
     try {
       final token = await TokenService.getAccessToken();
@@ -61,12 +62,10 @@ class ListConversationViewModel extends ChangeNotifier {
 
           _conversations.add(conversation);
         }
-      }
-      else {
+      } else {
         throw Exception('Failed to load conversations');
       }
       print("[VM] Fetch thành công ${_conversations.length} cuộc trò chuyện");
-
     } catch (e) {
       debugPrint("Error loading conversations: $e");
     } finally {
@@ -99,7 +98,7 @@ class ListConversationViewModel extends ChangeNotifier {
         // Nếu chưa có (ví dụ vừa tạo), gọi API để lấy 1 conversation mới
         final token = await TokenService.getAccessToken();
         final res = await http.get(
-          Uri.parse('${ApiConfig.base}/api/conversations/$conversationId'),
+          Uri.parse('${ApiConfig.getConversations}/$conversationId'),
           headers: {
             'Authorization': 'Bearer $token',
           },
@@ -115,8 +114,7 @@ class ListConversationViewModel extends ChangeNotifier {
 
       notifyListeners();
     } catch (e) {
-      debugPrint("updateConversationFromMessage error: $e");
+      debugPrint("${AppStyles.failureIcon}Update Conversation From Message Error: $e");
     }
   }
-
 }

@@ -16,9 +16,9 @@ class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen> {
   int currentTab = 0;
   final List<Widget> screens = [
     FeedScreen(),
-    SearchScreen(),
-    NotificationsScreen(),
-    UserScreen()
+    // SearchScreen(),
+    // NotificationsScreen(),
+    // UserScreen()
   ];
 
   final PageStorageBucket bucket = PageStorageBucket();

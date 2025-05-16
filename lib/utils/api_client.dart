@@ -1,18 +1,19 @@
 import 'package:dio/dio.dart';
 import 'package:olachat_mobile/config/api_config.dart';
+import 'package:olachat_mobile/utils/app_styles.dart';
 
 class ApiClient {
   final Dio dio;
 
   ApiClient()
       : dio = Dio(BaseOptions(
-    baseUrl: ApiConfig.base,
-    connectTimeout: const Duration(seconds: 10),
-    receiveTimeout: const Duration(seconds: 10),
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  ));
+          baseUrl: ApiConfig.base,
+          connectTimeout: const Duration(seconds: 10),
+          receiveTimeout: const Duration(seconds: 10),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        ));
 
   Future<Response> post(String path, {Map<String, dynamic>? data}) async {
     try {
@@ -20,9 +21,9 @@ class ApiClient {
       return response;
     } on DioException catch (e) {
       final msg = e.response?.data?['message'] ?? e.message;
-      throw Exception('Lỗi API: $msg');
+      throw Exception('${AppStyles.failureIcon}Lỗi API: $msg');
     } catch (e) {
-      throw Exception('Lỗi không xác định: $e');
+      throw Exception('${AppStyles.failureIcon}Lỗi không xác định: $e');
     }
   }
 }

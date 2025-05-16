@@ -1,9 +1,9 @@
 import 'dart:async';
-import 'dart:ui';
+import 'package:dio/dio.dart';
 import 'package:olachat_mobile/config/api_config.dart';
+import 'package:olachat_mobile/services/dio_client.dart';
+import 'package:olachat_mobile/services/token_service.dart';
 import 'package:olachat_mobile/utils/app_styles.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:http/http.dart' as http;
 
 class PingService {
   static Timer? _pingTimer;
@@ -25,31 +25,28 @@ class PingService {
   }
 
   static Future<void> _ping() async {
-    final prefs = await SharedPreferences.getInstance();
-    final token = prefs.getString('access_token');
-    print("${AppStyles.warningIcon}[TOKEN PING]: $token");
+    final token = await TokenService.getAccessToken();
+    print("${AppStyles.greenPointIcon}[PING] Token hiện tại: $token");
 
     if (token == null) {
-      print("${AppStyles.failureIcon}[PING ERROR] Không tìm thấy access_token, không gửi ping.");
+      print("${AppStyles.failureIcon}Token null. Không gửi ping.");
       return;
     }
 
     try {
-      final response = await http.get(
-        Uri.parse(ApiConfig.ping),
-        headers: {
-          'Authorization': 'Bearer $token',
-          'Content-Type': 'application/json',
-        },
-      );
-
-      if (response.statusCode == 200) {
-        print("${AppStyles.successIcon}[PING SUCCESS] Ping thành công.");
-      } else {
-        print("${AppStyles.failureIcon}[PING FAILED] Mã trạng thái: ${response.statusCode}");
-      }
+      final response = await DioClient().dio.get(ApiConfig.ping);
+      print("${AppStyles.greenPointIcon}PING STATUS: ${response.statusCode}");
     } catch (e) {
-      print("${AppStyles.failureIcon}[PING EXCEPTION] Lỗi khi gửi ping: $e");
+      if (e is DioException) {
+        print("${AppStyles.failureIcon}[DIO ERROR] - Type: ${e.type}");
+        print("${AppStyles.failureIcon}[DIO ERROR] - Message: ${e.message}");
+        print("${AppStyles.failureIcon}[DIO ERROR] - Response: ${e.response}");
+        print(
+            "${AppStyles.failureIcon}[DIO ERROR] - Request URI: ${e.requestOptions.uri}");
+      } else {
+        print(
+            "${AppStyles.failureIcon}[PING ERROR] Không phải DioException: $e");
+      }
     }
   }
 }

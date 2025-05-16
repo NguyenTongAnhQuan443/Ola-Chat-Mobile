@@ -5,6 +5,7 @@ import 'package:olachat_mobile/services/token_service.dart';
 import 'package:olachat_mobile/ui/views/phone_verification_screen.dart';
 import 'package:olachat_mobile/ui/widgets/custom_social_button.dart';
 import 'package:olachat_mobile/utils/app_styles.dart';
+import 'package:olachat_mobile/view_models/socket_view_model.dart';
 import 'package:provider/provider.dart';
 import '../../main.dart';
 import '../../view_models/login_view_model.dart';
@@ -40,28 +41,11 @@ class _LoginScreenState extends State<LoginScreen> {
     final viewModel = Provider.of<LoginViewModel>(context, listen: false);
     await loginMethod();
 
-    if (viewModel.authResponse != null) {
-      final accessToken = viewModel.authResponse!.accessToken;
-      if (accessToken.isNotEmpty) {
-        SocketService().init(
-          accessToken,
-          onConnectCallback: () async {
-            final userId = await TokenService.getCurrentUserId();
-            SocketService().subscribe('/user/$userId/private', (messageData) {
-              print('[SOCKET] Nhận tin nhắn mới: $messageData');
-            });
-          },
-        );
-      }
+    final auth = viewModel.authResponse;
 
-      Future.microtask(() {
-        navigatorKey.currentState?.pushReplacement(
-          MaterialPageRoute(builder: (_) => const BottomNavigationBarScreen()),
-        );
-      });
-    }
-
-    else {
+    if (auth != null) {
+      await handleAfterLoginSuccess(context, auth.accessToken);
+    } else {
       showErrorSnackBar(context, viewModel.errorMessage ?? 'Có lỗi xảy ra');
     }
   }
@@ -71,7 +55,6 @@ class _LoginScreenState extends State<LoginScreen> {
     final viewModel = Provider.of<LoginViewModel>(context, listen: false);
     final phone = phoneController.text.trim();
     final password = passwordController.text.trim();
-    final rawHost = hostController.text.trim();
 
     final phoneRegex = RegExp(r'^0\d{9}$');
     if (!phoneRegex.hasMatch(phone)) {
@@ -83,32 +66,13 @@ class _LoginScreenState extends State<LoginScreen> {
       showErrorSnackBar(context, 'Vui lòng nhập mật khẩu.');
       return;
     }
+
     await viewModel.loginWithPhone(phone, password);
-    if (viewModel.authResponse != null) {
-      // Connect WebSocket kèm subscribe
-      final accessToken = viewModel.authResponse!.accessToken;
-      if (accessToken.isNotEmpty) {
-        SocketService().init(
-          accessToken,
-          onConnectCallback: () async {
-            final userId = await TokenService.getCurrentUserId(); // Lấy userId
-            SocketService().subscribe('/user/$userId/private', (messageData) {
-              print('[SOCKET] Nhận tin nhắn mới: $messageData');
-              // `onMessageReceived` trong socket sẽ tự fetch lại conversation
-            });
-          },
-        );
-      }
+    final auth = viewModel.authResponse;
 
-      // Điều hướng sang màn hình chính
-      Future.microtask(() {
-        navigatorKey.currentState?.pushReplacement(
-          MaterialPageRoute(builder: (_) => const BottomNavigationBarScreen()),
-        );
-      });
-    }
-
-    else {
+    if (auth != null) {
+      await handleAfterLoginSuccess(context, auth.accessToken);
+    } else {
       showErrorSnackBar(context, viewModel.errorMessage ?? 'Có lỗi xảy ra');
     }
   }
@@ -228,14 +192,14 @@ class _LoginScreenState extends State<LoginScreen> {
                                     Align(
                                       alignment: Alignment.centerRight,
                                       child: InkWell(
-                                        onTap: () {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    const ForgotPasswordScreen()),
-                                          );
-                                        },
+                                        // onTap: () {
+                                        //   Navigator.push(
+                                        //     context,
+                                        //     MaterialPageRoute(
+                                        //         builder: (context) =>
+                                        //             const ForgotPasswordScreen()),
+                                        //   );
+                                        // },
                                         child: const Text("Quên mật khẩu ?",
                                             style: TextStyle(
                                                 color: Colors.grey,
@@ -294,14 +258,14 @@ class _LoginScreenState extends State<LoginScreen> {
                                             style: TextStyle(fontSize: 14)),
                                         const SizedBox(width: 5),
                                         InkWell(
-                                          onTap: () {
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      PhoneVerificationScreen()),
-                                            );
-                                          },
+                                          // onTap: () {
+                                          //   Navigator.push(
+                                          //     context,
+                                          //     MaterialPageRoute(
+                                          //         builder: (context) =>
+                                          //             PhoneVerificationScreen()),
+                                          //   );
+                                          // },
                                           child: const Text("Đăng ký",
                                               style: TextStyle(
                                                   fontSize: 14,
@@ -326,5 +290,19 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> handleAfterLoginSuccess(
+      BuildContext context, String accessToken) async {
+    if (accessToken.isNotEmpty) {
+      final socketVM = Provider.of<SocketViewModel>(context, listen: false);
+      socketVM.initSocketConnection(accessToken);
+    }
+
+    Future.microtask(() {
+      navigatorKey.currentState?.pushReplacement(
+        MaterialPageRoute(builder: (_) => const BottomNavigationBarScreen()),
+      );
+    });
   }
 }

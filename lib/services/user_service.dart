@@ -1,132 +1,170 @@
 import 'dart:io';
+import 'package:dio/dio.dart';
 import 'package:http/http.dart' as http;
 import 'package:olachat_mobile/config/api_config.dart';
+import 'package:olachat_mobile/services/dio_client.dart';
+import 'package:olachat_mobile/services/token_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import '../models/user_response_model.dart';
 
 class UserService {
+  // Upload avatar
   Future<void> uploadAvatar(File imageFile) async {
-    final prefs = await SharedPreferences.getInstance();
-    final token = prefs.getString('access_token');
+    final token = await TokenService.getAccessToken();
+    if (token == null) throw Exception('Token không tồn tại');
 
-    final uri = Uri.parse(ApiConfig.updateAvatar);
-    final request = http.MultipartRequest('PUT', uri)
-      ..headers['Authorization'] = 'Bearer $token'
-      ..files.add(await http.MultipartFile.fromPath('avatar', imageFile.path));
+    final dio = DioClient().dio;
+    final formData = FormData.fromMap({
+      'avatar':
+          await MultipartFile.fromFile(imageFile.path, filename: 'avatar.jpg'),
+    });
 
-    final streamedResponse = await request.send();
-    final response = await http.Response.fromStream(streamedResponse);
+    final response = await dio.put(
+      ApiConfig.updateAvatar,
+      data: formData,
+      options: Options(
+        headers: {
+          'Authorization': 'Bearer $token',
+        },
+        contentType: 'multipart/form-data',
+      ),
+    );
 
-    final json = jsonDecode(utf8.decode(response.bodyBytes));
+    final json = response.data;
     if (response.statusCode != 200 || json['success'] != true) {
       throw Exception(json['message'] ?? "Upload avatar thất bại.");
     }
   }
 
+  // Refresh user info
   Future<void> refreshUserInfo() async {
-    final prefs = await SharedPreferences.getInstance();
-    final token = prefs.getString('access_token');
+    final token = await TokenService.getAccessToken();
+    if (token == null) throw Exception('Token không tồn tại');
 
-    final response = await http.get(
-      Uri.parse(ApiConfig.userInfo),
-      headers: {
-        'Authorization': 'Bearer $token',
-        'Content-Type': 'application/json',
-      },
+    final dio = DioClient().dio;
+    final response = await dio.get(
+      ApiConfig.userInfo,
+      options: Options(
+        headers: {
+          'Authorization': 'Bearer $token',
+        },
+      ),
     );
-
-    final data = jsonDecode(utf8.decode(response.bodyBytes));
+    final data = response.data;
     if (response.statusCode == 200 && data['success'] == true) {
-      await prefs.setString('user_info', jsonEncode(data['data']));
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString(
+          'user_info', data['data'] != null ? data['data'].toString() : '');
     } else {
       throw Exception("Làm mới thông tin thất bại.");
     }
   }
 
+  // Update profile
   Future<void> updateProfile(Map<String, dynamic> data) async {
-    final prefs = await SharedPreferences.getInstance();
-    final token = prefs.getString('access_token');
+    final token = await TokenService.getAccessToken();
+    if (token == null) throw Exception('Token không tồn tại');
 
-    final response = await http.put(
-      Uri.parse(ApiConfig.updateProfile),
-      headers: {
-        'Authorization': 'Bearer $token',
-        'Content-Type': 'application/json',
-      },
-      body: jsonEncode(data),
+    final dio = DioClient().dio;
+    final response = await dio.put(
+      ApiConfig.updateProfile,
+      data: data,
+      options: Options(
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+      ),
     );
 
-    final json = jsonDecode(utf8.decode(response.bodyBytes));
+    final json = response.data;
     if (response.statusCode != 200 || json['success'] != true) {
       throw Exception(json['message'] ?? "Cập nhật thông tin thất bại.");
     }
   }
 
+  // Send email OTP
   Future<void> sendEmailOtp(String newEmail) async {
-    final prefs = await SharedPreferences.getInstance();
-    final token = prefs.getString('access_token');
+    final token = await TokenService.getAccessToken();
+    if (token == null) throw Exception('Token không tồn tại');
 
-    final uri = Uri.parse("${ApiConfig.sendEmailUpdateOtp}?newEmail=$newEmail");
-    final response = await http.post(
+    final dio = DioClient().dio;
+    final uri = "${ApiConfig.sendEmailUpdateOtp}?newEmail=$newEmail";
+    final response = await dio.post(
       uri,
-      headers: {
-        'Authorization': 'Bearer $token',
-        'Content-Type': 'application/json',
-      },
+      options: Options(
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+      ),
     );
-
-    final data = jsonDecode(utf8.decode(response.bodyBytes));
+    final data = response.data;
     if (response.statusCode != 200 || data['success'] != true) {
       throw Exception(data['message'] ?? "Gửi mã OTP email thất bại.");
     }
   }
 
+  // Verify email OTP
   Future<void> verifyEmailOtp(String otp) async {
-    final prefs = await SharedPreferences.getInstance();
-    final token = prefs.getString('access_token');
+    final token = await TokenService.getAccessToken();
+    if (token == null) throw Exception('Token không tồn tại');
 
-    final uri = Uri.parse("${ApiConfig.verifyEmailUpdateOtp}?otp=$otp");
-    final response = await http.post(
+    final dio = DioClient().dio;
+    final uri = "${ApiConfig.verifyEmailUpdateOtp}?otp=$otp";
+    final response = await dio.post(
       uri,
-      headers: {
-        'Authorization': 'Bearer $token',
-        'Content-Type': 'application/json',
-      },
+      options: Options(
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+      ),
     );
-
-    final data = jsonDecode(utf8.decode(response.bodyBytes));
+    final data = response.data;
     if (response.statusCode != 200 || data['success'] != true) {
       throw Exception(data['message'] ?? "Xác minh OTP email thất bại.");
     }
   }
 
-  // Tìm kiếm
+  // Search User
   static Future<UserResponseModel?> search(String query, String token) async {
-    final url = ApiConfig.searchUser(query);
-    final response = await http.get(
-      Uri.parse(url),
-      headers: {
-        'Authorization': 'Bearer $token',
-        'Content-Type': 'application/json',
-      },
-    );
+    final dio = DioClient().dio;
+    try {
+      final response = await dio.get(
+        ApiConfig.searchUser(query),
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $token',
+            'Content-Type': 'application/json',
+          },
+        ),
+      );
+      final data = response.data;
 
-    final decoded = utf8.decode(response.bodyBytes);
-    final data = jsonDecode(decoded);
+      if (response.statusCode == 200 && data['data'] != null) {
+        return UserResponseModel.fromJson(data['data']);
+      }
 
-    if (response.statusCode == 200 && data['data'] != null) {
-      return UserResponseModel.fromJson(data['data']);
+      if (response.statusCode == 404 ||
+          (data['message']?.contains("không tìm thấy") == true)) {
+        return null;
+      }
+
+      throw Exception(
+          data['message'] ?? 'Lỗi không xác định khi tìm kiếm người dùng');
+    } on DioException catch (e) {
+      if (e.response != null &&
+          (e.response!.statusCode == 404 ||
+              e.response?.data['message']?.contains("không tìm thấy") ==
+                  true)) {
+        return null;
+      }
+      throw Exception(
+          '[Dio] Lỗi khi tìm kiếm người dùng: ${e.response?.data['message'] ?? e.message}');
+    } catch (e) {
+      throw Exception('[Dio] Lỗi khi tìm kiếm người dùng: $e');
     }
-
-    if (response.statusCode == 404 ||
-        data['message']?.contains("không tìm thấy") == true) {
-      // Trả về null để ViewModel tự xử lý
-      return null;
-    }
-
-    // Những lỗi khác vẫn ném ra
-    throw Exception(
-        data['message'] ?? 'Lỗi không xác định khi tìm kiếm người dùng');
   }
 }

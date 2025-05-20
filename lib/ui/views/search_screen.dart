@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:olachat_mobile/ui/views/user_profile_infomation.dart';
 import 'package:provider/provider.dart';
-import 'package:http/http.dart' as http;
 import 'package:olachat_mobile/ui/widgets/custom_sliver_to_box_adapter.dart';
 import 'package:olachat_mobile/ui/widgets/app_logo_header_two.dart';
 import '../../view_models/search_view_model.dart';

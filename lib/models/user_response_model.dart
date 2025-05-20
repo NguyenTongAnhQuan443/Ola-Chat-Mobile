@@ -6,7 +6,7 @@ class UserResponseModel {
   final String avatar;
   final String? bio;
   final String dob;
-  final String friendAction;
+  final int friendAction;
 
   UserResponseModel({
     required this.userId,
@@ -28,7 +28,7 @@ class UserResponseModel {
       avatar: json['avatar'] ?? '',
       bio: json['bio'],
       dob: json['dob'] ?? '',
-      friendAction: json['friendAction'] ?? '',
+      friendAction: json['friendAction'] ?? 0,
     );
   }
 }

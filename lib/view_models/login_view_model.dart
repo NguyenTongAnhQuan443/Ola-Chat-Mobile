@@ -99,9 +99,11 @@ class LoginViewModel extends ChangeNotifier {
 
     final googleAuth = await googleUser.authentication;
     final idToken = googleAuth.idToken;
-    print("🟡 [DEBUG] GOOGLE ID TOKEN = $idToken");
-    print("🟡 [DEBUG] ID TOKEN LENGTH = ${idToken?.length}");
-    print("🟡 [DEBUG] ID TOKEN FORMAT = ${idToken?.split('.').length ?? 0} parts");
+    print("${AppStyles.successIcon}[DEBUG] GOOGLE ID TOKEN = $idToken");
+    print(
+        "${AppStyles.successIcon}🟡 [DEBUG] ID TOKEN LENGTH = ${idToken?.length}");
+    print(
+        "${AppStyles.successIcon} [DEBUG] ID TOKEN FORMAT = ${idToken?.split('.').length ?? 0} parts");
 
     if (idToken == null) {
       _errorMessage = 'Không lấy được ID Token';
@@ -109,7 +111,8 @@ class LoginViewModel extends ChangeNotifier {
       return;
     }
 
-    await _handleLogin(() => _authService.loginWithGoogle(idToken, Uri.encodeComponent(deviceId)));
+    await _handleLogin(() =>
+        _authService.loginWithGoogle(idToken, Uri.encodeComponent(deviceId)));
   }
 
   Future<void> loginWithFacebook() async {
@@ -122,7 +125,7 @@ class LoginViewModel extends ChangeNotifier {
           notifyListeners();
           return;
         }
-        print('🔵 [FACEBOOK ACCESS TOKEN]: $accessToken');
+        print('${AppStyles.successIcon}[FACEBOOK ACCESS TOKEN]: $accessToken');
         await _handleLogin(
             () => _authService.loginWithFacebook(accessToken, deviceId));
       } else {
@@ -157,7 +160,8 @@ class LoginViewModel extends ChangeNotifier {
   Future<void> refreshUserInfo() async {
     try {
       final token = await TokenService.getAccessToken();
-      if (token == null) throw Exception("${AppStyles.failureIcon}Token không tồn tại");
+      if (token == null)
+        throw Exception("${AppStyles.failureIcon}Token không tồn tại");
 
       final userInfo = await _authService.getMyInfo(token);
       _userInfo = userInfo;
@@ -165,7 +169,8 @@ class LoginViewModel extends ChangeNotifier {
       notifyListeners();
     } catch (e) {
       debugPrint('${AppStyles.failureIcon}refreshUserInfo thất bại: $e');
-      throw Exception("${AppStyles.failureIcon}Lấy thông tin người dùng thất bại");
+      throw Exception(
+          "${AppStyles.failureIcon}Lấy thông tin người dùng thất bại");
     }
   }
 
@@ -182,44 +187,38 @@ class LoginViewModel extends ChangeNotifier {
   Future<void> registerDeviceForNotification(String userId) async {
     try {
       if (Firebase.apps.isEmpty) {
-        debugPrint(
-            "${AppStyles.failureIcon}Firebase chưa được khởi tạo. Đang khởi tạo lại...");
-        await Firebase.initializeApp(
-          options: DefaultFirebaseOptions.currentPlatform,
-        );
+        debugPrint("${AppStyles.warningIcon} Firebase chưa khởi tạo. Khởi tạo lại...");
+        await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
       }
-
       final fcmToken = await FirebaseMessaging.instance.getToken();
       if (fcmToken == null) {
-        debugPrint('${AppStyles.warningIcon}[FCM] Không lấy được token.');
+        debugPrint('${AppStyles.failureIcon} [FCM] Không lấy được token.');
         return;
       }
 
       final payload = {
-        'userId': userId.toString(),
-        'token': fcmToken.toString(),
-        'deviceId': deviceId.toString(),
+        'userId': userId,
+        'token': fcmToken,
+        'deviceId': deviceId,
       };
-      debugPrint(
-          '${AppStyles.successIcon}[FCM] Gửi yêu cầu đăng ký - Payload: $payload');
-      final response = await http.post(
-        Uri.parse(ApiConfig.registerDevice),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: jsonEncode(payload),
+      debugPrint('${AppStyles.greenPointIcon} [FCM] Payload gửi đăng ký: $payload');
+      final response = await DioClient().dio.post(
+        ApiConfig.registerDevice,
+        data: payload,
       );
+      debugPrint('${AppStyles.greenPointIcon} [FCM] Phản hồi server (${response.statusCode}): ${response.data}');
 
-      final responseBody = utf8.decode(response.bodyBytes);
-      debugPrint(
-          '${AppStyles.successIcon}[FCM] Phản hồi server (${response.statusCode}): $responseBody');
-      if (response.statusCode != 200) {
-        throw Exception("${AppStyles.failureIcon}Đăng ký FCM thất bại: ${response.statusCode}");
+      if (response.statusCode == 200 && response.data['success'] == true) {
+        debugPrint('${AppStyles.successIcon} [FCM] Đăng ký thiết bị FCM thành công.');
+      } else {
+        debugPrint('${AppStyles.failureIcon} [FCM] Đăng ký thiết bị FCM thất bại: ${response.data}');
       }
     } catch (e) {
-      debugPrint('${AppStyles.failureIcon}[FCM] Lỗi khi đăng ký: $e');
+      debugPrint('${AppStyles.failureIcon} [FCM] Lỗi khi đăng ký: $e');
     }
   }
+
+
 
   Future<bool> validateAndFetchUserInfo() async {
     final accessToken = await TokenService.getAccessToken();

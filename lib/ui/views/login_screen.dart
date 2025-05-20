@@ -54,7 +54,7 @@ class _LoginScreenState extends State<LoginScreen> {
     final phone = phoneController.text.trim();
     final password = passwordController.text.trim();
 
-    final phoneRegex = RegExp(r'^0\d{9}\$');
+    final phoneRegex = RegExp(r'^0\d{9}$');
     if (!phoneRegex.hasMatch(phone)) {
       showErrorSnackBar(context,
           'Số điện thoại không hợp lệ. Vui lòng nhập 10 số bắt đầu bằng số 0.');

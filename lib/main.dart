@@ -93,8 +93,8 @@ Future<void> main() async {
         ChangeNotifierProvider(create: (_) => UpdatePasswordViewModel()),
         ChangeNotifierProvider(
             create: (_) => UserSettingInformationLoginHistoryViewModel()),
-        // ChangeNotifierProvider(create: (_) => FriendRequestViewModel()),
-        // ChangeNotifierProvider(create: (_) => NotificationViewModel()),
+        ChangeNotifierProvider(create: (_) => FriendRequestViewModel()),
+        ChangeNotifierProvider(create: (_) => NotificationViewModel()),
         ChangeNotifierProvider(create: (_) => ListConversationViewModel()),
         // ChangeNotifierProvider(create: (_) => CreateGroupViewModel()),
         // ChangeNotifierProvider(create: (_) => GroupManagementViewModel()),

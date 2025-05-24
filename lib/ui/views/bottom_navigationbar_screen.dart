@@ -17,7 +17,7 @@ class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen> {
   final List<Widget> screens = [
     FeedScreen(),
     SearchScreen(),
-    // NotificationsScreen(),
+    NotificationsScreen(),
     MyUserScreen()
   ];
 

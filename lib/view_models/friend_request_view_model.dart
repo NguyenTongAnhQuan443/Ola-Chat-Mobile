@@ -20,7 +20,8 @@ class FriendRequestViewModel extends ChangeNotifier {
     isLoading = true;
     notifyListeners();
 
-    final request = FriendRequestModel(senderId: senderId, receiverId: receiverId);
+    final request =
+        FriendRequestModel(senderId: senderId, receiverId: receiverId);
     final success = await _service.sendFriendRequest(request);
 
     isLoading = false;
@@ -87,7 +88,8 @@ class FriendRequestViewModel extends ChangeNotifier {
 
   bool isRequestSent(String userId) => sentRequestIds.contains(userId);
 
-  bool isReceivedRequestFrom(String userId) => receivedRequestIds.contains(userId);
+  bool isReceivedRequestFrom(String userId) =>
+      receivedRequestIds.contains(userId);
 
   String getDisplayName(String userId) {
     return receivedRequestMap[userId]?['displayName'] ?? "Ẩn danh";

@@ -40,11 +40,13 @@ class FriendRequestService {
     final response = await _dio.get(ApiConfig.getReceivedFriendRequests);
     if (response.statusCode == 200) {
       final data = response.data['data'] as List;
-      return data.map<Map<String, String>>((item) => {
-        'userId': item['userId']?.toString() ?? '',
-        'requestId': item['requestId']?.toString() ?? '',
-        'displayName': item['displayName']?.toString() ?? 'Ẩn danh',
-      }).toList();
+      return data
+          .map<Map<String, String>>((item) => {
+                'userId': item['userId']?.toString() ?? '',
+                'requestId': item['requestId']?.toString() ?? '',
+                'displayName': item['displayName']?.toString() ?? 'Ẩn danh',
+              })
+          .toList();
     }
     return [];
   }

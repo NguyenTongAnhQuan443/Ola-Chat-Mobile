@@ -379,8 +379,8 @@ class _UserProfileInfoScreenState extends State<UserProfileInfomationScreen> {
         return ListPost(posts: myPosts, showCommentButton: true);
       case 1:
         return ListPost(posts: savePosts, showCommentButton: true);
-      // case 2:
-      //   return const SliverToBoxAdapter(child: UserSettingScreen());
+      case 2:
+        return const SliverToBoxAdapter(child: UserSettingScreen());
       default:
         return const SizedBox.shrink();
     }

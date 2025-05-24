@@ -95,18 +95,16 @@ class _SearchScreenState extends State<SearchScreen> {
 
           // Loading
           if (viewModel.isLoading)
-            SliverToBoxAdapter(
+            SliverFillRemaining(
+              hasScrollBody: false,
               child: Center(
-                child: Padding(
-                  padding: EdgeInsets.all(20),
-                  child: const SizedBox(
-                    width: 32,
-                    height: 32,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2.5,
-                      valueColor:
-                          AlwaysStoppedAnimation<Color>(Color(0xFF2B4FE1)),
-                    ),
+                child: const SizedBox(
+                  width: 40,
+                  height: 40,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 3,
+                    valueColor:
+                        AlwaysStoppedAnimation<Color>(Color(0xFF2B4FE1)),
                   ),
                 ),
               ),

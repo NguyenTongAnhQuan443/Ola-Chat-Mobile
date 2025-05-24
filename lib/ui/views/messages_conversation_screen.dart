@@ -6,6 +6,7 @@ import 'package:olachat_mobile/data/services/token_service.dart';
 import 'package:olachat_mobile/ui/views/video_player_screen.dart';
 import 'package:provider/provider.dart';
 import '../../data/enum/message_type.dart';
+import '../../data/models/message_model.dart';
 import '../../data/services/socket_service.dart';
 import '../../view_models/message_conversation_view_model.dart';
 import 'package:giphy_get/giphy_get.dart';
@@ -141,7 +142,7 @@ class _MessagesConversationScreenState
   }
 
   // Widget
-  Widget _buildMessageContent(String content, String type) {
+  Widget _buildMessageContent(MessageModel msg) {
     void _showImagePreview(String imageUrl) {
       final screenSize = MediaQuery.of(context).size;
       final dialogWidth = screenSize.width * 0.8;
@@ -207,11 +208,14 @@ class _MessagesConversationScreenState
       );
     }
 
-    if (type == MessageType.STICKER.name) {
+    if (msg.type == MessageType.STICKER) {
+      final stickerUrl =
+          msg.mediaUrls?.isNotEmpty == true ? msg.mediaUrls![0] : "";
+      if (stickerUrl.isEmpty) return const SizedBox();
       return GestureDetector(
-        onTap: () => _showImagePreview(content),
+        onTap: () => _showImagePreview(stickerUrl),
         child: Image.network(
-          content,
+          stickerUrl,
           width: 100,
           height: 100,
           fit: BoxFit.cover,
@@ -232,93 +236,88 @@ class _MessagesConversationScreenState
       );
     }
 
-    if (type == MessageType.MEDIA.name) {
-      try {
-        final urls = jsonDecode(content);
-        if (urls is List) {
-          return Wrap(
-            spacing: 6,
-            runSpacing: 6,
-            children: urls.map<Widget>((url) {
-              final isVideo = url.toString().endsWith('.mp4') ||
-                  url.toString().endsWith('.mov');
-
-              return isVideo
-                  ? GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => Scaffold(
-                              backgroundColor: Colors.black,
-                              body: Stack(
-                                children: [
-                                  Center(
-                                    child: AspectRatio(
-                                      aspectRatio: 16 / 9,
-                                      child: VideoPlayerScreen(videoUrl: url),
-                                    ),
-                                  ),
-                                  Positioned(
-                                    top: 32,
-                                    right: 16,
-                                    child: IconButton(
-                                      icon: const Icon(Icons.close,
-                                          color: Colors.white),
-                                      onPressed: () =>
-                                          Navigator.of(context).pop(),
-                                    ),
-                                  ),
-                                ],
+    if (msg.type == MessageType.MEDIA) {
+      final urls = msg.mediaUrls ?? [];
+      if (urls.isEmpty) return const SizedBox();
+      return Wrap(
+        spacing: 6,
+        runSpacing: 6,
+        children: urls.map<Widget>((url) {
+          final isVideo = url.endsWith('.mp4') || url.endsWith('.mov');
+          return isVideo
+              ? GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => Scaffold(
+                          backgroundColor: Colors.black,
+                          body: Stack(
+                            children: [
+                              Center(
+                                child: AspectRatio(
+                                  aspectRatio: 16 / 9,
+                                  child: VideoPlayerScreen(videoUrl: url),
+                                ),
                               ),
-                            ),
+                              Positioned(
+                                top: 32,
+                                right: 16,
+                                child: IconButton(
+                                  icon: const Icon(Icons.close,
+                                      color: Colors.white),
+                                  onPressed: () => Navigator.of(context).pop(),
+                                ),
+                              ),
+                            ],
                           ),
-                        );
-                      },
-                      child: Container(
+                        ),
+                      ),
+                    );
+                  },
+                  child: Container(
+                    width: 100,
+                    height: 100,
+                    decoration: BoxDecoration(
+                      color: Colors.black12,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: const Icon(Icons.play_circle_fill,
+                        size: 40, color: Colors.white),
+                  ),
+                )
+              : GestureDetector(
+                  onTap: () => _showImagePreview(url),
+                  child: Image.network(
+                    url,
+                    width: 100,
+                    height: 100,
+                    fit: BoxFit.cover,
+                    errorBuilder: (_, __, ___) =>
+                        const Icon(Icons.broken_image),
+                    loadingBuilder: (context, child, loadingProgress) {
+                      if (loadingProgress == null) {
+                        Future.microtask(() => _scrollToBottom());
+                        return child;
+                      }
+                      return const SizedBox(
                         width: 100,
                         height: 100,
-                        decoration: BoxDecoration(
-                          color: Colors.black12,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: const Icon(Icons.play_circle_fill,
-                            size: 40, color: Colors.white),
-                      ),
-                    )
-                  : Image.network(
-                      url,
-                      width: 100,
-                      height: 100,
-                      fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) =>
-                          const Icon(Icons.broken_image),
-                      loadingBuilder: (context, child, loadingProgress) {
-                        if (loadingProgress == null) {
-                          Future.microtask(() => _scrollToBottom());
-                          return child;
-                        }
-                        return const SizedBox(
-                          width: 100,
-                          height: 100,
-                          child: Center(
-                              child: CircularProgressIndicator(strokeWidth: 2)),
-                        );
-                      },
-                    );
-            }).toList(),
-          );
-        }
-      } catch (e) {
-        print('[DEBUG] Lỗi decode mediaUrls: $e');
-      }
+                        child: Center(
+                            child: CircularProgressIndicator(strokeWidth: 2)),
+                      );
+                    },
+                  ),
+                );
+        }).toList(),
+      );
     }
 
-    // Text bình thường
-    return Text(content, style: const TextStyle(fontSize: 15));
+    // Trường hợp text
+    return Text(msg.content, style: const TextStyle(fontSize: 15));
   }
 
-  Widget _buildSentMessage(String message, String type, String time) {
+  Widget _buildSentMessage(MessageModel msg, String time) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
       child: Row(
@@ -329,21 +328,25 @@ class _MessagesConversationScreenState
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                if (type == MessageType.STICKER.name)
-                  _buildMessageContent(message, type)
-                else
-                  Container(
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFE5DEFF),
-                      borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(16),
-                        topRight: Radius.circular(16),
-                        bottomLeft: Radius.circular(16),
-                      ),
-                    ),
-                    child: _buildMessageContent(message, type),
-                  ),
+                // if (type == MessageType.STICKER.name)
+                //   _buildMessageContent(message, type)
+                // else
+                //   Container(
+                //     padding: const EdgeInsets.all(12),
+                //     decoration: BoxDecoration(
+                //       color: const Color(0xFFE5DEFF),
+                //       borderRadius: const BorderRadius.only(
+                //         topLeft: Radius.circular(16),
+                //         topRight: Radius.circular(16),
+                //         bottomLeft: Radius.circular(16),
+                //       ),
+                //     ),
+                //     child: _buildMessageContent(message, type),
+                //   ),
+                // const SizedBox(height: 4),
+                // Text(time,
+                //     style: const TextStyle(color: Colors.grey, fontSize: 11)),
+                _buildMessageContent(msg),
                 const SizedBox(height: 4),
                 Text(time,
                     style: const TextStyle(color: Colors.grey, fontSize: 11)),
@@ -355,22 +358,14 @@ class _MessagesConversationScreenState
     );
   }
 
-  Widget _buildReceivedMessage({
-    required String message,
-    required String type,
-    required String time,
-    required String senderId,
-  }) {
-    final isMediaOrSticker =
-        type == MessageType.MEDIA.name || type == MessageType.STICKER.name;
-
+  Widget _buildReceivedMessage(
+      {required MessageModel msg, required String time}) {
     final vm =
         Provider.of<MessageConversationViewModel>(context, listen: false);
     final isGroupChat = vm.userMap.length > 1;
-
-    // Lấy avatar người gửi (ưu tiên từ danh sách user trong GROUP)
-    final avatarUrl =
-        isGroupChat ? (vm.userMap[senderId]?.avatar ?? "") : widget.avatarUrl;
+    final avatarUrl = isGroupChat
+        ? (vm.userMap[msg.senderId]?.avatar ?? "")
+        : widget.avatarUrl;
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
@@ -389,20 +384,26 @@ class _MessagesConversationScreenState
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                isMediaOrSticker
-                    ? _buildMessageContent(message, type)
-                    : Container(
-                        padding: const EdgeInsets.all(12),
-                        decoration: const BoxDecoration(
-                          color: Color(0xFFF1F4F9),
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(16),
-                            topRight: Radius.circular(16),
-                            bottomRight: Radius.circular(16),
-                          ),
-                        ),
-                        child: _buildMessageContent(message, type),
-                      ),
+                // isMediaOrSticker
+                //     ? _buildMessageContent(message, type)
+                //     : Container(
+                //         padding: const EdgeInsets.all(12),
+                //         decoration: const BoxDecoration(
+                //           color: Color(0xFFF1F4F9),
+                //           borderRadius: BorderRadius.only(
+                //             topLeft: Radius.circular(16),
+                //             topRight: Radius.circular(16),
+                //             bottomRight: Radius.circular(16),
+                //           ),
+                //         ),
+                //         child: _buildMessageContent(message, type),
+                //       ),
+                // const SizedBox(height: 4),
+                // Text(
+                //   time,
+                //   style: const TextStyle(color: Colors.grey, fontSize: 11),
+                // ),
+                _buildMessageContent(msg),
                 const SizedBox(height: 4),
                 Text(
                   time,
@@ -519,7 +520,7 @@ class _MessagesConversationScreenState
                 backgroundImage: widget.avatarUrl.isNotEmpty
                     ? NetworkImage(widget.avatarUrl)
                     : const AssetImage('assets/images/default_avatar.png')
-                as ImageProvider,
+                        as ImageProvider,
               ),
               const SizedBox(width: 8),
               Expanded(
@@ -567,7 +568,6 @@ class _MessagesConversationScreenState
               ],
             ),
           ],
-
         ),
         body: Column(
           children: [
@@ -597,13 +597,10 @@ class _MessagesConversationScreenState
                             : msg.content;
 
                         return isMe
-                            ? _buildSentMessage(content, msg.type.name,
-                                _formatTime(msg.createdAt))
+                            ? _buildSentMessage(msg, _formatTime(msg.createdAt))
                             : _buildReceivedMessage(
-                                message: content,
-                                type: msg.type.name,
+                                msg: msg,
                                 time: _formatTime(msg.createdAt),
-                                senderId: msg.senderId,
                               );
                       },
                     ),

@@ -53,7 +53,7 @@ class SettingsScreenState extends State<UserSettingScreen>
               children: const [
                 UserSettingAvatarScreen(),
                 UserSettingIntroduceScreen(),
-                // UserSettingInformationScreen(),
+                UserSettingInformationScreen(),
                 LogoutScreen(),
               ],
             ),

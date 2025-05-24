@@ -18,6 +18,7 @@ import 'package:olachat_mobile/view_models/phone_verification_view_model.dart';
 import 'package:olachat_mobile/view_models/socket_view_model.dart';
 import 'package:olachat_mobile/view_models/update_email_view_model.dart';
 import 'package:olachat_mobile/view_models/update_password_view_model.dart';
+import 'package:olachat_mobile/view_models/user_setting_information_login_history_view_model.dart';
 import 'package:olachat_mobile/view_models/user_setting_introduce_view_model.dart';
 import 'utils/firebase_options.dart';
 import 'package:provider/provider.dart';
@@ -90,6 +91,8 @@ Future<void> main() async {
         ChangeNotifierProvider(create: (_) => SearchViewModel()),
         ChangeNotifierProvider(create: (_) => UpdateEmailViewModel()),
         ChangeNotifierProvider(create: (_) => UpdatePasswordViewModel()),
+        ChangeNotifierProvider(
+            create: (_) => UserSettingInformationLoginHistoryViewModel()),
         // ChangeNotifierProvider(create: (_) => FriendRequestViewModel()),
         // ChangeNotifierProvider(create: (_) => NotificationViewModel()),
         ChangeNotifierProvider(create: (_) => ListConversationViewModel()),

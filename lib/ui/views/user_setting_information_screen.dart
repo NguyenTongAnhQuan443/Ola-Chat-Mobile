@@ -64,12 +64,12 @@ class UserSettingInformationScreen extends StatelessWidget {
           const SizedBox(height: 16),
           buildInfoTile('Lịch sử đăng nhập', 'Nhấn để xem chi tiết',
               onEdit: () {
-            // Navigator.push(
-            //     context,
-            //     MaterialPageRoute(
-            //       builder: (_) =>
-            //           const UserSettingInformationLoginHistoryScreen(),
-            //     ));
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) =>
+                      const UserSettingInformationLoginHistoryScreen(),
+                ));
           }),
         ],
       ),

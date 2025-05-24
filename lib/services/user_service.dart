@@ -6,6 +6,7 @@ import 'package:olachat_mobile/config/api_config.dart';
 import 'package:olachat_mobile/services/dio_client.dart';
 import 'package:olachat_mobile/services/token_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../models/login_history_model.dart';
 import '../models/user_response_model.dart';
 
 class UserService {
@@ -192,6 +193,32 @@ class UserService {
     final data = response.data;
     if (response.statusCode != 200 || data['success'] != true) {
       throw Exception(data['message'] ?? "Đổi mật khẩu thất bại.");
+    }
+  }
+
+  // Get Login History
+  Future<List<LoginHistoryModel>> getLoginHistory(String userId) async {
+    final token = await TokenService.getAccessToken();
+    if (token == null) throw Exception('Token không tồn tại');
+
+    final dio = Dio();
+    final response = await dio.get(
+      ApiConfig.loginHistory(userId),
+      options: Options(
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+      ),
+    );
+
+    final data = response.data;
+    if (response.statusCode == 200 && data['success'] == true) {
+      return (data['data'] as List)
+          .map((e) => LoginHistoryModel.fromJson(e))
+          .toList();
+    } else {
+      throw Exception(data['message'] ?? 'Đã có lỗi xảy ra');
     }
   }
 }

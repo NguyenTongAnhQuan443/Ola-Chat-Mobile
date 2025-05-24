@@ -54,7 +54,7 @@ class SettingsScreenState extends State<UserSettingScreen>
                 UserSettingAvatarScreen(),
                 UserSettingIntroduceScreen(),
                 // UserSettingInformationScreen(),
-                // LogoutScreen(),
+                LogoutScreen(),
               ],
             ),
           ),

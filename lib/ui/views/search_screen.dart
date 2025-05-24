@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:olachat_mobile/ui/views/user_profile_infomation.dart';
 import 'package:provider/provider.dart';
 import 'package:olachat_mobile/ui/widgets/custom_sliver_to_box_adapter.dart';
 import 'package:olachat_mobile/ui/widgets/app_logo_header_two.dart';
@@ -58,10 +59,10 @@ class _SearchScreenState extends State<SearchScreen> {
                     if (_debounce?.isActive ?? false) _debounce!.cancel();
                     _debounce = Timer(const Duration(milliseconds: 500), () {
                       if (value.isNotEmpty) {
-                        viewModel.searchUser(
-                            value); // gọi API sau 500ms nếu user ngừng gõ
+                        viewModel.searchUser(value);
                       }
                     });
+                    setState(() {}); // <-- Cập nhật UI khi nhập
                   },
                   decoration: InputDecoration(
                     prefixIcon: Icon(
@@ -93,6 +94,35 @@ class _SearchScreenState extends State<SearchScreen> {
 
           CustomSliverToBoxAdapter(),
 
+          // Nếu chưa nhập gì thì show hình mặc định chờ tìm kiếm
+          if (_controller.text.isEmpty &&
+              !viewModel.isLoading &&
+              viewModel.result == null &&
+              viewModel.error == null)
+            SliverFillRemaining(
+              hasScrollBody: false,
+              child: Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SvgPicture.asset(
+                      'assets/images/search_waiting.svg',
+                      height: 250,
+                    ),
+                    const SizedBox(height: 24),
+                    const Text(
+                      "Tìm bạn bè, nhập số điện thoại hoặc email để bắt đầu",
+                      style: TextStyle(
+                        fontSize: 15,
+                        color: Colors.grey,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
           // Loading
           if (viewModel.isLoading)
             SliverFillRemaining(
@@ -103,8 +133,8 @@ class _SearchScreenState extends State<SearchScreen> {
                   height: 40,
                   child: CircularProgressIndicator(
                     strokeWidth: 3,
-                    valueColor:
-                        AlwaysStoppedAnimation<Color>(Color(0xFF2B4FE1)),
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                        Color(0xFF2B4FE1)),
                   ),
                 ),
               ),
@@ -121,15 +151,15 @@ class _SearchScreenState extends State<SearchScreen> {
                     leading: CircleAvatar(
                       radius: 20,
                       backgroundImage: (viewModel.result?.avatar != null &&
-                              viewModel.result!.avatar.isNotEmpty)
+                          viewModel.result!.avatar.isNotEmpty)
                           ? NetworkImage(viewModel.result!.avatar)
                           : const AssetImage("assets/images/default_avatar.png")
-                              as ImageProvider,
+                      as ImageProvider,
                     ),
                     title: Text(
                       viewModel.result!.displayName,
-                      style:
-                          TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                          fontSize: 14, fontWeight: FontWeight.bold),
                     ),
                     subtitle: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -141,15 +171,15 @@ class _SearchScreenState extends State<SearchScreen> {
                       ],
                     ),
                     trailing: Icon(Icons.arrow_forward_outlined),
-                    // onTap: () {
-                    //   Navigator.push(
-                    //     context,
-                    //     MaterialPageRoute(
-                    //       builder: (_) => UserProfileInfomationScreen(
-                    //           user: viewModel.result!),
-                    //     ),
-                    //   );
-                    // },
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => UserProfileInfomationScreen(
+                              user: viewModel.result!),
+                        ),
+                      );
+                    },
                   ),
                 ),
               ),
@@ -159,8 +189,8 @@ class _SearchScreenState extends State<SearchScreen> {
           if (viewModel.error != null)
             SliverToBoxAdapter(
               child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 24, vertical: 40),
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 24, vertical: 40),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [

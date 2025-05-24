@@ -52,7 +52,7 @@ class SettingsScreenState extends State<UserSettingScreen>
               controller: _tabController,
               children: const [
                 UserSettingAvatarScreen(),
-                // UserSettingIntroduceScreen(),
+                UserSettingIntroduceScreen(),
                 // UserSettingInformationScreen(),
                 // LogoutScreen(),
               ],

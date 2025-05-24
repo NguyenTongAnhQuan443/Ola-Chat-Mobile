@@ -168,4 +168,30 @@ class UserService {
       throw Exception('[Dio] Lỗi khi tìm kiếm người dùng: $e');
     }
   }
+
+  // Change Password
+  Future<void> changePassword(String oldPassword, String newPassword) async {
+    final token = await TokenService.getAccessToken();
+    if (token == null) throw Exception('Token không tồn tại');
+
+    final dio = DioClient().dio;
+    final response = await dio.put(
+      ApiConfig.changePassword,
+      data: {
+        "oldPassword": oldPassword,
+        "newPassword": newPassword,
+      },
+      options: Options(
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+      ),
+    );
+
+    final data = response.data;
+    if (response.statusCode != 200 || data['success'] != true) {
+      throw Exception(data['message'] ?? "Đổi mật khẩu thất bại.");
+    }
+  }
 }

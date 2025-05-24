@@ -45,19 +45,19 @@ class UserSettingInformationScreen extends StatelessWidget {
                 ));
           }),
           buildInfoTile('Ngày sinh', formatDate(userInfo?['dob']), onEdit: () {
-            // Navigator.push(
-            //     context,
-            //     MaterialPageRoute(
-            //       builder: (_) => const UserSettingInfomationUpdateDobScreen(),
-            //     ));
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const UserSettingInfomationUpdateDobScreen(),
+                ));
           }),
           buildInfoTile('Mật khẩu', '********', onEdit: () {
-            // Navigator.push(
-            //     context,
-            //     MaterialPageRoute(
-            //       builder: (_) =>
-            //           const UserSettingInfomationUpdatePasswordScreen(),
-            //     ));
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) =>
+                      const UserSettingInfomationUpdatePasswordScreen(),
+                ));
           }),
           buildInfoTile(
               'Ngày tạo tài khoản', formatDate(userInfo?['createdAt'])),

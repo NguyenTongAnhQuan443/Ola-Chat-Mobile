@@ -13,8 +13,8 @@ class ResetPasswordViewModel with ChangeNotifier {
         .hasMatch(password);
   }
 
-  Future<void> resetPassword(
-      String email, String otp, String newPassword, BuildContext context) async {
+  Future<void> resetPassword(String email, String otp, String newPassword,
+      BuildContext context) async {
     error = null;
     isLoading = true;
     notifyListeners();

@@ -8,6 +8,7 @@ class SignUpViewModel extends ChangeNotifier {
   String? _errorMessage;
 
   bool get isLoading => _isLoading;
+
   String? get errorMessage => _errorMessage;
 
   SignUpViewModel({AuthService? authService})

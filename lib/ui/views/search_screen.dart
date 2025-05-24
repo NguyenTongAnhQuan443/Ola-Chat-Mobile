@@ -56,10 +56,10 @@ class _SearchScreenState extends State<SearchScreen> {
                   controller: _controller,
                   onChanged: (value) {
                     if (_debounce?.isActive ?? false) _debounce!.cancel();
-                    _debounce = Timer(const Duration(milliseconds: 300), () {
+                    _debounce = Timer(const Duration(milliseconds: 500), () {
                       if (value.isNotEmpty) {
                         viewModel.searchUser(
-                            value); // gọi API sau 300ms nếu user ngừng gõ
+                            value); // gọi API sau 500ms nếu user ngừng gõ
                       }
                     });
                   },
@@ -104,8 +104,8 @@ class _SearchScreenState extends State<SearchScreen> {
                     height: 32,
                     child: CircularProgressIndicator(
                       strokeWidth: 2.5,
-                      valueColor: AlwaysStoppedAnimation<Color>(
-                          Color(0xFF2B4FE1)), // màu xanh hiện đại
+                      valueColor:
+                          AlwaysStoppedAnimation<Color>(Color(0xFF2B4FE1)),
                     ),
                   ),
                 ),
@@ -185,7 +185,7 @@ class _SearchScreenState extends State<SearchScreen> {
                       "Hãy thử lại với số điện thoại hoặc email khác nhé.",
                       style: TextStyle(
                         fontSize: 13,
-                        color: Color(0xFF7A7A7A), // nhẹ nhàng hơn
+                        color: Color(0xFF7A7A7A),
                       ),
                       textAlign: TextAlign.center,
                     ),

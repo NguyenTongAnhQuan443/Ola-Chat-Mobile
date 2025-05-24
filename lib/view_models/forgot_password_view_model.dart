@@ -12,7 +12,8 @@ class ForgotPasswordViewModel with ChangeNotifier {
   bool isLoading = false;
   String? errorMessage;
 
-  Future<void> sendOtp(String email, BuildContext context, {VoidCallback? onSuccess}) async {
+  Future<void> sendOtp(String email, BuildContext context,
+      {VoidCallback? onSuccess}) async {
     isLoading = true;
     notifyListeners();
 

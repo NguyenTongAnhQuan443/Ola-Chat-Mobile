@@ -33,10 +33,15 @@ class ConversationModel {
       name: json['name'] ?? '',
       avatarUrl: json['avatar'] ?? '',
       lastMessage: json['lastMessage']?['content'] ?? '',
-      isOnline: true, // Hardcode
+      isOnline: true,
+      // Hardcode
       type: json['type'] ?? '',
-      createdAt: json['createdAt'] != null ? DateTime.tryParse(json['createdAt']) : null,
-      updatedAt: json['updatedAt'] != null ? DateTime.tryParse(json['updatedAt']) : null,
+      createdAt: json['createdAt'] != null
+          ? DateTime.tryParse(json['createdAt'])
+          : null,
+      updatedAt: json['updatedAt'] != null
+          ? DateTime.tryParse(json['updatedAt'])
+          : null,
       userIds: List<String>.from(json['userIds'] ?? []),
       moderatorIds: List<String>.from(json['moderatorIds'] ?? []),
       adminId: json['adminId'],

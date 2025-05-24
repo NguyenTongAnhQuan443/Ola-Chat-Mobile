@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:olachat_mobile/models/post_model.dart';
 import '../views/comments_screen.dart';
+
 class ListPost extends StatefulWidget {
   final List<PostModel> posts;
   final bool showCommentButton;
@@ -32,7 +33,7 @@ class ListPostState extends State<ListPost> {
   Widget build(BuildContext context) {
     return SliverList(
       delegate: SliverChildBuilderDelegate(
-            (context, index) {
+        (context, index) {
           final post = widget.posts[index];
 
           return Card(
@@ -46,21 +47,25 @@ class ListPostState extends State<ListPost> {
                   ListTile(
                     leading: CircleAvatar(
                       backgroundImage: NetworkImage(post.user.avatarUrl),
-                      onBackgroundImageError: (_, __) => const Icon(Icons.error),
+                      onBackgroundImageError: (_, __) =>
+                          const Icon(Icons.error),
                     ),
                     title: Text(
                       post.user.userName,
-                      style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                      style: const TextStyle(
+                          fontSize: 14, fontWeight: FontWeight.bold),
                     ),
                     subtitle: Text(post.user.nickName,
-                        style: const TextStyle(fontSize: 12, color: Colors.grey)),
+                        style:
+                            const TextStyle(fontSize: 12, color: Colors.grey)),
                     trailing: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         const Icon(Icons.more_horiz, size: 20),
                         Text(post.postTime,
-                            style: const TextStyle(fontSize: 12, color: Colors.grey)),
+                            style: const TextStyle(
+                                fontSize: 12, color: Colors.grey)),
                       ],
                     ),
                   ),

@@ -46,7 +46,9 @@ class LoginViewModel extends ChangeNotifier {
   AuthResponseModel? _authResponse;
 
   bool get isLoading => _isLoading;
+
   String? get errorMessage => _errorMessage;
+
   AuthResponseModel? get authResponse => _authResponse;
 
   Future<void> _handleLogin(
@@ -155,6 +157,7 @@ class LoginViewModel extends ChangeNotifier {
   }
 
   Map<String, dynamic>? _userInfo;
+
   Map<String, dynamic>? get userInfo => _userInfo;
 
   Future<void> refreshUserInfo() async {
@@ -187,8 +190,10 @@ class LoginViewModel extends ChangeNotifier {
   Future<void> registerDeviceForNotification(String userId) async {
     try {
       if (Firebase.apps.isEmpty) {
-        debugPrint("${AppStyles.warningIcon} Firebase chưa khởi tạo. Khởi tạo lại...");
-        await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+        debugPrint(
+            "${AppStyles.warningIcon} Firebase chưa khởi tạo. Khởi tạo lại...");
+        await Firebase.initializeApp(
+            options: DefaultFirebaseOptions.currentPlatform);
       }
       final fcmToken = await FirebaseMessaging.instance.getToken();
       if (fcmToken == null) {
@@ -201,24 +206,26 @@ class LoginViewModel extends ChangeNotifier {
         'token': fcmToken,
         'deviceId': deviceId,
       };
-      debugPrint('${AppStyles.greenPointIcon} [FCM] Payload gửi đăng ký: $payload');
+      debugPrint(
+          '${AppStyles.greenPointIcon} [FCM] Payload gửi đăng ký: $payload');
       final response = await DioClient().dio.post(
-        ApiConfig.registerDevice,
-        data: payload,
-      );
-      debugPrint('${AppStyles.greenPointIcon} [FCM] Phản hồi server (${response.statusCode}): ${response.data}');
+            ApiConfig.registerDevice,
+            data: payload,
+          );
+      debugPrint(
+          '${AppStyles.greenPointIcon} [FCM] Phản hồi server (${response.statusCode}): ${response.data}');
 
       if (response.statusCode == 200 && response.data['success'] == true) {
-        debugPrint('${AppStyles.successIcon} [FCM] Đăng ký thiết bị FCM thành công.');
+        debugPrint(
+            '${AppStyles.successIcon} [FCM] Đăng ký thiết bị FCM thành công.');
       } else {
-        debugPrint('${AppStyles.failureIcon} [FCM] Đăng ký thiết bị FCM thất bại: ${response.data}');
+        debugPrint(
+            '${AppStyles.failureIcon} [FCM] Đăng ký thiết bị FCM thất bại: ${response.data}');
       }
     } catch (e) {
       debugPrint('${AppStyles.failureIcon} [FCM] Lỗi khi đăng ký: $e');
     }
   }
-
-
 
   Future<bool> validateAndFetchUserInfo() async {
     final accessToken = await TokenService.getAccessToken();

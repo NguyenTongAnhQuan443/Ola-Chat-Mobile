@@ -44,7 +44,7 @@ class CustomDatePickerField extends StatelessWidget {
   }
 
   OutlineInputBorder get _borderStyle => OutlineInputBorder(
-    borderRadius: BorderRadius.circular(8),
-    borderSide: BorderSide(color: Colors.grey.shade300, width: 1.5),
-  );
+        borderRadius: BorderRadius.circular(8),
+        borderSide: BorderSide(color: Colors.grey.shade300, width: 1.5),
+      );
 }

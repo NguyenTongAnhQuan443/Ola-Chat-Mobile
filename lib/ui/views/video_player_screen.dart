@@ -5,6 +5,7 @@ import 'package:chewie/chewie.dart';
 
 class VideoPlayerScreen extends StatefulWidget {
   final String videoUrl;
+
   const VideoPlayerScreen({super.key, required this.videoUrl});
 
   @override

@@ -1,5 +1,3 @@
-
-
 import 'package:olachat_mobile/models/user_model.dart';
 
 class PostModel {

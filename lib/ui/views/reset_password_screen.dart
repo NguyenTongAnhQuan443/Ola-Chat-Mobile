@@ -19,7 +19,8 @@ class ResetPasswordScreen extends StatefulWidget {
 class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   final TextEditingController otpController = TextEditingController();
   final TextEditingController newPasswordController = TextEditingController();
-  final TextEditingController confirmPasswordController = TextEditingController();
+  final TextEditingController confirmPasswordController =
+      TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -77,35 +78,41 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                           onPressed: viewModel.isLoading
                               ? null
                               : () {
-                            final otp = otpController.text.trim();
-                            final newPass = newPasswordController.text.trim();
-                            final confirmPass = confirmPasswordController.text.trim();
+                                  final otp = otpController.text.trim();
+                                  final newPass =
+                                      newPasswordController.text.trim();
+                                  final confirmPass =
+                                      confirmPasswordController.text.trim();
 
-                            if (otp.isEmpty || newPass.isEmpty || confirmPass.isEmpty) {
-                              showErrorSnackBar(context, 'Vui lòng điền đầy đủ thông tin.');
-                              return;
-                            }
+                                  if (otp.isEmpty ||
+                                      newPass.isEmpty ||
+                                      confirmPass.isEmpty) {
+                                    showErrorSnackBar(context,
+                                        'Vui lòng điền đầy đủ thông tin.');
+                                    return;
+                                  }
 
-                            if (newPass != confirmPass) {
-                              showErrorSnackBar(context, 'Mật khẩu nhập lại không khớp.');
-                              return;
-                            }
+                                  if (newPass != confirmPass) {
+                                    showErrorSnackBar(context,
+                                        'Mật khẩu nhập lại không khớp.');
+                                    return;
+                                  }
 
-                            if (!viewModel.isValidPassword(newPass)) {
-                              showErrorSnackBar(
-                                context,
-                                'Mật khẩu phải có ít nhất 8 ký tự, 1 chữ cái viết hoa, 1 số và 1 ký tự đặc biệt.',
-                              );
-                              return;
-                            }
+                                  if (!viewModel.isValidPassword(newPass)) {
+                                    showErrorSnackBar(
+                                      context,
+                                      'Mật khẩu phải có ít nhất 8 ký tự, 1 chữ cái viết hoa, 1 số và 1 ký tự đặc biệt.',
+                                    );
+                                    return;
+                                  }
 
-                            viewModel.resetPassword(
-                              widget.email,
-                              otp,
-                              newPass,
-                              context,
-                            );
-                          },
+                                  viewModel.resetPassword(
+                                    widget.email,
+                                    otp,
+                                    newPass,
+                                    context,
+                                  );
+                                },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.black,
                             foregroundColor: Colors.white,
@@ -117,14 +124,16 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                           ),
                           child: viewModel.isLoading
                               ? const SizedBox(
-                            width: 20,
-                            height: 20,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                            ),
-                          )
-                              : const Text("Đổi mật khẩu", style: TextStyle(fontSize: 14)),
+                                  width: 20,
+                                  height: 20,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                        Colors.white),
+                                  ),
+                                )
+                              : const Text("Đổi mật khẩu",
+                                  style: TextStyle(fontSize: 14)),
                         ),
                       ),
                       const SizedBox(height: 24),
@@ -138,5 +147,4 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
       ),
     );
   }
-
 }

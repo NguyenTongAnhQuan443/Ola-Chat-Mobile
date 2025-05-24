@@ -22,7 +22,8 @@ class CustomTextFieldSettings extends StatelessWidget {
         labelText: label,
         labelStyle: const TextStyle(fontSize: 14, color: Colors.grey),
         floatingLabelBehavior: FloatingLabelBehavior.never,
-        contentPadding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
+        contentPadding:
+            const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
           borderSide: BorderSide(color: Colors.grey.shade300),

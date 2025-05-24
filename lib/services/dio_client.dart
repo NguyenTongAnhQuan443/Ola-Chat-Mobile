@@ -46,7 +46,7 @@ class DioClient {
         ];
 
         final isPublic = publicEndpoints.any((path) =>
-        options.path.startsWith(path) || options.uri.path.contains(path));
+            options.path.startsWith(path) || options.uri.path.contains(path));
 
         if (!isPublic) {
           final token = await TokenService.getAccessToken();
@@ -57,15 +57,13 @@ class DioClient {
 
         handler.next(options);
       },
-
       onError: (error, handler) async {
         final requestOptions = error.requestOptions;
         final hasRetried = requestOptions.extra['hasRetried'] == true;
 
         final isUnauthorized = error.response?.statusCode == 401;
-        final isUnknownWithToken =
-            error.type == DioExceptionType.unknown &&
-                await TokenService.getAccessToken() != null;
+        final isUnknownWithToken = error.type == DioExceptionType.unknown &&
+            await TokenService.getAccessToken() != null;
 
         if ((isUnauthorized || isUnknownWithToken) && !hasRetried) {
           final refreshed = await _refreshToken();
@@ -120,7 +118,8 @@ class DioClient {
 
       final data = response.data['data'];
       if (response.statusCode == 200 && data != null) {
-        await TokenService.saveTokens(data['accessToken'], data['refreshToken']);
+        await TokenService.saveTokens(
+            data['accessToken'], data['refreshToken']);
         print("${AppStyles.greenPointIcon} Token đã được làm mới thành công.");
         return true;
       }
@@ -132,7 +131,8 @@ class DioClient {
   }
 
   static Future<void> _forceLogout() async {
-    print('${AppStyles.failureIcon} Token không còn hợp lệ. Đăng xuất người dùng...');
+    print(
+        '${AppStyles.failureIcon} Token không còn hợp lệ. Đăng xuất người dùng...');
 
     // Ngắt kết nối socket
     SocketService().disconnect();
@@ -143,7 +143,7 @@ class DioClient {
     // Chuyển về màn hình đăng nhập
     navigatorKey.currentState?.pushAndRemoveUntil(
       MaterialPageRoute(builder: (_) => const LoginScreen()),
-          (route) => false,
+      (route) => false,
     );
   }
 }

@@ -11,6 +11,7 @@ class ListConversationViewModel extends ChangeNotifier {
   bool _isLoading = true;
 
   List<ConversationModel> get conversations => _conversations;
+
   bool get isLoading => _isLoading;
 
   Future<void> fetchConversations() async {
@@ -114,7 +115,8 @@ class ListConversationViewModel extends ChangeNotifier {
 
       notifyListeners();
     } catch (e) {
-      debugPrint("${AppStyles.failureIcon}Update Conversation From Message Error: $e");
+      debugPrint(
+          "${AppStyles.failureIcon}Update Conversation From Message Error: $e");
     }
   }
 }

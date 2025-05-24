@@ -15,7 +15,8 @@ class TokenResponseModel {
   }
 }
 
-Future<TokenResponseModel?> refreshAccessToken(String accessTokenOld, String refreshToken) async {
+Future<TokenResponseModel?> refreshAccessToken(
+    String accessTokenOld, String refreshToken) async {
   try {
     final dio = Dio();
 

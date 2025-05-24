@@ -23,7 +23,8 @@ class AppLogoHeaderTwo extends StatelessWidget {
                       width: AppStyles.logoIconSize,
                       height: AppStyles.logoIconSize),
                   const SizedBox(width: 18),
-                  const Text(AppStyles.nameApp, style: AppStyles.socialTextStyle),
+                  const Text(AppStyles.nameApp,
+                      style: AppStyles.socialTextStyle),
                 ],
               ),
               // onTap: () {

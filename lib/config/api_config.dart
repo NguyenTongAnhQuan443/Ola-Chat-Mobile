@@ -1,5 +1,5 @@
 class ApiConfig {
-  static String host = "http://192.168.100.135:8080";
+  static String host = "http://192.168.100.173:8080";
 
   // static String host = "https://ola-chat-backend-latest.onrender.com";
   static String get base => "$host/ola-chat";

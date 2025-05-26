@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:olachat_mobile/utils/app_styles.dart';
 
+import '../views/messages_list_screen.dart';
+
 class AppLogoHeaderTwo extends StatelessWidget {
   // DÀNH CHO CÁC TRANG HOME KHI ĐĂNG NHẬP THÀNH CÔNG
   const AppLogoHeaderTwo({super.key});
@@ -37,12 +39,12 @@ class AppLogoHeaderTwo extends StatelessWidget {
               // },
             ),
             InkWell(
-              // onTap: () {
-              //   Navigator.push(
-              //       context,
-              //       MaterialPageRoute(
-              //           builder: (context) => MessagesListScreen()));
-              // },
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => MessagesListScreen()));
+              },
               child: Image.asset(
                 'assets/icons/Send.png',
                 width: 20,

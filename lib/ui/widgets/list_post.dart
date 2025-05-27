@@ -77,40 +77,39 @@ class ListPostState extends State<ListPost> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       if (widget.showCommentButton)
-                        TextButton.icon(
-                          onPressed: () {
-                            Navigator.push(
+                        Flexible(
+                          child: TextButton.icon(
+                            onPressed: () {
+                              Navigator.push(
                                 context,
-                                MaterialPageRoute(
-                                    builder: (context) => CommentsScreen()));
-                          },
-                          icon: const Icon(Icons.mode_comment_outlined,
-                              size: 20, color: Colors.grey),
-                          label: const Text("Comment",
-                              style: TextStyle(color: Colors.grey)),
+                                MaterialPageRoute(builder: (context) => CommentsScreen()),
+                              );
+                            },
+                            icon: const Icon(Icons.mode_comment_outlined, size: 20, color: Colors.grey),
+                            label: const Text("Comment", style: TextStyle(color: Colors.grey)),
+                          ),
                         ),
-                      Row(
-                        children: [
-                          IconButton(
-                            icon: const Icon(Icons.thumb_up_alt_outlined,
-                                size: 20, color: Colors.grey),
-                            onPressed: () => _incrementLike(post),
-                          ),
-                          Text("${post.likeCount} Likes",
-                              style: const TextStyle(color: Colors.grey)),
-                          const SizedBox(width: 10),
-                          IconButton(
-                            icon: const Icon(Icons.thumb_down_alt_outlined,
-                                size: 20, color: Colors.grey),
-                            onPressed: () => _incrementDislike(post),
-                          ),
-                          Text("${post.dislikeCount} Dislikes",
-                              style: const TextStyle(color: Colors.grey)),
-                          const SizedBox(width: 10),
-                        ],
+                      Flexible(
+                        child: Wrap(
+                          spacing: 4,
+                          crossAxisAlignment: WrapCrossAlignment.center,
+                          children: [
+                            IconButton(
+                              icon: const Icon(Icons.thumb_up_alt_outlined, size: 20, color: Colors.grey),
+                              onPressed: () => _incrementLike(post),
+                            ),
+                            Text("${post.likeCount} Likes", style: const TextStyle(color: Colors.grey)),
+                            IconButton(
+                              icon: const Icon(Icons.thumb_down_alt_outlined, size: 20, color: Colors.grey),
+                              onPressed: () => _incrementDislike(post),
+                            ),
+                            Text("${post.dislikeCount} Dislikes", style: const TextStyle(color: Colors.grey)),
+                          ],
+                        ),
                       ),
                     ],
                   ),
+
                 ],
               ),
             ),

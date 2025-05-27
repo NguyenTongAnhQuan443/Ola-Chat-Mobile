@@ -26,14 +26,14 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  final TextEditingController hostController =
-      TextEditingController(text: ApiConfig.host);
+  // final TextEditingController hostController =
+  //     TextEditingController(text: ApiConfig.host);
 
   @override
   void dispose() {
     phoneController.dispose();
     passwordController.dispose();
-    hostController.dispose();
+    // hostController.dispose();
     super.dispose();
   }
 
@@ -182,13 +182,13 @@ class _LoginScreenState extends State<LoginScreen> {
                                       enabled: true,
                                     ),
                                     if (kDebugMode)
-                                      CustomTextField(
-                                        labelText:
-                                            "Host (ví dụ: http://192.168.1.4:8080)",
-                                        controller: hostController,
-                                        isPassword: false,
-                                        enabled: true,
-                                      ),
+                                      // CustomTextField(
+                                      //   labelText:
+                                      //       "Host (ví dụ: http://192.168.1.4:8080)",
+                                      //   controller: hostController,
+                                      //   isPassword: false,
+                                      //   enabled: true,
+                                      // ),
                                     Align(
                                       alignment: Alignment.centerRight,
                                       child: InkWell(

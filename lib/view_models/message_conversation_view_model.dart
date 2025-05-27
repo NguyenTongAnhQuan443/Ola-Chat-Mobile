@@ -7,6 +7,7 @@ import '../config/api_config.dart';
 import '../models/enum/message_type.dart';
 import '../models/message_model.dart';
 import '../models/user_in_conversation_model.dart';
+import '../services/conversation_service.dart';
 import '../services/file_upload_service.dart';
 import '../services/message_service.dart';
 import '../services/socket_service.dart';
@@ -15,8 +16,10 @@ import '../services/token_service.dart';
 class MessageConversationViewModel extends ChangeNotifier {
   final MessageService _messageService = MessageService();
   final SocketService _socketService = SocketService();
+  final ConversationService _conversationService = ConversationService();
 
   Map<String, UserInConversation> _userMap = {};
+
   Map<String, UserInConversation> get userMap => _userMap;
 
   List<MessageModel> _messages = [];
@@ -25,7 +28,9 @@ class MessageConversationViewModel extends ChangeNotifier {
   String? _currentUserId;
 
   List<MessageModel> get messages => _messages;
+
   bool get isLoading => _isLoading;
+
   String? get errorMessage => _errorMessage;
 
   Future<void> init(String conversationId) async {
@@ -42,7 +47,7 @@ class MessageConversationViewModel extends ChangeNotifier {
 
     try {
       _messages =
-      await _messageService.fetchMessagesByConversationId(conversationId);
+          await _messageService.fetchMessagesByConversationId(conversationId);
     } catch (e) {
       _errorMessage = e.toString();
     }
@@ -63,12 +68,12 @@ class MessageConversationViewModel extends ChangeNotifier {
   void _subscribeToConversation(String conversationId) {
     _socketService.subscribe(
       "/user/$conversationId/private",
-          (data) {
+      (data) {
         try {
           final message = MessageModel.fromJson(data);
 
           final isDuplicate = _messages.any((m) =>
-          (m.id != null && m.id == message.id) ||
+              (m.id != null && m.id == message.id) ||
               (m.id == null &&
                   m.senderId == message.senderId &&
                   m.content == message.content &&
@@ -146,7 +151,7 @@ class MessageConversationViewModel extends ChangeNotifier {
     try {
       final accessToken = await TokenService.getAccessToken();
       final mediaUrls =
-      await FileUploadService.uploadFilesIndividually(files, accessToken!);
+          await FileUploadService.uploadFilesIndividually(files, accessToken!);
       final now = DateTime.now();
 
       final tempMessage = MessageModel(
@@ -178,23 +183,8 @@ class MessageConversationViewModel extends ChangeNotifier {
   // Fetch all user in conversation
   Future<void> fetchUsersInConversation(String conversationId) async {
     try {
-      final token = await TokenService.getAccessToken();
-      final url = Uri.parse(ApiConfig.getUsersInConversation(conversationId));
-
-      final response = await http.get(url, headers: {
-        'Authorization': 'Bearer $token',
-        'Content-Type': 'application/json',
-      });
-
-      if (response.statusCode == 200) {
-        final List<dynamic> data = jsonDecode(utf8.decode(response.bodyBytes));
-        _userMap = {
-          for (var json in data)
-            json['userId']: UserInConversation.fromJson(json)
-        };
-      } else {
-        print("Lỗi khi fetch users in conversation: ${response.body}");
-      }
+      _userMap = await _conversationService.getUsersInConversation(conversationId);
+      notifyListeners();
     } catch (e) {
       print("Exception khi fetch users in conversation: $e");
     }

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:olachat_mobile/models/conversation_model.dart';
-import 'package:olachat_mobile/services/conversation_service.dart';
+import 'package:olachat_mobile/services/list_conversation_service.dart';
 import 'package:olachat_mobile/utils/app_styles.dart';
 
 class ListConversationViewModel extends ChangeNotifier {
-  final ConversationService _service = ConversationService();
+  final ListConversationService _service = ListConversationService();
   List<ConversationModel> _conversations = [];
   bool _isLoading = true;
 

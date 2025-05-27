@@ -57,7 +57,7 @@ class _MessagesConversationScreenState
       SocketService().init(token!);
 
       final vm =
-      Provider.of<MessageConversationViewModel>(context, listen: false);
+          Provider.of<MessageConversationViewModel>(context, listen: false);
       await vm.init(widget.conversationId);
 
       _jumpToBottom();
@@ -210,7 +210,7 @@ class _MessagesConversationScreenState
 
     if (msg.type == MessageType.STICKER) {
       final stickerUrl =
-      msg.mediaUrls?.isNotEmpty == true ? msg.mediaUrls![0] : "";
+          msg.mediaUrls?.isNotEmpty == true ? msg.mediaUrls![0] : "";
       if (stickerUrl.isEmpty) return const SizedBox();
       return GestureDetector(
         onTap: () => _showImagePreview(stickerUrl),
@@ -220,7 +220,7 @@ class _MessagesConversationScreenState
           height: 100,
           fit: BoxFit.cover,
           errorBuilder: (context, error, stackTrace) =>
-          const Icon(Icons.broken_image, size: 48),
+              const Icon(Icons.broken_image, size: 48),
           loadingBuilder: (context, child, loadingProgress) {
             if (loadingProgress == null) {
               Future.microtask(() => _scrollToBottom());
@@ -246,69 +246,69 @@ class _MessagesConversationScreenState
           final isVideo = url.endsWith('.mp4') || url.endsWith('.mov');
           return isVideo
               ? GestureDetector(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => Scaffold(
-                    backgroundColor: Colors.black,
-                    body: Stack(
-                      children: [
-                        Center(
-                          child: AspectRatio(
-                            aspectRatio: 16 / 9,
-                            child: VideoPlayerScreen(videoUrl: url),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => Scaffold(
+                          backgroundColor: Colors.black,
+                          body: Stack(
+                            children: [
+                              Center(
+                                child: AspectRatio(
+                                  aspectRatio: 16 / 9,
+                                  child: VideoPlayerScreen(videoUrl: url),
+                                ),
+                              ),
+                              Positioned(
+                                top: 32,
+                                right: 16,
+                                child: IconButton(
+                                  icon: const Icon(Icons.close,
+                                      color: Colors.white),
+                                  onPressed: () => Navigator.of(context).pop(),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                        Positioned(
-                          top: 32,
-                          right: 16,
-                          child: IconButton(
-                            icon: const Icon(Icons.close,
-                                color: Colors.white),
-                            onPressed: () => Navigator.of(context).pop(),
-                          ),
-                        ),
-                      ],
+                      ),
+                    );
+                  },
+                  child: Container(
+                    width: 100,
+                    height: 100,
+                    decoration: BoxDecoration(
+                      color: Colors.black12,
+                      borderRadius: BorderRadius.circular(8),
                     ),
+                    child: const Icon(Icons.play_circle_fill,
+                        size: 40, color: Colors.white),
                   ),
-                ),
-              );
-            },
-            child: Container(
-              width: 100,
-              height: 100,
-              decoration: BoxDecoration(
-                color: Colors.black12,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: const Icon(Icons.play_circle_fill,
-                  size: 40, color: Colors.white),
-            ),
-          )
+                )
               : GestureDetector(
-            onTap: () => _showImagePreview(url),
-            child: Image.network(
-              url,
-              width: 100,
-              height: 100,
-              fit: BoxFit.cover,
-              errorBuilder: (_, __, ___) =>
-              const Icon(Icons.broken_image),
-              loadingBuilder: (context, child, loadingProgress) {
-                if (loadingProgress == null) {
-                  Future.microtask(() => _scrollToBottom());
-                  return child;
-                }
-                return const SizedBox(
-                  width: 100,
-                  height: 100,
-                  child: Center(
-                      child: CircularProgressIndicator(strokeWidth: 2)),
+                  onTap: () => _showImagePreview(url),
+                  child: Image.network(
+                    url,
+                    width: 100,
+                    height: 100,
+                    fit: BoxFit.cover,
+                    errorBuilder: (_, __, ___) =>
+                        const Icon(Icons.broken_image),
+                    loadingBuilder: (context, child, loadingProgress) {
+                      if (loadingProgress == null) {
+                        Future.microtask(() => _scrollToBottom());
+                        return child;
+                      }
+                      return const SizedBox(
+                        width: 100,
+                        height: 100,
+                        child: Center(
+                            child: CircularProgressIndicator(strokeWidth: 2)),
+                      );
+                    },
+                  ),
                 );
-              },
-            ),
-          );
         }).toList(),
       );
     }
@@ -361,7 +361,7 @@ class _MessagesConversationScreenState
   Widget _buildReceivedMessage(
       {required MessageModel msg, required String time}) {
     final vm =
-    Provider.of<MessageConversationViewModel>(context, listen: false);
+        Provider.of<MessageConversationViewModel>(context, listen: false);
     final isGroupChat = vm.userMap.length > 1;
     final avatarUrl = isGroupChat
         ? (vm.userMap[msg.senderId]?.avatar ?? "")
@@ -377,7 +377,7 @@ class _MessagesConversationScreenState
             backgroundImage: avatarUrl.isNotEmpty
                 ? NetworkImage(avatarUrl)
                 : const AssetImage('assets/images/default_avatar.png')
-            as ImageProvider,
+                    as ImageProvider,
           ),
           const SizedBox(width: 8),
           Flexible(
@@ -520,7 +520,7 @@ class _MessagesConversationScreenState
                 backgroundImage: widget.avatarUrl.isNotEmpty
                     ? NetworkImage(widget.avatarUrl)
                     : const AssetImage('assets/images/default_avatar.png')
-                as ImageProvider,
+                        as ImageProvider,
               ),
               const SizedBox(width: 8),
               Expanded(
@@ -585,25 +585,25 @@ class _MessagesConversationScreenState
               child: vm.isLoading
                   ? const Center(child: CircularProgressIndicator())
                   : ListView.builder(
-                controller: _scrollController,
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 8, vertical: 8),
-                itemCount: messages.length,
-                itemBuilder: (context, index) {
-                  final msg = messages[index];
-                  final isMe = msg.senderId == _userId;
-                  final content = msg.type == MessageType.MEDIA
-                      ? jsonEncode(msg.mediaUrls ?? [])
-                      : msg.content;
+                      controller: _scrollController,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 8),
+                      itemCount: messages.length,
+                      itemBuilder: (context, index) {
+                        final msg = messages[index];
+                        final isMe = msg.senderId == _userId;
+                        final content = msg.type == MessageType.MEDIA
+                            ? jsonEncode(msg.mediaUrls ?? [])
+                            : msg.content;
 
-                  return isMe
-                      ? _buildSentMessage(msg, _formatTime(msg.createdAt))
-                      : _buildReceivedMessage(
-                    msg: msg,
-                    time: _formatTime(msg.createdAt),
-                  );
-                },
-              ),
+                        return isMe
+                            ? _buildSentMessage(msg, _formatTime(msg.createdAt))
+                            : _buildReceivedMessage(
+                                msg: msg,
+                                time: _formatTime(msg.createdAt),
+                              );
+                      },
+                    ),
             ),
             _buildMessageInput(),
           ],

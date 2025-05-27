@@ -1,71 +1,9 @@
-// import 'package:flutter/material.dart';
-// import 'package:provider/provider.dart';
-// import 'package:shared_preferences/shared_preferences.dart';
-// import 'package:olachat_mobile/ui/views/login_screen.dart';
-// import 'package:olachat_mobile/ui/views/bottom_navigationbar_screen.dart';
-// import 'package:olachat_mobile/view_models/login_view_model.dart';
-// import 'package:http/http.dart' as http;
-// import 'dart:convert';
-//
-// import '../../config/api_config.dart';
-// import '../../services/ping_service.dart';
-//
-// class SplashScreen extends StatefulWidget {
-//   const SplashScreen({super.key});
-//
-//   @override
-//   State<SplashScreen> createState() => _SplashScreenState();
-// }
-//
-// class _SplashScreenState extends State<SplashScreen> {
-//   @override
-//   void initState() {
-//     super.initState();
-//     _checkLoginStatus();
-//     PingService.start();
-//   }
-//
-//   Future<void> _checkLoginStatus() async {
-//     final loginVM = Provider.of<LoginViewModel>(context, listen: false);
-//
-//     final success = await loginVM.validateAndFetchUserInfo();
-//
-//     if (success) {
-//       PingService.start();
-//       _goToHome();
-//     } else {
-//       _goToLogin();
-//     }
-//   }
-//
-//   void _goToLogin() {
-//     Navigator.pushReplacement(
-//       context,
-//       MaterialPageRoute(builder: (_) => const LoginScreen()),
-//     );
-//   }
-//
-//   void _goToHome() {
-//     Navigator.pushReplacement(
-//       context,
-//       MaterialPageRoute(builder: (_) => const BottomNavigationBarScreen()),
-//     );
-//   }
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return const Scaffold(
-//       body: Center(child: CircularProgressIndicator()),
-//     );
-//   }
-// }
-
 import 'package:flutter/material.dart';
+import 'package:olachat_mobile/utils/app_styles.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-
 import '../../services/ping_service.dart';
 import '../../utils/firebase_options.dart';
 import '../../view_models/login_view_model.dart';
@@ -73,7 +11,7 @@ import '../views/login_screen.dart';
 import '../views/bottom_navigationbar_screen.dart';
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-FlutterLocalNotificationsPlugin();
+    FlutterLocalNotificationsPlugin();
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -102,7 +40,7 @@ class _SplashScreenState extends State<SplashScreen> {
       await _requestNotificationPermission();
 
       const androidSettings =
-      AndroidInitializationSettings('@mipmap/ic_launcher');
+          AndroidInitializationSettings('@mipmap/ic_launcher');
       const initSettings = InitializationSettings(android: androidSettings);
       await flutterLocalNotificationsPlugin.initialize(initSettings);
 
@@ -138,8 +76,8 @@ class _SplashScreenState extends State<SplashScreen> {
         _goToLogin();
       }
     } catch (e, s) {
-      debugPrint("❌ Lỗi khởi tạo SplashScreen: $e\n$s");
-      _goToLogin(); // fallback nếu có lỗi
+      debugPrint("${AppStyles.redPointIcon} Lỗi khởi tạo SplashScreen: $e\n$s");
+      _goToLogin();
     }
   }
 

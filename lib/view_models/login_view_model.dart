@@ -102,7 +102,7 @@ class LoginViewModel extends ChangeNotifier {
     final idToken = googleAuth.idToken;
     print("${AppStyles.successIcon}[DEBUG] GOOGLE ID TOKEN = $idToken");
     print(
-        "${AppStyles.successIcon}🟡 [DEBUG] ID TOKEN LENGTH = ${idToken?.length}");
+        "${AppStyles.successIcon}[DEBUG] ID TOKEN LENGTH = ${idToken?.length}");
     print(
         "${AppStyles.successIcon} [DEBUG] ID TOKEN FORMAT = ${idToken?.split('.').length ?? 0} parts");
 

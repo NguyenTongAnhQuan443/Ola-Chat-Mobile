@@ -1,8 +1,5 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:olachat_mobile/config/api_config.dart';
-import 'package:olachat_mobile/services/socket_service.dart';
-import 'package:olachat_mobile/services/token_service.dart';
 import 'package:olachat_mobile/ui/views/phone_verification_screen.dart';
 import 'package:olachat_mobile/ui/widgets/custom_social_button.dart';
 import 'package:olachat_mobile/utils/app_styles.dart';
@@ -26,14 +23,11 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  // final TextEditingController hostController =
-  //     TextEditingController(text: ApiConfig.host);
 
   @override
   void dispose() {
     phoneController.dispose();
     passwordController.dispose();
-    // hostController.dispose();
     super.dispose();
   }
 
@@ -182,30 +176,23 @@ class _LoginScreenState extends State<LoginScreen> {
                                       enabled: true,
                                     ),
                                     if (kDebugMode)
-                                      // CustomTextField(
-                                      //   labelText:
-                                      //       "Host (ví dụ: http://192.168.1.4:8080)",
-                                      //   controller: hostController,
-                                      //   isPassword: false,
-                                      //   enabled: true,
-                                      // ),
-                                    Align(
-                                      alignment: Alignment.centerRight,
-                                      child: InkWell(
-                                        onTap: () {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    const ForgotPasswordScreen()),
-                                          );
-                                        },
-                                        child: const Text("Quên mật khẩu ?",
-                                            style: TextStyle(
-                                                color: Colors.grey,
-                                                fontSize: 12)),
+                                      Align(
+                                        alignment: Alignment.centerRight,
+                                        child: InkWell(
+                                          onTap: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      const ForgotPasswordScreen()),
+                                            );
+                                          },
+                                          child: const Text("Quên mật khẩu ?",
+                                              style: TextStyle(
+                                                  color: Colors.grey,
+                                                  fontSize: 12)),
+                                        ),
                                       ),
-                                    ),
                                     const SizedBox(height: 20),
                                   ],
                                 ),

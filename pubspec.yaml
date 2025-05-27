@@ -25,7 +25,7 @@ dependencies:
   #  SharedPreferences
   shared_preferences: ^2.5.2
   #  device_info_plus
-  device_info_plus: ^10.1.2
+  device_info_plus: ^11.4.0
   # Login Facebook
   flutter_facebook_auth: ^7.1.1
   # dio:
@@ -45,7 +45,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  flutter_lints: ^5.0.0
+  flutter_lints: ^6.0.0
   # Lib Logo APP
   flutter_launcher_icons: ^0.14.3
 

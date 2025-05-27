@@ -43,7 +43,7 @@ class _MessagesListScreenState extends State<MessagesListScreen> {
                       height: 54,
                       color: Colors.white,
                       child: TextButton(
-                        onPressed: (){},
+                        onPressed: () {},
                         // onPressed: () async {
                         //   final result = await Navigator.push(
                         //     context,
@@ -113,19 +113,19 @@ class _MessagesListScreenState extends State<MessagesListScreen> {
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
                               ),
-                              // onTap: () {
-                              //   Navigator.push(
-                              //     context,
-                              //     MaterialPageRoute(
-                              //       builder: (context) =>
-                              //           MessagesConversationScreen(
-                              //         conversationId: message.id,
-                              //         conversationName: message.name,
-                              //         avatarUrl: message.avatarUrl,
-                              //       ),
-                              //     ),
-                              //   );
-                              // },
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        MessagesConversationScreen(
+                                      conversationId: message.id,
+                                      conversationName: message.name,
+                                      avatarUrl: message.avatarUrl,
+                                    ),
+                                  ),
+                                );
+                              },
                             ),
                           ),
                         );

@@ -110,13 +110,16 @@ class _SearchScreenState extends State<SearchScreen> {
                       height: 250,
                     ),
                     const SizedBox(height: 24),
-                    const Text(
-                      "Tìm bạn bè, nhập số điện thoại hoặc email để bắt đầu",
-                      style: TextStyle(
-                        fontSize: 15,
-                        color: Colors.grey,
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.8,
+                      child: const Text(
+                        "Tìm bạn bè, nhập số điện thoại hoặc email để bắt đầu",
+                        style: TextStyle(
+                          fontSize: 15,
+                          color: Colors.grey,
+                        ),
+                        textAlign: TextAlign.center,
                       ),
-                      textAlign: TextAlign.center,
                     ),
                   ],
                 ),
@@ -133,8 +136,8 @@ class _SearchScreenState extends State<SearchScreen> {
                   height: 40,
                   child: CircularProgressIndicator(
                     strokeWidth: 3,
-                    valueColor: AlwaysStoppedAnimation<Color>(
-                        Color(0xFF2B4FE1)),
+                    valueColor:
+                        AlwaysStoppedAnimation<Color>(Color(0xFF2B4FE1)),
                   ),
                 ),
               ),
@@ -151,15 +154,15 @@ class _SearchScreenState extends State<SearchScreen> {
                     leading: CircleAvatar(
                       radius: 20,
                       backgroundImage: (viewModel.result?.avatar != null &&
-                          viewModel.result!.avatar.isNotEmpty)
+                              viewModel.result!.avatar.isNotEmpty)
                           ? NetworkImage(viewModel.result!.avatar)
                           : const AssetImage("assets/images/default_avatar.png")
-                      as ImageProvider,
+                              as ImageProvider,
                     ),
                     title: Text(
                       viewModel.result!.displayName,
-                      style: TextStyle(
-                          fontSize: 14, fontWeight: FontWeight.bold),
+                      style:
+                          TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
                     ),
                     subtitle: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -189,8 +192,8 @@ class _SearchScreenState extends State<SearchScreen> {
           if (viewModel.error != null)
             SliverToBoxAdapter(
               child: Padding(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 24, vertical: 40),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 24, vertical: 40),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [

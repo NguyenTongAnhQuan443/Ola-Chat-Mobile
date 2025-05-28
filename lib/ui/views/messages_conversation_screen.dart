@@ -565,11 +565,13 @@ class _MessagesConversationScreenState
                   context,
                   MaterialPageRoute(
                     builder: (_) => CallVideoScreen(
-                      channelName: "room123",
-                      token: AgoraConfig.token,
+                      channelName: widget.conversationId,
+                      avatarUrl: "http://res.cloudinary.com/dm5ulzy7n/image/upload/v1748106975/travel/bbyvzr6s3p4yfa1fqrzm.jpg",
+                      // token: ...
                     ),
                   ),
                 );
+
               },
             ),
             // PopupMenuButton<String>(

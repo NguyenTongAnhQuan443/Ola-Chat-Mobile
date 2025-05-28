@@ -1,5 +1,3 @@
 class AgoraConfig {
-  static const String appId = '0aeec49e7a0b423e87150186568b81c7';
-  static const String token =
-      '007eJxTYGCckLA6IOvj++t7cnofrxLfvXBDgZBSg9bW4zuPTN7562+EAoNBYmpqsollqnmiQZKJkXGqhbmhqYGhhZmpmUWShWGy+XYt04yGQEYGjfj1LIwMEAjiszMU5efnGhoZMzAAAGWTIbM=';
+  static const String appId = '3d8544a8d6eb45e385188b8ce83259ad';
 }

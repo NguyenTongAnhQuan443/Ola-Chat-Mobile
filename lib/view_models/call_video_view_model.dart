@@ -7,6 +7,7 @@ class CallVideoViewModel extends ChangeNotifier {
   late RtcEngine engine;
   int? remoteUid;
   bool localUserJoined = false;
+  bool remoteVideoMuted = false;
 
   Future<void> initAgora({
     required String channelName,
@@ -17,30 +18,35 @@ class CallVideoViewModel extends ChangeNotifier {
       appId: AgoraConfig.appId,
     ));
 
-    engine.registerEventHandler(
-      RtcEngineEventHandler(
-        onJoinChannelSuccess: (RtcConnection connection, int elapsed) {
-          localUserJoined = true;
-          notifyListeners();
-        },
-        onUserJoined: (RtcConnection connection, int rUid, int elapsed) {
-          remoteUid = rUid;
-          notifyListeners();
-        },
-        onUserOffline: (RtcConnection connection, int rUid, UserOfflineReasonType reason) {
-          remoteUid = null;
-          notifyListeners();
-        },
-      ),
-    );
+    engine.registerEventHandler(RtcEngineEventHandler(
+      onJoinChannelSuccess: (RtcConnection connection, int elapsed) {
+        localUserJoined = true;
+        notifyListeners();
+      },
+      onUserJoined: (RtcConnection connection, int remoteUid, int elapsed) {
+        this.remoteUid = remoteUid;
+        remoteVideoMuted = false;
+        notifyListeners();
+      },
+      onUserOffline: (RtcConnection connection, int remoteUid,
+          UserOfflineReasonType reason) {
+        this.remoteUid = null;
+        notifyListeners();
+      },
+      // Lắng nghe sự kiện tắt/mở camera của đối phương
+      onUserMuteVideo: (RtcConnection connection, int remoteUid, bool muted) {
+        this.remoteVideoMuted = muted;
+        notifyListeners();
+      },
+    ));
 
     await engine.enableVideo();
     await engine.startPreview();
 
     await engine.joinChannel(
-      token: token ?? "",
+      token: token ?? '',
       channelId: channelName,
-      uid: 0, // random UID, có thể truyền userId
+      uid: 0,
       options: const ChannelMediaOptions(),
     );
   }

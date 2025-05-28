@@ -1,7 +1,6 @@
 class ApiConfig {
   static String host = "https://ola-chat-backend-latest-ir9h.onrender.com";
 
-  // static String host = "https://ola-chat-backend-latest.onrender.com";
   static String get base => "$host/ola-chat";
 
   // OTP

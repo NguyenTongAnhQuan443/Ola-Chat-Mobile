@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:olachat_mobile/config/agora_config.dart';
 import 'package:olachat_mobile/ui/views/video_player_screen.dart';
 import 'package:provider/provider.dart';
 import '../../models/enum/message_type.dart';
@@ -12,6 +13,7 @@ import '../../view_models/message_conversation_view_model.dart';
 import 'package:giphy_get/giphy_get.dart';
 import 'package:file_picker/file_picker.dart';
 
+import 'call_video_screen.dart';
 import 'group_management_screen.dart';
 
 class MessagesConversationScreen extends StatefulWidget {
@@ -545,6 +547,31 @@ class _MessagesConversationScreenState
             ],
           ),
           actions: [
+            IconButton(
+              icon: const Icon(Icons.call, color: Color(0xFF4C68D5)), // Voice call
+              tooltip: 'Gọi thoại',
+              onPressed: () {
+                // TODO: Thực hiện gọi thoại
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Tính năng gọi thoại chưa khả dụng')),
+                );
+              },
+            ),
+            IconButton(
+              icon: const Icon(Icons.videocam, color: Color(0xFF4C68D5)), // Video call
+              tooltip: 'Gọi video',
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => CallVideoScreen(
+                      channelName: "room123",
+                      token: AgoraConfig.token,
+                    ),
+                  ),
+                );
+              },
+            ),
             // PopupMenuButton<String>(
             //   onSelected: (value) {
             //     if (value == 'manage') {

@@ -566,7 +566,7 @@ class _MessagesConversationScreenState
                   MaterialPageRoute(
                     builder: (_) => CallVideoScreen(
                       channelName: widget.conversationId,
-                      avatarUrl: "http://res.cloudinary.com/dm5ulzy7n/image/upload/v1748106975/travel/bbyvzr6s3p4yfa1fqrzm.jpg",
+                      avatarRemoteUrl: widget.avatarUrl,
                       // token: ...
                     ),
                   ),

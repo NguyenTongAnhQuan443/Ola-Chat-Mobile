@@ -1,21 +1,19 @@
-import 'package:agora_rtc_engine/agora_rtc_engine.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:provider/provider.dart';
 
 import '../../view_models/call_video_view_model.dart';
 
 class CallVideoScreen extends StatefulWidget {
-  final String channelName; // dùng conversationId hoặc custom string
+  final String channelName;
   final String? token;
-  final String? avatarUrl;
+  final String? avatarRemoteUrl; // avatar đối phương truyền vào
 
   const CallVideoScreen({
     super.key,
     required this.channelName,
     this.token,
-    this.avatarUrl,
+    this.avatarRemoteUrl,
   });
 
   @override
@@ -32,14 +30,8 @@ class _CallVideoScreenState extends State<CallVideoScreen> {
     _init();
   }
 
-  // Xin quyền
-  Future<void> _initPermissions() async {
-    await [Permission.camera, Permission.microphone].request();
-  }
-
   Future<void> _init() async {
-    await [Permission.camera, Permission.microphone].request();
-    await _initPermissions();
+    // Request permissions...
     await vm.initAgora(
       channelName: widget.channelName,
       token: widget.token,
@@ -63,43 +55,61 @@ class _CallVideoScreenState extends State<CallVideoScreen> {
             backgroundColor: Colors.black,
             body: Stack(
               children: [
-                Center(
-                  child: vm.localUserJoined
+                // ----- REMOTE VIDEO (FULL SCREEN) -----
+                Positioned.fill(
+                  child: vm.remoteUid != null && !vm.remoteVideoMuted
                       ? AgoraVideoView(
-                          controller: VideoViewController(
-                            rtcEngine: vm.engine,
-                            canvas: const VideoCanvas(uid: 0),
-                          ),
-                        )
-                      : const CircularProgressIndicator(),
-                ),
-                if (vm.remoteUid != null)
-                  Align(
-                    alignment: Alignment.topLeft,
-                    child: vm.remoteVideoMuted
-                        ? Container(
-                            color: Colors.grey[900],
-                            child: Center(
-                              child: CircleAvatar(
-                                radius: 40,
-                                backgroundImage: widget.avatarUrl != null &&
-                                        widget.avatarUrl!.isNotEmpty
-                                    ? NetworkImage(widget.avatarUrl!)
-                                    : const AssetImage(
-                                            'assets/images/default_avatar.png')
-                                        as ImageProvider,
-                              ),
-                            ),
-                          )
-                        : AgoraVideoView(
-                            controller: VideoViewController.remote(
-                              rtcEngine: vm.engine,
-                              canvas: VideoCanvas(uid: vm.remoteUid),
-                              connection:
-                                  RtcConnection(channelId: widget.channelName),
-                            ),
-                          ),
+                    controller: VideoViewController.remote(
+                      rtcEngine: vm.engine,
+                      canvas: VideoCanvas(uid: vm.remoteUid),
+                      connection: RtcConnection(channelId: widget.channelName),
+                    ),
+                  )
+                      : Center(
+                    child: CircleAvatar(
+                      radius: 80,
+                      backgroundImage: widget.avatarRemoteUrl != null
+                          ? NetworkImage(widget.avatarRemoteUrl!)
+                          : const AssetImage('assets/images/default_avatar.png') as ImageProvider,
+                    ),
                   ),
+                ),
+                // ----- LOCAL VIDEO (TOP-RIGHT CORNER) -----
+                Positioned(
+                  top: 40,
+                  right: 16,
+                  child: vm.localUserJoined
+                      ? Container(
+                    width: 100,
+                    height: 140,
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.white, width: 2),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(12),
+                      child: AgoraVideoView(
+                        controller: VideoViewController(
+                          rtcEngine: vm.engine,
+                          canvas: const VideoCanvas(uid: 0),
+                        ),
+                      ),
+                    ),
+                  )
+                      : Container(
+                    width: 100,
+                    height: 140,
+                    decoration: BoxDecoration(
+                      color: Colors.black45,
+                      border: Border.all(color: Colors.white, width: 2),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: const Center(
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    ),
+                  ),
+                ),
+                // ----- END CALL BUTTON -----
                 Positioned(
                   bottom: 40,
                   left: 0,

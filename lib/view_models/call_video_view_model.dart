@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 
@@ -10,30 +12,35 @@ class CallVideoViewModel extends ChangeNotifier {
   bool localUserJoined = false;
   bool remoteVideoMuted = false;
 
+  // Trạng thái bật/tắt camera, mic
+  bool isCameraEnabled = true;
+  bool isMicEnabled = true;
+
   Future<void> initAgora({
     required String channelName,
     String? token,
   }) async {
-    // 1. Khởi tạo Agora engine
     engine = createAgoraRtcEngine();
     await engine.initialize(
       const RtcEngineContext(appId: AgoraConfig.appId),
     );
-
-    // 2. Đăng ký lắng nghe sự kiện
+    await engine.enableVideo();
     engine.registerEventHandler(
       RtcEngineEventHandler(
         onJoinChannelSuccess: (RtcConnection connection, int elapsed) {
           localUserJoined = true;
+          debugPrint('🟢 [Local] Đã join channel: ${connection.channelId}, uid: ${connection.localUid}');
           notifyListeners();
         },
         onUserJoined: (RtcConnection connection, int remoteUid, int elapsed) {
           this.remoteUid = remoteUid;
           remoteVideoMuted = false;
+          debugPrint('🔵 [Remote] Có user mới join: $remoteUid vào channel: ${connection.channelId}');
           notifyListeners();
         },
         onUserOffline: (RtcConnection connection, int remoteUid, UserOfflineReasonType reason) {
           this.remoteUid = null;
+          debugPrint('🔴 [Remote] User rời khỏi: $remoteUid, lý do: $reason');
           notifyListeners();
         },
         onUserMuteVideo: (RtcConnection connection, int remoteUid, bool muted) {
@@ -42,17 +49,18 @@ class CallVideoViewModel extends ChangeNotifier {
         },
       ),
     );
-
-    // 3. Bật video local
-    await engine.enableVideo();
     await engine.startPreview();
-
-    // 4. Tham gia kênh (joinChannel tự động publish track)
     await engine.joinChannel(
       token: token ?? '',
       channelId: channelName,
-      uid: 100, // có thể dùng userId hiện tại
-      options: const ChannelMediaOptions(),
+      uid: Random().nextInt(999999),
+      options: const ChannelMediaOptions(
+        publishCameraTrack: true,
+        publishMicrophoneTrack: true,
+        autoSubscribeAudio: true,
+        autoSubscribeVideo: true,
+      ),
+
     );
   }
 
@@ -65,15 +73,24 @@ class CallVideoViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Tùy chọn mở rộng: tắt / bật camera local
-  Future<void> toggleLocalVideo(bool enable) async {
-    await engine.muteLocalVideoStream(!enable);
+  // Toggle camera
+  Future<void> toggleLocalVideo() async {
+    isCameraEnabled = !isCameraEnabled;
+    await engine.muteLocalVideoStream(!isCameraEnabled);
     notifyListeners();
   }
 
-  // Tùy chọn mở rộng: tắt / bật mic
-  Future<void> toggleLocalAudio(bool enable) async {
-    await engine.muteLocalAudioStream(!enable);
+  // Toggle mic
+  Future<void> toggleLocalAudio() async {
+    isMicEnabled = !isMicEnabled;
+    await engine.muteLocalAudioStream(!isMicEnabled);
     notifyListeners();
   }
+
+  @override
+  void dispose() {
+    leaveChannel(); // đảm bảo thoát và giải phóng engine
+    super.dispose();
+  }
+
 }

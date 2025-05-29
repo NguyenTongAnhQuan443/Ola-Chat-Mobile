@@ -162,6 +162,7 @@ class _ListConversationScreenState extends State<ListConversationScreen>
                                       avatarUrl: message.avatarUrl,
                                       isOnline: message.isOnline ?? false,
                                       userId: currentUserId,
+                                      conversationId: message.id,
                                     ),
                                   ),
                                 );

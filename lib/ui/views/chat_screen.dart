@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:marquee/marquee.dart';
+import '../../models/enum/message_type.dart';
+import '../../models/message_model.dart';
+import '../../services/message_service.dart';
 
 class ChatScreen extends StatefulWidget {
   final String name;
   final String avatarUrl;
   final bool isOnline;
   final String userId;
+  final String conversationId; // ✅ Thêm conversationId
 
   const ChatScreen({
     super.key,
@@ -13,6 +17,7 @@ class ChatScreen extends StatefulWidget {
     required this.avatarUrl,
     required this.isOnline,
     required this.userId,
+    required this.conversationId,
   });
 
   @override
@@ -20,24 +25,31 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
-  List<Map<String, dynamic>> messages = [];
+  List<MessageModel> messages = [];
+  final MessageService _messageService = MessageService();
 
   @override
   void initState() {
     super.initState();
+    debugPrint("📩 ChatScreen mở với conversationId: ${widget.conversationId}");
     _loadMessages(); // Gọi API để load tin nhắn khi mở màn hình
   }
 
+
   Future<void> _loadMessages() async {
-    await Future.delayed(const Duration(milliseconds: 500)); // Giả lập delay API
-    setState(() {
-      messages = [
-        {'text': 'hi', 'isMe': false, 'time': '02:45'},
-        {'text': '😀', 'isMe': true, 'time': '01:45'},
-        {'image': 'assets/sticker1.png', 'isMe': false, 'time': '01:45'},
-        {'text': 'alo', 'isMe': true, 'time': '08:41'},
-      ];
-    });
+    try {
+      final fetched = await _messageService.fetchMessages(
+        conversationId: widget.conversationId, // ✅ Dùng conversationId
+        page: 0,
+        size: 20,
+      );
+
+      setState(() {
+        messages = fetched;
+      });
+    } catch (e) {
+      debugPrint("❌ Error loading messages: $e");
+    }
   }
 
   @override
@@ -149,14 +161,17 @@ class _ChatScreenState extends State<ChatScreen> {
                 itemCount: messages.length,
                 itemBuilder: (context, index) {
                   final msg = messages[messages.length - 1 - index];
-                  final isMe = msg['isMe'] as bool;
-                  final text = msg['text'] as String?;
-                  final image = msg['image'] as String?;
-                  final time = msg['time'] as String;
+                  final isMe = msg.senderId == widget.userId;
+                  final text = msg.content;
+                  final image = (msg.mediaUrls?.isNotEmpty ?? false)
+                      ? msg.mediaUrls!.first
+                      : null;
+                  final time = msg.createdAt != null
+                      ? "${msg.createdAt!.hour}:${msg.createdAt!.minute.toString().padLeft(2, '0')}"
+                      : "";
 
                   return Align(
-                    alignment:
-                    isMe ? Alignment.centerRight : Alignment.centerLeft,
+                    alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
                     child: Container(
                       margin: const EdgeInsets.symmetric(vertical: 4),
                       padding: const EdgeInsets.all(10),
@@ -165,13 +180,12 @@ class _ChatScreenState extends State<ChatScreen> {
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Column(
-                        crossAxisAlignment: isMe
-                            ? CrossAxisAlignment.end
-                            : CrossAxisAlignment.start,
+                        crossAxisAlignment:
+                        isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
                         children: [
-                          if (image != null)
-                            Image.asset(image, height: 100), // 🖼️ Gửi sticker
-                          if (text != null)
+                          if (msg.type == MessageType.STICKER && image != null)
+                            Image.network(image, height: 100), // 🖼️ Gửi sticker
+                          if (msg.type == MessageType.TEXT && text.isNotEmpty)
                             Text(
                               text,
                               style: const TextStyle(fontSize: 15),
@@ -179,8 +193,8 @@ class _ChatScreenState extends State<ChatScreen> {
                           const SizedBox(height: 4),
                           Text(
                             time,
-                            style: const TextStyle(
-                                fontSize: 11, color: Colors.grey),
+                            style:
+                            const TextStyle(fontSize: 11, color: Colors.grey),
                           ), // ⏰ Thời gian gửi
                         ],
                       ),

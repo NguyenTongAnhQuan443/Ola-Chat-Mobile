@@ -8,14 +8,14 @@ import '../widgets/app_logo_header_two.dart';
 import 'create_group_screen.dart';
 import 'messages_conversation_screen.dart';
 
-class MessagesListScreen extends StatefulWidget {
-  const MessagesListScreen({super.key});
+class ListConversationScreen extends StatefulWidget {
+  const ListConversationScreen({super.key});
 
   @override
-  State<MessagesListScreen> createState() => _MessagesListScreenState();
+  State<ListConversationScreen> createState() => _ListConversationScreenState();
 }
 
-class _MessagesListScreenState extends State<MessagesListScreen>
+class _ListConversationScreenState extends State<ListConversationScreen>
     with RouteAware {
   @override
   void initState() {

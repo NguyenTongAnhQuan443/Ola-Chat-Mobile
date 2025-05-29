@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../utils/app_styles.dart';
-import '../views/messages_list_screen.dart';
+import '../views/list_conversation_screen.dart';
 
 class AppLogoHeaderTwo extends StatelessWidget {
   final bool showMessageIcon;
@@ -42,7 +42,7 @@ class AppLogoHeaderTwo extends StatelessWidget {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => MessagesListScreen()));
+                          builder: (context) => ListConversationScreen()));
                 },
                 child: Image.asset(
                   'assets/icons/Send.png',

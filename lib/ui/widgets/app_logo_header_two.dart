@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:olachat_mobile/utils/app_styles.dart';
 
+import '../../utils/app_styles.dart';
 import '../views/messages_list_screen.dart';
 
 class AppLogoHeaderTwo extends StatelessWidget {
-  // DÀNH CHO CÁC TRANG HOME KHI ĐĂNG NHẬP THÀNH CÔNG
-  const AppLogoHeaderTwo({super.key});
+  final bool showMessageIcon;
+
+  const AppLogoHeaderTwo({
+    super.key,
+    this.showMessageIcon = true, // mặc định là hiện icon
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -29,28 +33,23 @@ class AppLogoHeaderTwo extends StatelessWidget {
                       style: AppStyles.socialTextStyle),
                 ],
               ),
-              // onTap: () {
-              //   Navigator.push(
-              //     context,
-              //     MaterialPageRoute(
-              //       builder: (context) => MessagesConversationScreen(),
-              //     ),
-              //   );
-              // },
             ),
-            InkWell(
-              onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => MessagesListScreen()));
-              },
-              child: Image.asset(
-                'assets/icons/Send.png',
-                width: 20,
-                height: 20,
+
+            // Chỉ hiển thị icon nếu showMessageIcon là true
+            if (showMessageIcon)
+              InkWell(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => MessagesListScreen()));
+                },
+                child: Image.asset(
+                  'assets/icons/Send.png',
+                  width: 20,
+                  height: 20,
+                ),
               ),
-            ),
           ],
         ),
       ),

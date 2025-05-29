@@ -59,7 +59,7 @@ void main() {
         //     avatarUrl: "...",
         //   ),
         // )
-        ChangeNotifierProvider(create: (_) => MessageConversationViewModel()),
+        // ChangeNotifierProvider(create: (_) => MessageConversationViewModel()),
         ChangeNotifierProvider(create: (_) => CallVideoViewModel()),
       ],
       child: const MyApp(),
@@ -67,12 +67,15 @@ void main() {
   );
 }
 
+final RouteObserver<ModalRoute<void>> routeObserver =
+    RouteObserver<ModalRoute<void>>();
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorObservers: [routeObserver],
       debugShowCheckedModeBanner: false,
       title: 'OlaChat',
       home: const SplashScreen(),

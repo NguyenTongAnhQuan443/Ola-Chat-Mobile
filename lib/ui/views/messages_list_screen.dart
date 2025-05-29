@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:olachat_mobile/ui/views/chat_screen.dart';
 import 'package:provider/provider.dart';
+import '../../main.dart';
 import '../../view_models/list_conversation_view_model.dart';
 import '../widgets/custom_sliver_to_box_adapter.dart';
 import '../widgets/app_logo_header_two.dart';
@@ -13,15 +15,39 @@ class MessagesListScreen extends StatefulWidget {
   State<MessagesListScreen> createState() => _MessagesListScreenState();
 }
 
-class _MessagesListScreenState extends State<MessagesListScreen> {
+class _MessagesListScreenState extends State<MessagesListScreen>
+    with RouteAware {
   @override
   void initState() {
     super.initState();
-    // Trì hoãn gọi fetchConversations sau khi build xong
+    // Gọi lần đầu sau khi build
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<ListConversationViewModel>(context, listen: false)
-          .fetchConversations();
+      _fetchData();
     });
+  }
+
+  void _fetchData() {
+    Provider.of<ListConversationViewModel>(context, listen: false)
+        .fetchConversations();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    routeObserver.subscribe(
+        this, ModalRoute.of(context)!); // Đăng ký theo dõi route
+  }
+
+  @override
+  void dispose() {
+    routeObserver.unsubscribe(this); // Hủy đăng ký
+    super.dispose();
+  }
+
+  // Khi quay lại màn hình này từ màn khác
+  @override
+  void didPopNext() {
+    _fetchData(); // Load lại danh sách hội thoại
   }
 
   @override
@@ -36,7 +62,7 @@ class _MessagesListScreenState extends State<MessagesListScreen> {
             ? const Center(child: CircularProgressIndicator())
             : CustomScrollView(
                 slivers: [
-                  AppLogoHeaderTwo(),
+                  AppLogoHeaderTwo(showMessageIcon: false),
                   CustomSliverToBoxAdapter(),
                   SliverToBoxAdapter(
                     child: Container(
@@ -104,12 +130,14 @@ class _MessagesListScreenState extends State<MessagesListScreen> {
                                 ],
                               ),
                               title: Text(
-                                message.name,
+                                message.type == 'GROUP'
+                                    ? 'Nhóm: ${message.name}'
+                                    : message.name,
                                 style: const TextStyle(
                                     fontWeight: FontWeight.bold, fontSize: 14),
                               ),
                               subtitle: Text(
-                                message.lastMessage,
+                                message.lastMessage?.content ?? '',
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
                               ),
@@ -117,12 +145,7 @@ class _MessagesListScreenState extends State<MessagesListScreen> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) =>
-                                        MessagesConversationScreen(
-                                      conversationId: message.id,
-                                      conversationName: message.name,
-                                      avatarUrl: message.avatarUrl,
-                                    ),
+                                    builder: (context) => ChatScreen(),
                                   ),
                                 );
                               },

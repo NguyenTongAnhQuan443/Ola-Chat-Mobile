@@ -1,8 +1,10 @@
+import 'last_message_model.dart';
+
 class ConversationModel {
   String id;
   String name;
   String avatarUrl;
-  String lastMessage;
+  LastMessageModel? lastMessage;
   bool isOnline;
   String type;
   DateTime? createdAt;
@@ -16,7 +18,7 @@ class ConversationModel {
     required this.id,
     required this.name,
     required this.avatarUrl,
-    required this.lastMessage,
+    this.lastMessage,
     required this.isOnline,
     required this.type,
     required this.createdAt,
@@ -32,16 +34,13 @@ class ConversationModel {
       id: json['id'] ?? '',
       name: json['name'] ?? '',
       avatarUrl: json['avatar'] ?? '',
-      lastMessage: json['lastMessage']?['content'] ?? '',
-      isOnline: true,
-      // Hardcode
+      lastMessage: json['lastMessage'] != null
+          ? LastMessageModel.fromJson(json['lastMessage'])
+          : null,
+      isOnline: true, // tuỳ chỉnh sau nếu BE trả trạng thái online
       type: json['type'] ?? '',
-      createdAt: json['createdAt'] != null
-          ? DateTime.tryParse(json['createdAt'])
-          : null,
-      updatedAt: json['updatedAt'] != null
-          ? DateTime.tryParse(json['updatedAt'])
-          : null,
+      createdAt: json['createdAt'] != null ? DateTime.tryParse(json['createdAt']) : null,
+      updatedAt: json['updatedAt'] != null ? DateTime.tryParse(json['updatedAt']) : null,
       userIds: List<String>.from(json['userIds'] ?? []),
       moderatorIds: List<String>.from(json['moderatorIds'] ?? []),
       adminId: json['adminId'],

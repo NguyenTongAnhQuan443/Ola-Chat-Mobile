@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:olachat_mobile/models/conversation_model.dart';
+import 'package:olachat_mobile/models/last_message_model.dart';
 import 'package:olachat_mobile/services/list_conversation_service.dart';
 import 'package:olachat_mobile/utils/app_styles.dart';
 
@@ -27,7 +28,8 @@ class ListConversationViewModel extends ChangeNotifier {
     }
   }
 
-  Future<void> updateConversationFromMessage(Map<String, dynamic> messageData) async {
+  Future<void> updateConversationFromMessage(
+      Map<String, dynamic> messageData) async {
     try {
       final String conversationId = messageData['conversationId'];
       final String content = messageData['content'];
@@ -38,13 +40,19 @@ class ListConversationViewModel extends ChangeNotifier {
 
       if (index != -1) {
         final updated = _conversations[index];
-        updated.lastMessage = messageType == 'TEXT' ? content : '[Media]';
+        updated.lastMessage = LastMessageModel(
+          content: messageType == 'TEXT' ? content : '[Media]',
+          createdAt: DateTime.now(),
+          senderId: messageData['senderId'],
+        );
+
         updated.updatedAt = now;
         _conversations.removeAt(index);
         _conversations.insert(0, updated);
       } else {
         // fetch mới
-        final newConversation = await _service.fetchConversationById(conversationId);
+        final newConversation =
+            await _service.fetchConversationById(conversationId);
         _conversations.insert(0, newConversation);
       }
       notifyListeners();

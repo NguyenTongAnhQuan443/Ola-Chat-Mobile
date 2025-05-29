@@ -37,6 +37,7 @@ dependencies:
   firebase_messaging: ^15.2.5
   # Sticker
   giphy_get: ^3.0.0
+  marquee: ^2.3.0
 
 
   awesome_dialog: ^3.2.1

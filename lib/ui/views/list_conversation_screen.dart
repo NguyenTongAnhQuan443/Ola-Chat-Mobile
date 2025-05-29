@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:olachat_mobile/ui/views/chat_screen.dart';
 import 'package:provider/provider.dart';
 import '../../main.dart';
+import '../../services/token_service.dart';
 import '../../view_models/list_conversation_view_model.dart';
 import '../widgets/custom_sliver_to_box_adapter.dart';
 import '../widgets/app_logo_header_two.dart';
@@ -141,11 +142,27 @@ class _ListConversationScreenState extends State<ListConversationScreen>
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
                               ),
-                              onTap: () {
+                              onTap: () async {
+                                final currentUserId =
+                                    await TokenService.getCurrentUserId();
+                                if (currentUserId == null) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                        content: Text(
+                                            'Không thể xác định người dùng hiện tại')),
+                                  );
+                                  return;
+                                }
+
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => ChatScreen(),
+                                    builder: (context) => ChatScreen(
+                                      name: message.name,
+                                      avatarUrl: message.avatarUrl,
+                                      isOnline: message.isOnline ?? false,
+                                      userId: currentUserId,
+                                    ),
                                   ),
                                 );
                               },

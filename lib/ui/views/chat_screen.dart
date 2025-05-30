@@ -38,7 +38,6 @@ class _ChatScreenState extends State<ChatScreen> {
     _loadMessages(); // Gọi API để load tin nhắn khi mở màn hình
   }
 
-
   Future<void> _loadMessages() async {
     try {
       final fetched = await _messageService.fetchMessages(
@@ -63,6 +62,10 @@ class _ChatScreenState extends State<ChatScreen> {
           name: widget.name,
           avatarUrl: widget.avatarUrl,
           isOnline: widget.isOnline,
+          conversationId: widget.conversationId,
+          currentUserId: widget.userId,
+          currentUserName:
+              'Tên của bạn', // Có thể lấy từ SharedPreferences nếu cần
         ),
         body: Column(
           children: [

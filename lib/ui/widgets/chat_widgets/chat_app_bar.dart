@@ -1,11 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:marquee/marquee.dart';
 
+import '../../views/zego_call_screen.dart';
+
 class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String name;
   final String avatarUrl;
   final bool isOnline;
-  const ChatAppBar({super.key, required this.name, required this.avatarUrl, required this.isOnline});
+  final String conversationId;
+  final String currentUserId;
+  final String currentUserName;
+
+  const ChatAppBar({
+    super.key,
+    required this.name,
+    required this.avatarUrl,
+    required this.isOnline,
+    required this.conversationId,
+    required this.currentUserId,
+    required this.currentUserName,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -62,17 +76,48 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
           ),
         ],
       ),
-      actions: [
-        const IconButton(icon: Icon(Icons.call, color: Colors.indigo), onPressed: null),
-        const IconButton(icon: Icon(Icons.videocam, color: Colors.indigo), onPressed: null),
-        PopupMenuButton<String>(
-          icon: const Icon(Icons.more_vert, color: Colors.indigo),
-          itemBuilder: (context) => const [
-            PopupMenuItem(value: 'xoa', child: Text('Xoá đoạn chat')),
-            PopupMenuItem(value: 'chan', child: Text('Chặn người này')),
-          ],
-        )
-      ],
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.call, color: Colors.indigo),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => ZegoCallScreen(
+                    userId: currentUserId,
+                    userName: currentUserName,
+                    callID: conversationId,
+                    isVideoCall: false,
+                  ),
+                ),
+              );
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.videocam, color: Colors.indigo),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => ZegoCallScreen(
+                    userId: currentUserId,
+                    userName: currentUserName,
+                    callID: conversationId,
+                    isVideoCall: true,
+                  ),
+                ),
+              );
+            },
+          ),
+          PopupMenuButton<String>(
+            icon: const Icon(Icons.more_vert, color: Colors.indigo),
+            itemBuilder: (context) => const [
+              PopupMenuItem(value: 'xoa', child: Text('Xoá đoạn chat')),
+              PopupMenuItem(value: 'chan', child: Text('Chặn người này')),
+            ],
+          ),
+        ]
+
     );
   }
 

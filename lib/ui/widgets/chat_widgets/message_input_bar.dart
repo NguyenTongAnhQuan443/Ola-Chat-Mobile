@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+// Widget thanh nhập tin nhắn ở cuối màn hình trò chuyện
 class MessageInputBar extends StatelessWidget {
   const MessageInputBar({super.key});
 
@@ -11,9 +12,25 @@ class MessageInputBar extends StatelessWidget {
       child: SafeArea(
         child: Row(
           children: [
-            IconButton(icon: const Icon(Icons.emoji_emotions_outlined), onPressed: () {}),
-            IconButton(icon: const Icon(Icons.image_outlined), onPressed: () {}),
-            IconButton(icon: const Icon(Icons.mic, color: Colors.deepPurple), onPressed: () {}),
+            // Nút mở emoji (chưa xử lý logic)
+            IconButton(
+              icon: const Icon(Icons.emoji_emotions_outlined),
+              onPressed: () {},
+            ),
+
+            // Nút mở gallery hoặc gửi ảnh (chưa xử lý)
+            IconButton(
+              icon: const Icon(Icons.image_outlined),
+              onPressed: () {},
+            ),
+
+            // Nút ghi âm (chưa xử lý)
+            IconButton(
+              icon: const Icon(Icons.mic, color: Colors.deepPurple),
+              onPressed: () {},
+            ),
+
+            // Ô nhập văn bản
             Expanded(
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -29,7 +46,12 @@ class MessageInputBar extends StatelessWidget {
                 ),
               ),
             ),
-            IconButton(icon: const Icon(Icons.send, color: Colors.deepPurple), onPressed: () {}),
+
+            // Nút gửi tin nhắn (chưa xử lý logic gửi)
+            IconButton(
+              icon: const Icon(Icons.send, color: Colors.deepPurple),
+              onPressed: () {}, // TODO: cần truyền hàm gửi tin nhắn
+            ),
           ],
         ),
       ),

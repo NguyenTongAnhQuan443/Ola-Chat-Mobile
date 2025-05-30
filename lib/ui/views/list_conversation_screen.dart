@@ -7,6 +7,7 @@ import '../../view_models/list_conversation_view_model.dart';
 import '../widgets/custom_sliver_to_box_adapter.dart';
 import '../widgets/app_logo_header_two.dart';
 
+// Màn hình danh sách cuộc trò chuyện
 class ListConversationScreen extends StatefulWidget {
   const ListConversationScreen({super.key});
 
@@ -19,12 +20,13 @@ class _ListConversationScreenState extends State<ListConversationScreen>
   @override
   void initState() {
     super.initState();
-    // Gọi lần đầu sau khi build
+    // Gọi fetch dữ liệu sau khi build xong frame đầu tiên
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _fetchData();
     });
   }
 
+  // Gọi ViewModel để lấy danh sách cuộc trò chuyện từ API
   void _fetchData() {
     Provider.of<ListConversationViewModel>(context, listen: false)
         .fetchConversations();
@@ -33,26 +35,27 @@ class _ListConversationScreenState extends State<ListConversationScreen>
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    routeObserver.subscribe(
-        this, ModalRoute.of(context)!); // Đăng ký theo dõi route
+    // Đăng ký theo dõi route để biết khi nào quay lại màn hình này
+    routeObserver.subscribe(this, ModalRoute.of(context)!);
   }
 
   @override
   void dispose() {
-    routeObserver.unsubscribe(this); // Hủy đăng ký
+    // Hủy đăng ký khi màn hình bị dispose
+    routeObserver.unsubscribe(this);
     super.dispose();
   }
 
-  // Khi quay lại màn hình này từ màn khác
+  // Hàm này được gọi khi quay lại màn hình từ một màn hình khác
   @override
   void didPopNext() {
-    _fetchData(); // Load lại danh sách hội thoại
+    _fetchData();
   }
 
   @override
   Widget build(BuildContext context) {
     final vm = Provider.of<ListConversationViewModel>(context);
-    final messages = vm.conversations;
+    final messages = vm.conversations; // Danh sách hội thoại
 
     return SafeArea(
       child: Scaffold(
@@ -61,8 +64,11 @@ class _ListConversationScreenState extends State<ListConversationScreen>
             ? const Center(child: CircularProgressIndicator())
             : CustomScrollView(
                 slivers: [
+                  // Header logo
                   AppLogoHeaderTwo(showMessageIcon: false),
-                  CustomSliverToBoxAdapter(),
+                  CustomSliverToBoxAdapter(), // Spacer
+
+                  // Nút tạo nhóm chat (đang để trống onPressed)
                   SliverToBoxAdapter(
                     child: Container(
                       height: 54,
@@ -98,17 +104,22 @@ class _ListConversationScreenState extends State<ListConversationScreen>
                       ),
                     ),
                   ),
-                  CustomSliverToBoxAdapter(),
+
+                  CustomSliverToBoxAdapter(), // Spacer
+
+                  // Danh sách hội thoại
                   SliverList(
                     delegate: SliverChildBuilderDelegate(
                       (context, index) {
                         final message = messages[index];
+
                         return Padding(
                           padding: const EdgeInsets.symmetric(vertical: 6),
                           child: InkWell(
                             child: ListTile(
                               leading: Stack(
                                 children: [
+                                  // Avatar người dùng hoặc nhóm
                                   CircleAvatar(
                                     radius: 24,
                                     backgroundImage: message
@@ -118,6 +129,7 @@ class _ListConversationScreenState extends State<ListConversationScreen>
                                                 'assets/images/default_avatar.png')
                                             as ImageProvider,
                                   ),
+                                  // Chấm xanh biểu thị "online"
                                   const Positioned(
                                     bottom: 0,
                                     right: 0,
@@ -128,6 +140,8 @@ class _ListConversationScreenState extends State<ListConversationScreen>
                                   ),
                                 ],
                               ),
+
+                              // Hiển thị tên nhóm hoặc người dùng
                               title: Text(
                                 message.type == 'GROUP'
                                     ? 'Nhóm: ${message.name}'
@@ -135,14 +149,19 @@ class _ListConversationScreenState extends State<ListConversationScreen>
                                 style: const TextStyle(
                                     fontWeight: FontWeight.bold, fontSize: 14),
                               ),
+
+                              // Tin nhắn cuối cùng trong hội thoại
                               subtitle: Text(
                                 message.lastMessage?.content ?? '',
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
                               ),
+
+                              // Khi bấm vào cuộc trò chuyện
                               onTap: () async {
                                 final currentUserId =
                                     await TokenService.getCurrentUserId();
+
                                 if (currentUserId == null) {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
@@ -152,6 +171,7 @@ class _ListConversationScreenState extends State<ListConversationScreen>
                                   return;
                                 }
 
+                                // Mở ChatScreen với thông tin truyền vào
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
@@ -169,7 +189,7 @@ class _ListConversationScreenState extends State<ListConversationScreen>
                           ),
                         );
                       },
-                      childCount: messages.length,
+                      childCount: messages.length, // Số lượng item
                     ),
                   ),
                 ],

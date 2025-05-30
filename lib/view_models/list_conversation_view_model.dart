@@ -12,53 +12,60 @@ class ListConversationViewModel extends ChangeNotifier {
   List<ConversationModel> get conversations => _conversations;
   bool get isLoading => _isLoading;
 
+  // Gọi API để lấy danh sách tất cả các hội thoại
   Future<void> fetchConversations() async {
     _isLoading = true;
-    notifyListeners();
-    print("${AppStyles.successIcon}[VM] Bắt đầu fetch conversations");
+    notifyListeners(); // Cập nhật UI ngay khi bắt đầu tải
+    print("${AppStyles.successIcon}[ListConversationVM] Bắt đầu fetch conversations");
 
     try {
       _conversations = await _service.fetchConversations();
     } catch (e) {
-      debugPrint("Error loading conversations: $e");
+      debugPrint("${AppStyles.failureIcon} [ListConversationVM] Error loading conversations: $e");
       _conversations = [];
     } finally {
       _isLoading = false;
-      notifyListeners();
+      notifyListeners(); // Cập nhật UI sau khi tải xong
     }
   }
 
-  Future<void> updateConversationFromMessage(
-      Map<String, dynamic> messageData) async {
+  // Hàm gọi khi có tin nhắn mới qua socket hoặc sự kiện realtime
+  // Mục tiêu: cập nhật `lastMessage` và đưa hội thoại lên đầu
+  Future<void> updateConversationFromMessage(Map<String, dynamic> messageData) async {
     try {
-      final String conversationId = messageData['conversationId'];
-      final String content = messageData['content'];
-      final String messageType = messageData['type'];
-      final DateTime now = DateTime.now();
+      final String conversationId = messageData['conversationId']; // ID hội thoại
+      final String content = messageData['content']; // Nội dung tin nhắn
+      final String messageType = messageData['type']; // TEXT / MEDIA
+      final DateTime now = DateTime.now(); // Thời gian hiện tại
 
+      // Tìm vị trí hội thoại trong danh sách
       final index = _conversations.indexWhere((c) => c.id == conversationId);
 
       if (index != -1) {
+        // Nếu hội thoại đã tồn tại → cập nhật nội dung tin nhắn cuối
         final updated = _conversations[index];
         updated.lastMessage = LastMessageModel(
-          content: messageType == 'TEXT' ? content : '[Media]',
+          content: messageType == 'TEXT'
+              ? content
+              : '[Media]', // Nếu không phải TEXT thì hiển thị là [Media]
           createdAt: DateTime.now(),
           senderId: messageData['senderId'],
         );
 
-        updated.updatedAt = now;
-        _conversations.removeAt(index);
-        _conversations.insert(0, updated);
+        updated.updatedAt = now; // Cập nhật thời gian chỉnh sửa
+        _conversations.removeAt(index); // Xoá khỏi vị trí cũ
+        _conversations.insert(0, updated); // Đưa lên đầu danh sách
       } else {
-        // fetch mới
-        final newConversation =
-            await _service.fetchConversationById(conversationId);
-        _conversations.insert(0, newConversation);
+        // Nếu hội thoại chưa tồn tại → gọi API để fetch hội thoại đó
+        final newConversation = await _service.fetchConversationById(conversationId);
+        _conversations.insert(0, newConversation); // Thêm vào đầu danh sách
       }
-      notifyListeners();
+
+      notifyListeners(); // Cập nhật UI
     } catch (e) {
       debugPrint(
-          "${AppStyles.failureIcon}Update Conversation From Message Error: $e");
+        "${AppStyles.failureIcon} [ListConversationVM] Update Conversation From Message Error: $e",
+      );
     }
   }
 }

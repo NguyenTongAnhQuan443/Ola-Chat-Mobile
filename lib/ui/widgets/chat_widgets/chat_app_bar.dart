@@ -25,18 +25,20 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return AppBar(
       backgroundColor: const Color(0xFFF5F2FA),
-      automaticallyImplyLeading: false,
+      automaticallyImplyLeading: false, // Không hiển thị nút mặc định (back)
+
       leading: IconButton(
         icon: const Icon(Icons.arrow_back, color: Colors.black),
-        onPressed: () => Navigator.pop(context),
+        onPressed: () => Navigator.pop(context), // Quay lại màn hình trước
       ),
+
+      // Phần chính hiển thị avatar + tên + trạng thái online
       title: Row(
         children: [
           CircleAvatar(
             backgroundImage: avatarUrl.isNotEmpty
                 ? NetworkImage(avatarUrl)
-                : const AssetImage('assets/images/default_avatar.png')
-            as ImageProvider,
+                : const AssetImage('assets/images/default_avatar.png') as ImageProvider,
             radius: 18,
           ),
           const SizedBox(width: 10),
@@ -44,6 +46,7 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // Dòng tên hiển thị theo dạng chạy marquee nếu dài
                 SizedBox(
                   height: 20,
                   width: double.infinity,
@@ -61,6 +64,7 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
                     decelerationCurve: Curves.easeOut,
                   ),
                 ),
+                // Dòng hiển thị trạng thái online / offline
                 Row(
                   children: [
                     Icon(Icons.circle, size: 10, color: isOnline ? Colors.green : Colors.grey),
@@ -76,51 +80,57 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
           ),
         ],
       ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.call, color: Colors.indigo),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => ZegoCallScreen(
-                    userId: currentUserId,
-                    userName: currentUserName,
-                    callID: conversationId,
-                    isVideoCall: false,
-                  ),
-                ),
-              );
-            },
-          ),
-          IconButton(
-            icon: const Icon(Icons.videocam, color: Colors.indigo),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => ZegoCallScreen(
-                    userId: currentUserId,
-                    userName: currentUserName,
-                    callID: conversationId,
-                    isVideoCall: true,
-                  ),
-                ),
-              );
-            },
-          ),
-          PopupMenuButton<String>(
-            icon: const Icon(Icons.more_vert, color: Colors.indigo),
-            itemBuilder: (context) => const [
-              PopupMenuItem(value: 'xoa', child: Text('Xoá đoạn chat')),
-              PopupMenuItem(value: 'chan', child: Text('Chặn người này')),
-            ],
-          ),
-        ]
 
+      // Các nút hành động ở bên phải AppBar: Gọi thoại, gọi video, và menu 3 chấm
+      actions: [
+        // Nút gọi thoại
+        IconButton(
+          icon: const Icon(Icons.call, color: Colors.indigo),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => ZegoCallScreen(
+                  userId: currentUserId,
+                  userName: currentUserName,
+                  callID: conversationId,
+                  isVideoCall: false, // Gọi thoại
+                ),
+              ),
+            );
+          },
+        ),
+
+        // Nút gọi video
+        IconButton(
+          icon: const Icon(Icons.videocam, color: Colors.indigo),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => ZegoCallScreen(
+                  userId: currentUserId,
+                  userName: currentUserName,
+                  callID: conversationId,
+                  isVideoCall: true, // Gọi video
+                ),
+              ),
+            );
+          },
+        ),
+
+        // Nút mở menu 3 chấm (popup menu)
+        PopupMenuButton<String>(
+          icon: const Icon(Icons.more_vert, color: Colors.indigo),
+          itemBuilder: (context) => const [
+            PopupMenuItem(value: 'xoa', child: Text('Xoá đoạn chat')),
+            PopupMenuItem(value: 'chan', child: Text('Chặn người này')),
+          ],
+        ),
+      ],
     );
   }
 
   @override
-  Size get preferredSize => const Size.fromHeight(60);
+  Size get preferredSize => const Size.fromHeight(70); // Chiều cao AppBar
 }

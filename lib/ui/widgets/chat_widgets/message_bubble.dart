@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mime/mime.dart';
+import 'package:olachat_mobile/utils/app_styles.dart';
 import '../../../models/enum/message_type.dart';
 import '../../../models/message_model.dart';
 import '../../../services/file_opener_service.dart';
@@ -7,6 +8,8 @@ import 'package:dio/dio.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 import 'package:open_filex/open_filex.dart';
+
+import '../../../services/socket_service.dart';
 
 class MessageBubble extends StatelessWidget {
   final MessageModel message;
@@ -36,19 +39,22 @@ class MessageBubble extends StatelessWidget {
 
                 return GestureDetector(
                   onTap: () => FileOpenerService.openMedia(context, url),
-                  onLongPress: () => _downloadFile(context, url),
+                  onLongPress: isMe ? () => _showRecallOptions(context, message) : null,
                   child: Padding(
                     padding: const EdgeInsets.only(bottom: 8),
-                    child: isImage
-                        ? Image.network(url, height: 200)
-                        : _buildFileCard(url),
+                    child: isImage ? Image.network(url, height: 200) : _buildFileCard(url),
                   ),
                 );
               }),
 
             // ===== TEXT =====
+            if (message.content == '[Tin nhắn đã được thu hồi]')
+              Text(message.content, style: TextStyle(fontStyle: FontStyle.italic, color: Colors.grey)),
             if (message.type == MessageType.TEXT && message.content.isNotEmpty)
-              Text(message.content, style: const TextStyle(fontSize: 15)),
+              GestureDetector(
+                onLongPress: isMe ? () => _showRecallOptions(context, message) : null,
+                child: Text(message.content, style: const TextStyle(fontSize: 15)),
+              ),
 
             const SizedBox(height: 4),
             Text(
@@ -174,7 +180,7 @@ class MessageBubble extends StatelessWidget {
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('✅ Đã tải xuống: $fileName'),
+          content: Text('${AppStyles.successIcon} Đã tải xuống: $fileName'),
           action: SnackBarAction(
             label: 'Mở',
             onPressed: () => OpenFilex.open(savePath),
@@ -183,9 +189,45 @@ class MessageBubble extends StatelessWidget {
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('❌ Tải xuống thất bại')),
+        const SnackBar(content: Text('${AppStyles.failureIcon} Tải xuống thất bại')),
       );
     }
   }
 
+  // Xử lý thu hồi tin nhắn
+  void _showRecallOptions(BuildContext context, MessageModel message) {
+    showModalBottomSheet(
+      context: context,
+      builder: (_) {
+        return SafeArea(
+          child: Wrap(
+            children: [
+              ListTile(
+                leading: const Icon(Icons.undo),
+                title: const Text('Thu hồi tin nhắn'),
+                onTap: () {
+                  Navigator.pop(context);
+                  _recallMessage(context, message);
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.cancel),
+                title: const Text('Huỷ'),
+                onTap: () => Navigator.pop(context),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void _recallMessage(BuildContext context, MessageModel message) {
+    // Gọi SocketService để gửi dữ liệu thu hồi
+    SocketService().recallMessage(message.id.toString(), message.senderId);
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Đã gửi thu hồi tin nhắn')),
+    );
+  }
 }

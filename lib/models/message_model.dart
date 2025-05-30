@@ -77,4 +77,36 @@ class MessageModel {
       'mentions': mentions,
     };
   }
+
+  // coppy
+  MessageModel copyWith({
+    String? id,
+    String? senderId,
+    String? conversationId,
+    String? content,
+    MessageType? type,
+    List<String>? mediaUrls,
+    String? status,
+    List<Map<String, dynamic>>? deliveryStatus,
+    List<Map<String, dynamic>>? readStatus,
+    DateTime? createdAt,
+    bool? recalled,
+    List<Map<String, dynamic>>? mentions,
+  }) {
+    return MessageModel(
+      id: id ?? this.id,
+      senderId: senderId ?? this.senderId,
+      conversationId: conversationId ?? this.conversationId,
+      content: content ?? this.content,
+      type: type ?? this.type,
+      mediaUrls: mediaUrls ?? this.mediaUrls,
+      status: status ?? this.status,
+      deliveryStatus: deliveryStatus ?? this.deliveryStatus,
+      readStatus: readStatus ?? this.readStatus,
+      createdAt: createdAt ?? this.createdAt,
+      recalled: recalled ?? this.recalled,
+      mentions: mentions ?? this.mentions,
+    );
+  }
+
 }

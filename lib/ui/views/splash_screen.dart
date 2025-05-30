@@ -5,6 +5,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import '../../services/ping_service.dart';
+import '../../services/socket_service.dart';
+import '../../services/token_service.dart';
 import '../../utils/firebase_options.dart';
 import '../../view_models/login_view_model.dart';
 import '../views/login_screen.dart';
@@ -70,6 +72,12 @@ class _SplashScreenState extends State<SplashScreen> {
       if (success) {
         debugPrint("${AppStyles.successIcon}[SplashScreen] Đã đăng nhập, chuyển sang Home");
         PingService.start();
+
+        // Tự kết nối socket mỗi lần mở app
+        final accessToken = await TokenService.getAccessToken();
+        if (accessToken != null && !SocketService().isConnected) {
+          SocketService().init(accessToken);
+        }
         _goToHome();
       } else {
         debugPrint("${AppStyles.warningIcon}[SplashScreen] Chưa đăng nhập, chuyển sang Login");

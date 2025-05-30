@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:olachat_mobile/utils/app_styles.dart';
+import '../../models/enum/message_type.dart';
 import '../../models/message_model.dart';
 import '../../services/message_service.dart';
 import '../../services/socket_service.dart';
@@ -60,6 +61,19 @@ class _ChatScreenState extends State<ChatScreen> {
         }
       });
     });
+
+    // Lắng nghe recall
+    onRecallMessage: (messageId) {
+      setState(() {
+        final index = messages.indexWhere((msg) => msg.id == messageId);
+        if (index != -1) {
+          messages[index] = messages[index].copyWith(
+            content: '[Tin nhắn đã được thu hồi]',
+            type: MessageType.SYSTEM,
+          );
+        }
+      });
+    };
   }
 
   // Hàm bất đồng bộ để lấy tên người dùng từ local (token)

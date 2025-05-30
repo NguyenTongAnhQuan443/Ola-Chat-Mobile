@@ -6,6 +6,9 @@ import '../models/enum/message_type.dart';
 
 class MessageConversationViewModel extends ChangeNotifier {
   final SocketService _socketService = SocketService();
+  //
+  List<MessageModel> _messages = [];
+  List<MessageModel> get messages => _messages;
 
   // Gửi tin nhắn Text
   void sendTextMessage({
@@ -91,5 +94,26 @@ class MessageConversationViewModel extends ChangeNotifier {
     print("${AppStyles.successIcon} Đã gửi FILE/MEDIA: $message");
   }
 
+  // xóa tin nhắn
+  void recallMessageInConversation(String messageId) {
+    final index = _messages.indexWhere((msg) => msg.id == messageId);
+    if (index != -1) {
+      _messages[index] = _messages[index].copyWith(
+        content: '[Tin nhắn đã được thu hồi]',
+        type: MessageType.SYSTEM, // hoặc giữ nguyên type tuỳ bạn
+      );
+      notifyListeners();
+    }
+  }
 
+  void handleRecallFromSocket(String messageId) {
+    final index = _messages.indexWhere((msg) => msg.id == messageId);
+    if (index != -1) {
+      _messages[index] = _messages[index].copyWith(
+        content: '[Tin nhắn đã được thu hồi]',
+        type: MessageType.SYSTEM,
+      );
+      notifyListeners();
+    }
+  }
 }

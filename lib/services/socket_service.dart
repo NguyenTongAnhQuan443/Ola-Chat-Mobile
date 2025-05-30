@@ -5,6 +5,7 @@ import 'package:olachat_mobile/view_models/list_conversation_view_model.dart';
 import 'package:provider/provider.dart';
 import 'package:stomp_dart_client/stomp_dart_client.dart';
 import '../../main.dart';
+import '../view_models/message_conversation_view_model.dart';
 
 class SocketService {
   static final SocketService _instance = SocketService._internal();
@@ -98,6 +99,43 @@ class SocketService {
   void disconnect() {
     _client?.deactivate();
     print('${AppStyles.connectIcon} [SOCKET] Ngắt kết nối thành công');
+  }
+
+  void recallMessage(String messageId, String senderId) {
+    final recallData = {
+      "id": messageId,
+      "senderId": senderId,
+    };
+
+    _client?.send(
+      destination: "/app/recall-message",
+      body: jsonEncode(recallData),
+    );
+  }
+
+  // Lắng nghe tin nhắn thu hồi
+  void listenToRecall({
+    required String conversationId,
+  }) {
+    _client?.subscribe(
+      destination: "/user/$conversationId/private",
+      callback: (frame) {
+        final data = jsonDecode(frame.body!);
+
+        if (data['type'] == 'RECALL') {
+          final recalledMessageId = data['id'];
+
+          final context = navigatorKey.currentContext;
+          if (context != null) {
+            final vm = Provider.of<MessageConversationViewModel>(
+              context,
+              listen: false,
+            );
+            vm.handleRecallFromSocket(recalledMessageId);
+          }
+        }
+      },
+    );
   }
 
   bool get isConnected => _client?.connected ?? false;

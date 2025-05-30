@@ -36,12 +36,15 @@ class _ChatScreenState extends State<ChatScreen> {
   // Cuộn tin nhắn xuống cuối khi có tin nhắn mới
   final ScrollController _scrollController = ScrollController();
 
+  String? myAvatar;
+
   @override
   void initState() {
     super.initState();
     debugPrint("[ChatScreen] mở với conversationId: ${widget.conversationId}");
     _loadMessages();
     _loadUserName();
+    _loadMyAvatar();
 
     // Lắng nghe tin nhắn realtime
     final socket = SocketService();
@@ -70,6 +73,14 @@ class _ChatScreenState extends State<ChatScreen> {
     };
   }
 
+  // Lấy avatar bản thân
+  Future<void> _loadMyAvatar() async {
+    final avatar = await TokenService.getCurrentUserAvatar();
+    setState(() {
+      myAvatar = avatar;
+    });
+  }
+
   // Hàm bất đồng bộ để lấy tên người dùng từ local (token)
   Future<void> _loadUserName() async {
     final name = await TokenService.getCurrentUserName();
@@ -84,7 +95,7 @@ class _ChatScreenState extends State<ChatScreen> {
       final fetched = await _messageService.fetchMessages(
         conversationId: widget.conversationId,
         page: 0,
-        size: 20,
+        size: 100,
       );
 
       setState(() {
@@ -125,7 +136,12 @@ class _ChatScreenState extends State<ChatScreen> {
                   final isMe = msg.senderId == widget.userId;
 
                   // Hiển thị bong bóng tin nhắn
-                  return MessageBubble(message: msg, isMe: isMe);
+                  return MessageBubble(
+                    message: msg,
+                    isMe: isMe,
+                    myAvatar: myAvatar ?? 'https://placeholder.com/me.png',
+                    currentUserAvatar: widget.avatarUrl,
+                  );
                 },
               ),
             ),

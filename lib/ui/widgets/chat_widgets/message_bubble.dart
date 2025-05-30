@@ -6,7 +6,6 @@ import '../../../models/message_model.dart';
 import '../../../services/file_opener_service.dart';
 import 'package:dio/dio.dart';
 import 'package:path_provider/path_provider.dart';
-import 'dart:io';
 import 'package:open_filex/open_filex.dart';
 
 import '../../../services/socket_service.dart';
@@ -15,71 +14,118 @@ import '../../views/video_player_screen.dart';
 class MessageBubble extends StatelessWidget {
   final MessageModel message;
   final bool isMe;
+  final String myAvatar;
+  final String currentUserAvatar;
 
-  const MessageBubble({super.key, required this.message, required this.isMe});
+  const MessageBubble({
+    super.key,
+    required this.message,
+    required this.isMe,
+    required this.myAvatar,
+    required this.currentUserAvatar,
+  });
 
   @override
   Widget build(BuildContext context) {
     final mediaUrls = message.mediaUrls ?? [];
     final time =
-        message.createdAt != null ? "${message.createdAt!.hour}:${message.createdAt!.minute.toString().padLeft(2, '0')}" : "";
+    message.createdAt != null ? "${message.createdAt!.hour}:${message.createdAt!.minute.toString().padLeft(2, '0')}" : "";
 
-    return Align(
-      alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
-      child: Container(
-        margin: const EdgeInsets.symmetric(vertical: 4),
-        padding: const EdgeInsets.all(10),
-        child: Column(
-          crossAxisAlignment: isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-          children: [
-            // ===== MEDIA (ẢNH, VIDEO, FILE, STICKER) =====
-            if (message.type == MessageType.MEDIA || message.type == MessageType.FILE || message.type == MessageType.STICKER)
-              ...mediaUrls.map((url) {
-                final isImage = _isImageUrl(url);
-                final isVideo = _isVideoUrl(url);
-
-                return GestureDetector(
-                  onTap: () => FileOpenerService.openMedia(context, url),
-                  onLongPress: isMe ? () => _showRecallOptions(context, message) : null,
-                  child: Padding(
-                    padding: const EdgeInsets.only(bottom: 8),
-                    child: isImage ? Image.network(url, height: 200) : _buildFileCard(url),
-                  ),
-                );
-              }),
-
-            // ===== TEXT =====
-            // Tin nhắn đã thu hồi
-            if (message.content == '[Tin nhắn đã được thu hồi]')
-              Text(message.content, style: TextStyle(fontStyle: FontStyle.italic, color: Colors.grey)),
-            // Tin nhắn bình thường
-            if (message.type == MessageType.TEXT && message.content.isNotEmpty)
-              GestureDetector(
-                onLongPress: isMe ? () => _showRecallOptions(context, message) : null,
-                child: Text(message.content, style: const TextStyle(fontSize: 15)),
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+      child: Row(
+        mainAxisAlignment: isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          // Avatar đối phương
+          if (!isMe)
+            Padding(
+              padding: const EdgeInsets.only(right: 8),
+              child: CircleAvatar(
+                radius: 16,
+                backgroundImage: NetworkImage(currentUserAvatar),
               ),
-
-            // Voice
-            if (message.type == MessageType.VOICE && mediaUrls.isNotEmpty)
-              IconButton(
-                icon: const Icon(Icons.play_circle_fill),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => VideoPlayerScreen(videoUrl: mediaUrls.first),
-                    ),
-                  );
-                },
-              ),
-
-            const SizedBox(height: 4),
-            Text(
-              time,
-              style: const TextStyle(fontSize: 11, color: Colors.grey),
             ),
-          ],
-        ),
+
+          // Tin nhắn
+          Flexible(
+            child: Column(
+              crossAxisAlignment: isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: isMe ? Colors.blue[50] : Colors.grey[100],
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+                    children: [
+                      // MEDIA (ẢNH, VIDEO, FILE, STICKER)
+                      if (message.type == MessageType.MEDIA ||
+                          message.type == MessageType.FILE ||
+                          message.type == MessageType.STICKER)
+                        ...mediaUrls.map((url) {
+                          final isImage = _isImageUrl(url);
+                          return GestureDetector(
+                            onTap: () => FileOpenerService.openMedia(context, url),
+                            onLongPress: isMe ? () => _showRecallOptions(context, message) : null,
+                            child: Padding(
+                              padding: const EdgeInsets.only(bottom: 8),
+                              child: isImage
+                                  ? Image.network(url, height: 200)
+                                  : _buildFileCard(url),
+                            ),
+                          );
+                        }),
+
+                      // TEXT
+                      if (message.content == '[Tin nhắn đã được thu hồi]')
+                        Text(
+                          message.content,
+                          style: const TextStyle(fontStyle: FontStyle.italic, color: Colors.grey),
+                        ),
+                      if (message.type == MessageType.TEXT && message.content.isNotEmpty)
+                        GestureDetector(
+                          onLongPress: isMe ? () => _showRecallOptions(context, message) : null,
+                          child: Text(message.content, style: const TextStyle(fontSize: 15)),
+                        ),
+
+                      // VOICE
+                      if (message.type == MessageType.VOICE && mediaUrls.isNotEmpty)
+                        IconButton(
+                          icon: const Icon(Icons.play_circle_fill),
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => VideoPlayerScreen(videoUrl: mediaUrls.first),
+                              ),
+                            );
+                          },
+                        ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  time,
+                  style: const TextStyle(fontSize: 11, color: Colors.grey),
+                ),
+              ],
+            ),
+          ),
+
+          // Avatar của bạn
+          if (isMe)
+            Padding(
+              padding: const EdgeInsets.only(left: 8),
+              child: CircleAvatar(
+                radius: 16,
+                backgroundImage: NetworkImage(myAvatar),
+              ),
+            ),
+        ],
       ),
     );
   }

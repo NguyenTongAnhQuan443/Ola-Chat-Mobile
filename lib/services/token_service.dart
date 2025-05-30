@@ -55,6 +55,19 @@ class TokenService {
     }
   }
 
+  static Future<String?> getCurrentUserAvatar() async {
+    final userInfoJson = await getUserInfo();
+    if (userInfoJson == null) return null;
+
+    try {
+      final data = jsonDecode(userInfoJson);
+      return data['avatar'];
+    } catch (e) {
+      print("${AppStyles.failureIcon}Lỗi khi decode user info: $e");
+      return null;
+    }
+  }
+
   static Future<String?> getCurrentUserName() async {
     final userInfoJson = await getUserInfo();
     if (userInfoJson == null) return null;

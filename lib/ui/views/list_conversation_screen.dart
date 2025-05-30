@@ -6,6 +6,7 @@ import '../../services/token_service.dart';
 import '../../view_models/list_conversation_view_model.dart';
 import '../widgets/custom_sliver_to_box_adapter.dart';
 import '../widgets/app_logo_header_two.dart';
+import 'create_group_screen.dart';
 
 // Màn hình danh sách cuộc trò chuyện
 class ListConversationScreen extends StatefulWidget {
@@ -74,22 +75,21 @@ class _ListConversationScreenState extends State<ListConversationScreen>
                       height: 54,
                       color: Colors.white,
                       child: TextButton(
-                        onPressed: () {},
-                        // onPressed: () async {
-                        //   final result = await Navigator.push(
-                        //     context,
-                        //     MaterialPageRoute(
-                        //       builder: (context) => const CreateGroupScreen(),
-                        //     ),
-                        //   );
-                        //
-                        //   // Nếu kết quả trả về là true (tạo nhóm thành công), load lại danh sách
-                        //   if (result == true && mounted) {
-                        //     Provider.of<ListConversationViewModel>(context,
-                        //             listen: false)
-                        //         .fetchConversations();
-                        //   }
-                        // },
+                        onPressed: () async {
+                          final result = await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const CreateGroupScreen(),
+                            ),
+                          );
+
+                          // Nếu kết quả trả về là true (tạo nhóm thành công), load lại danh sách
+                          if (result == true && mounted) {
+                            Provider.of<ListConversationViewModel>(context,
+                                    listen: false)
+                                .fetchConversations();
+                          }
+                        },
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: const [

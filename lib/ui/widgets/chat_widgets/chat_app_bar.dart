@@ -124,7 +124,7 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
           icon: const Icon(Icons.more_vert, color: Colors.indigo),
           itemBuilder: (context) => const [
             PopupMenuItem(value: 'xoa', child: Text('Xoá đoạn chat')),
-            PopupMenuItem(value: 'chan', child: Text('Chặn người này')),
+            PopupMenuItem(value: 'chan', child: Text('Thiết lập')),
           ],
         ),
       ],
@@ -132,5 +132,5 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
   }
 
   @override
-  Size get preferredSize => const Size.fromHeight(70); // Chiều cao AppBar
+  Size get preferredSize => const Size.fromHeight(60); // Chiều cao AppBar
 }

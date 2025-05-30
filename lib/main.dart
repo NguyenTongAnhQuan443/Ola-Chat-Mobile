@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:olachat_mobile/view_models/create_group_view_model.dart';
 import 'package:olachat_mobile/view_models/list_conversation_view_model.dart';
 import 'package:olachat_mobile/view_models/friend_request_view_model.dart';
 import 'package:olachat_mobile/view_models/message_conversation_view_model.dart';
@@ -19,8 +20,7 @@ import 'view_models/signup_view_model.dart';
 import 'view_models/search_view_model.dart';
 import 'view_models/user_setting_avatar_view_model.dart';
 
-final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
-    GlobalKey<ScaffoldMessengerState>();
+final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() {
@@ -39,13 +39,12 @@ void main() {
         ChangeNotifierProvider(create: (_) => SearchViewModel()),
         ChangeNotifierProvider(create: (_) => UpdateEmailViewModel()),
         ChangeNotifierProvider(create: (_) => UpdatePasswordViewModel()),
-        ChangeNotifierProvider(
-            create: (_) => UserSettingInformationLoginHistoryViewModel()),
+        ChangeNotifierProvider(create: (_) => UserSettingInformationLoginHistoryViewModel()),
         ChangeNotifierProvider(create: (_) => FriendRequestViewModel()),
         ChangeNotifierProvider(create: (_) => NotificationViewModel()),
         ChangeNotifierProvider(create: (_) => ListConversationViewModel()),
-  ChangeNotifierProvider(create: (_) => MessageConversationViewModel()),
-        // ChangeNotifierProvider(create: (_) => CreateGroupViewModel()),
+        ChangeNotifierProvider(create: (_) => MessageConversationViewModel()),
+        ChangeNotifierProvider(create: (_) => CreateGroupViewModel()),
         // ChangeNotifierProvider(create: (_) => GroupManagementViewModel()),
         // ChangeNotifierProvider(create: (_) => AddGroupMembersViewModel()),
         // ChangeNotifierProvider(create: (_) => GroupMembersViewModel()),
@@ -65,8 +64,8 @@ void main() {
   );
 }
 
-final RouteObserver<ModalRoute<void>> routeObserver =
-    RouteObserver<ModalRoute<void>>();
+final RouteObserver<ModalRoute<void>> routeObserver = RouteObserver<ModalRoute<void>>();
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 

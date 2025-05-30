@@ -112,8 +112,7 @@ class _UserProfileInfoScreenState extends State<UserProfileInfomationScreen> {
             const SizedBox(height: 16),
             Text(user.displayName, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
             const SizedBox(height: 6),
-            if (user.nickname?.isNotEmpty == true)
-              Text(user.nickname!, style: const TextStyle(color: Colors.black87)),
+            if (user.nickname?.isNotEmpty == true) Text(user.nickname!, style: const TextStyle(color: Colors.black87)),
             const SizedBox(height: 8),
             if (user.bio?.isNotEmpty == true)
               Text(user.bio!, style: const TextStyle(color: Colors.black54), textAlign: TextAlign.center),
@@ -183,6 +182,7 @@ class _UserProfileInfoScreenState extends State<UserProfileInfomationScreen> {
 
     switch (actionCode) {
       case 1:
+        // Chưa gửi -> Gửi lời mời
         return ElevatedButton.icon(
           onPressed: () async {
             final senderId = await Provider.of<LoginViewModel>(context, listen: false).getCurrentUserId();
@@ -206,6 +206,7 @@ class _UserProfileInfoScreenState extends State<UserProfileInfomationScreen> {
         );
 
       case 2:
+        // Đã gửi -> Huỷ lời mời
         return ElevatedButton.icon(
           onPressed: () async {
             final confirm = await showDialog<bool>(
@@ -236,6 +237,100 @@ class _UserProfileInfoScreenState extends State<UserProfileInfomationScreen> {
           },
           icon: const Icon(Icons.person_remove),
           label: const Text("Thu hồi lời mời"),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.grey[300],
+            foregroundColor: Colors.black87,
+          ),
+        );
+
+      case 3:
+        // Nhận lời mời -> Chấp nhận / Từ chối
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ElevatedButton.icon(
+              onPressed: () async {
+                final confirm = await showDialog<bool>(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    title: const Text("Chấp nhận lời mời kết bạn"),
+                    content: const Text("Bạn có chắc muốn chấp nhận lời mời kết bạn này không?"),
+                    actions: [
+                      TextButton(onPressed: () => Navigator.pop(context, false), child: const Text("Hủy")),
+                      TextButton(onPressed: () => Navigator.pop(context, true), child: const Text("Chấp nhận")),
+                    ],
+                  ),
+                );
+
+                if (confirm == true) {
+                  await friendVM.acceptRequest(widget.user.userId, context);
+                  setState(() => currentFriendAction = 4); // ✅ trở thành bạn bè
+                }
+              },
+              icon: const Icon(Icons.person_add_alt_1),
+              label: const Text("Chấp nhận"),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF4B67D3),
+                foregroundColor: Colors.white,
+              ),
+            ),
+            const SizedBox(width: 12),
+            ElevatedButton.icon(
+              onPressed: () async {
+                final confirm = await showDialog<bool>(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    title: const Text("Từ chối lời mời kết bạn"),
+                    content: const Text("Bạn có chắc muốn từ chối lời mời kết bạn này không?"),
+                    actions: [
+                      TextButton(onPressed: () => Navigator.pop(context, false), child: const Text("Hủy")),
+                      TextButton(onPressed: () => Navigator.pop(context, true), child: const Text("Từ chối")),
+                    ],
+                  ),
+                );
+
+                if (confirm == true) {
+                  await friendVM.rejectRequest(widget.user.userId, context);
+                  setState(() => currentFriendAction = 1); // ✅ quay lại trạng thái chưa kết bạn
+                }
+              },
+              icon: const Icon(Icons.person_off),
+              label: const Text("Từ chối"),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.grey[300],
+                foregroundColor: Colors.black87,
+              ),
+            ),
+          ],
+        );
+
+      case 4:
+        // Đã là bạn bè -> Huỷ kết bạn
+        return ElevatedButton.icon(
+          onPressed: () async {
+            final confirm = await showDialog<bool>(
+              context: context,
+              builder: (context) => AlertDialog(
+                title: const Text("Huỷ kết bạn"),
+                content: const Text("Bạn có chắc muốn huỷ kết bạn với người này không?"),
+                actions: [
+                  TextButton(onPressed: () => Navigator.pop(context, false), child: const Text("Hủy")),
+                  TextButton(
+                    onPressed: () => Navigator.pop(context, true),
+                    child: const Text("Huỷ kết bạn", style: TextStyle(color: Colors.redAccent)),
+                  ),
+                ],
+              ),
+            );
+
+            if (confirm == true) {
+              // TODO: Gọi API huỷ kết bạn (chưa có trong ViewModel hiện tại)
+              showSuccessSnackBar(context, "Đã huỷ kết bạn");
+              setState(() => currentFriendAction = 1); // trở lại trạng thái chưa kết bạn
+            }
+          },
+          icon: const Icon(Icons.person_off),
+          label: const Text("Huỷ kết bạn"),
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.grey[300],
             foregroundColor: Colors.black87,

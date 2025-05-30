@@ -135,7 +135,7 @@ class _MyUserScreenState extends State<MyUserScreen> {
             ),
           ),
           CustomSliverToBoxAdapter(),
-          // buildView_3(selectedIndex, myPosts, savePosts),
+          buildView_3(selectedIndex, myPosts, myPosts),
         ],
       ),
     );

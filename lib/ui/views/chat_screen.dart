@@ -51,19 +51,12 @@ class _ChatScreenState extends State<ChatScreen> {
         messages.insert(0, newMessage); // Chèn tin mới vào đầu danh sách
       });
       // Scroll đến cuối
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (_scrollController.hasClients) {
-          _scrollController.animateTo(
-            _scrollController.position.maxScrollExtent,
-            duration: const Duration(milliseconds: 200),
-            curve: Curves.easeOut,
-          );
-        }
-      });
+      _scrollToBottom(delayMs: 300);
     });
 
     // Lắng nghe recall
-    onRecallMessage: (messageId) {
+    onRecallMessage:
+    (messageId) {
       setState(() {
         final index = messages.indexWhere((msg) => msg.id == messageId);
         if (index != -1) {
@@ -73,6 +66,7 @@ class _ChatScreenState extends State<ChatScreen> {
           );
         }
       });
+      _scrollToBottom();
     };
   }
 
@@ -146,5 +140,18 @@ class _ChatScreenState extends State<ChatScreen> {
         ),
       ),
     );
+  }
+
+  // Scroll xuống tin nhắn cuối
+  void _scrollToBottom({int delayMs = 100}) {
+    Future.delayed(Duration(milliseconds: delayMs), () {
+      if (_scrollController.hasClients) {
+        _scrollController.animateTo(
+          _scrollController.position.maxScrollExtent,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
+      }
+    });
   }
 }

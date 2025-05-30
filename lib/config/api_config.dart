@@ -96,7 +96,7 @@ class ApiConfig {
       "$base/api/conversations/$conversationId/users";
 
   // File
-  static String get upFile => "$base/files/upload";
+  static String get uploadFileMobile => "$base/files/upload_v2";
 
   // Group
   static String updateGroup(String groupId) => "$base/api/groups/$groupId";

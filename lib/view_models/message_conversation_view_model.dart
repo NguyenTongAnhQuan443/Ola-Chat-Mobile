@@ -63,4 +63,33 @@ class MessageConversationViewModel extends ChangeNotifier {
     print("${AppStyles.successIcon} Đã gửi STICKER: $message");
   }
 
+  // Gửi file
+  void sendFileMessage({
+    required List<String> mediaUrls,
+    required String conversationId,
+    required String senderId,
+    bool isImage = false,
+  }) {
+    final now = DateTime.now().toIso8601String();
+
+    final message = {
+      "senderId": senderId,
+      "conversationId": conversationId,
+      "content": "",
+      "type": isImage ? MessageType.MEDIA.name : MessageType.FILE.name,
+      "createdAt": now,
+      "mediaUrls": mediaUrls,
+      "mentions": [],
+      "recalled": false,
+      "deletedStatus": [],
+      "emojiTypes": [],
+      "totalReactionCount": 0,
+      "lastUserReaction": null
+    };
+
+    _socketService.sendMessage("/app/private-message", message);
+    print("${AppStyles.successIcon} Đã gửi FILE/MEDIA: $message");
+  }
+
+
 }

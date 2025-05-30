@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:giphy_get/giphy_get.dart';
 import 'package:provider/provider.dart';
+import '../../../services/file_upload_service.dart';
 import '../../../view_models/message_conversation_view_model.dart';
+import 'dart:io';
+import 'package:file_picker/file_picker.dart';
 
 class MessageInputBar extends StatefulWidget {
   final String conversationId;
@@ -53,6 +56,29 @@ class _MessageInputBarState extends State<MessageInputBar> {
     }
   }
 
+  // Xử lý gửi file
+  void _handleFileUpload() async {
+    final result = await FilePicker.platform.pickFiles(
+      allowMultiple: true,
+      type: FileType.custom,
+      allowedExtensions: ['jpg', 'png', 'pdf', 'docx', 'xlsx'],
+    );
+
+    if (result != null && result.files.isNotEmpty) {
+      final files = result.paths.map((path) => File(path!)).toList();
+      final mediaUrls = await FileUploadService().uploadFiles(files);
+
+      final isImage = mediaUrls.every((url) => url.endsWith('.jpg') || url.endsWith('.png'));
+
+      Provider.of<MessageConversationViewModel>(context, listen: false).sendFileMessage(
+        mediaUrls: mediaUrls,
+        conversationId: widget.conversationId,
+        senderId: widget.currentUserId,
+        isImage: isImage,
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -66,7 +92,11 @@ class _MessageInputBarState extends State<MessageInputBar> {
               icon: const Icon(Icons.emoji_emotions_outlined),
               onPressed: _handleSticker,
             ),
-            IconButton(icon: const Icon(Icons.image_outlined), onPressed: () {}),
+            IconButton(
+              icon: const Icon(Icons.attach_file),
+              onPressed: _handleFileUpload,
+            ),
+
             IconButton(icon: const Icon(Icons.mic, color: Colors.deepPurple), onPressed: () {}),
 
             // Ô nhập tin nhắn

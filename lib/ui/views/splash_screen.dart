@@ -29,12 +29,12 @@ class _SplashScreenState extends State<SplashScreen> {
 
   Future<void> _initializeApp() async {
     try {
-      debugPrint("[SplashScreen] Bắt đầu khởi tạo Firebase...");
+      debugPrint("${AppStyles.connectIcon}[SplashScreen] Bắt đầu khởi tạo Firebase...");
       await Firebase.initializeApp(
         options: DefaultFirebaseOptions.currentPlatform,
       );
 
-      debugPrint("[SplashScreen] Firebase khởi tạo thành công");
+      debugPrint("${AppStyles.successIcon}[SplashScreen] Firebase khởi tạo thành công");
 
       // Cấp quyền nếu cần (Android 13+)
       await _requestNotificationPermission();
@@ -62,17 +62,17 @@ class _SplashScreenState extends State<SplashScreen> {
         }
       });
 
-      debugPrint("[SplashScreen] Bắt đầu kiểm tra đăng nhập...");
+      debugPrint("${AppStyles.wattingIcon}[SplashScreen] Bắt đầu kiểm tra đăng nhập...");
       final loginVM = Provider.of<LoginViewModel>(context, listen: false);
       final success = await loginVM.validateAndFetchUserInfo();
 
       if (!mounted) return;
       if (success) {
-        debugPrint("[SplashScreen] Đã đăng nhập, chuyển sang Home");
+        debugPrint("${AppStyles.successIcon}[SplashScreen] Đã đăng nhập, chuyển sang Home");
         PingService.start();
         _goToHome();
       } else {
-        debugPrint("[SplashScreen] Chưa đăng nhập, chuyển sang Login");
+        debugPrint("${AppStyles.warningIcon}[SplashScreen] Chưa đăng nhập, chuyển sang Login");
         _goToLogin();
       }
     } catch (e, s) {

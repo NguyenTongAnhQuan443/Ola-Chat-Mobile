@@ -43,6 +43,8 @@ class _MessageInputBarState extends State<MessageInputBar> {
             IconButton(icon: const Icon(Icons.emoji_emotions_outlined), onPressed: () {}),
             IconButton(icon: const Icon(Icons.image_outlined), onPressed: () {}),
             IconButton(icon: const Icon(Icons.mic, color: Colors.deepPurple), onPressed: () {}),
+
+            // Ô nhập tin nhắn
             Expanded(
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -59,6 +61,8 @@ class _MessageInputBarState extends State<MessageInputBar> {
                 ),
               ),
             ),
+
+            // Nút gửi tin nhắn
             IconButton(
               icon: const Icon(Icons.send, color: Colors.deepPurple),
               onPressed: _handleSend,

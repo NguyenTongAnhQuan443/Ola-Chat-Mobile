@@ -5,7 +5,6 @@ import 'package:olachat_mobile/config/api_config.dart';
 import 'package:olachat_mobile/utils/app_styles.dart';
 
 class MessageService {
-// Lấy instance Dio từ DioClient (có interceptor và token)
   final Dio _dio = DioClient().dio;
 
 // Lấy danh sách tin nhắn theo conversationId (hỗ trợ phân trang)

@@ -109,6 +109,8 @@ class _ChatScreenState extends State<ChatScreen> {
               ),
             ),
             const Divider(height: 1),
+
+            // Phần nhập tin nhắn
             MessageInputBar(
               conversationId: widget.conversationId,
               currentUserId: widget.userId,

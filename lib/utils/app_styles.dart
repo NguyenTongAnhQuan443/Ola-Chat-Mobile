@@ -22,4 +22,7 @@ class AppStyles {
   static const String greenPointIcon = "🟢 - ";
   static const String redPointIcon = "🔴  - ";
   static const String phoneIcon = "📱- ";
+  static const String connectIcon = "🔌- ";
+  static const String wattingIcon = "⏳- ";
+  static const String receiveIcon = "📥- ";
 }

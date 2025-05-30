@@ -7,6 +7,7 @@ import '../models/enum/message_type.dart';
 class MessageConversationViewModel extends ChangeNotifier {
   final SocketService _socketService = SocketService();
 
+  // Gửi tin nhắn Text
   void sendTextMessage({
     required String content,
     required String conversationId,

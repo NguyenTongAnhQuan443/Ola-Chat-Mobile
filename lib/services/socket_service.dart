@@ -18,24 +18,24 @@ class SocketService {
     _accessToken = accessToken;
     final socketUrl = ApiConfig.socketUrl;
 
-    print("🔌 Đang khởi tạo kết nối STOMP tới: $socketUrl");
+    print("${AppStyles.connectIcon} Đang khởi tạo kết nối STOMP tới: $socketUrl");
 
     _client = StompClient(
       config: StompConfig(
         url: socketUrl,
         onConnect: (frame) {
-          print('✅ [SOCKET] Kết nối STOMP thành công ✅');
+          print('${AppStyles.successIcon} [SOCKET] Kết nối STOMP thành công ${AppStyles.successIcon}');
           if (onConnectCallback != null) onConnectCallback();
         },
         beforeConnect: () async {
-          print("⏳ [SOCKET] Đang chờ kết nối...");
+          print("${AppStyles.warningIcon} [SOCKET] Đang chờ kết nối...");
           await Future.delayed(const Duration(milliseconds: 200));
         },
         onWebSocketError: (dynamic error) {
-          print('❌ [SOCKET] Lỗi kết nối WebSocket: $error');
+          print('${AppStyles.failureIcon}[SOCKET] Lỗi kết nối WebSocket: $error');
         },
         onDisconnect: (frame) {
-          print('🔌 [SOCKET] Đã ngắt kết nối');
+          print('${AppStyles.connectIcon} [SOCKET] Đã ngắt kết nối');
         },
         stompConnectHeaders: {
           'Authorization': 'Bearer $accessToken',
@@ -53,17 +53,17 @@ class SocketService {
   }
 
   void subscribe(String destination, Function(Map<String, dynamic>) callback) {
-    print("🟢 [SOCKET] Đang đăng ký lắng nghe: $destination");
+    print("${AppStyles.greenPointIcon} [SOCKET] Đang đăng ký lắng nghe: $destination");
 
     _client?.subscribe(
       destination: destination,
       callback: (frame) {
         if (frame.body == null) {
-          print("⚠️ [SOCKET] Tin nhắn rỗng từ: $destination");
+          print("${AppStyles.warningIcon} [SOCKET] Tin nhắn rỗng từ: $destination");
           return;
         }
 
-        print("📥 [SOCKET] Đã nhận tin nhắn từ $destination: ${frame.body}");
+        print("${AppStyles.receiveIcon} [SOCKET] Đã nhận tin nhắn từ $destination: ${frame.body}");
 
         final body = jsonDecode(frame.body!);
         callback(body);
@@ -74,7 +74,7 @@ class SocketService {
 
   void sendMessage(String destination, Map<String, dynamic> body) {
     final encoded = jsonEncode(body);
-    print("📤 [SOCKET] Gửi tin nhắn tới $destination: $encoded");
+    print("${AppStyles.receiveIcon} [SOCKET] Gửi tin nhắn tới $destination: $encoded");
 
     _client?.send(
       destination: destination,
@@ -83,7 +83,7 @@ class SocketService {
   }
 
   void onMessageReceived(Map<String, dynamic> messageData) {
-    print("✅ [SOCKET] Đã nhận và xử lý tin nhắn");
+    print("${AppStyles.successIcon} [SOCKET] Đã nhận và xử lý tin nhắn");
 
     final context = navigatorKey.currentContext;
 
@@ -91,13 +91,13 @@ class SocketService {
       final vm = Provider.of<ListConversationViewModel>(context, listen: false);
       vm.updateConversationFromMessage(messageData);
     } else {
-      print("❌ [SOCKET] Không tìm thấy context để cập nhật hội thoại");
+      print("${AppStyles.failureIcon} [SOCKET] Không tìm thấy context để cập nhật hội thoại");
     }
   }
 
   void disconnect() {
     _client?.deactivate();
-    print('🔌 [SOCKET] Ngắt kết nối thành công');
+    print('${AppStyles.connectIcon} [SOCKET] Ngắt kết nối thành công');
   }
 
   bool get isConnected => _client?.connected ?? false;

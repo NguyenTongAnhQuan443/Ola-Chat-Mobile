@@ -24,22 +24,17 @@ class MessageBubble extends StatelessWidget {
       // Căn trái/phải tùy theo người gửi
       alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
       child: Container(
-        margin: const EdgeInsets.symmetric(vertical: 4), // Khoảng cách giữa các tin nhắn
-        padding: const EdgeInsets.all(10), // Padding bên trong bong bóng
-        decoration: BoxDecoration(
-          color: isMe
-              ? Colors.blue[50]
-              : Colors.grey[200], // Màu nền khác nhau cho tin nhắn của mình/người khác
-          borderRadius: BorderRadius.circular(12), // Bo tròn bong bóng
-        ),
+        margin: const EdgeInsets.symmetric(vertical: 4),
+        padding: const EdgeInsets.all(10),
         child: Column(
           crossAxisAlignment: isMe
               ? CrossAxisAlignment.end
-              : CrossAxisAlignment.start, // Căn nội dung theo hướng phù hợp
+              : CrossAxisAlignment.start,
           children: [
             // Nếu là tin nhắn sticker và có ảnh → hiển thị ảnh
-            if (message.type == MessageType.STICKER && image != null || message.type == MessageType.MEDIA && image != null)
-              Image.network(image, height: 100),
+            if (message.type == MessageType.STICKER && image != null ||
+                message.type == MessageType.MEDIA && image != null)
+              Image.network(image, height: 200),
 
             // Nếu là tin nhắn dạng text và có nội dung → hiển thị text
             if (message.type == MessageType.TEXT && message.content.isNotEmpty)

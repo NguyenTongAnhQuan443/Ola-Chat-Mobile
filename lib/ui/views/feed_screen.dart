@@ -21,7 +21,11 @@ class _FeedScreenState extends State<FeedScreen> {
   void initState() {
     super.initState();
     _loadAvatar();
-    Provider.of<FeedViewModel>(context, listen: false).fetchPosts();
+
+    // Gọi fetchPosts() sau khi widget đã build xong
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<FeedViewModel>(context, listen: false).fetchPosts();
+    });
   }
 
   Future<void> _loadAvatar() async {
@@ -47,7 +51,7 @@ class _FeedScreenState extends State<FeedScreen> {
             SliverToBoxAdapter(
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 35, vertical: 16),
-                child: _buildPostInputBar(), // ✅ gọi hàm bên dưới
+                child: _buildPostInputBar(), // gọi hàm bên dưới
               ),
             ),
             CustomSliverToBoxAdapter(),
@@ -67,7 +71,7 @@ class _FeedScreenState extends State<FeedScreen> {
     );
   }
 
-  // ✅ Đặt lại đúng trong _FeedScreenState
+  // Đặt lại đúng trong _FeedScreenState
   Widget _buildPostInputBar() {
     return GestureDetector(
       onTap: () {

@@ -12,12 +12,9 @@ import '../widgets/custom_sliver_to_box_adapter.dart';
 import '../widgets/list_post.dart';
 import '../widgets/show_snack_bar.dart';
 
-/// Màn hình hiển thị thông tin cá nhân và danh sách bài viết
 class UserProfileInfomationScreen extends StatefulWidget {
   final UserResponseModel user;
   final List<PostModel> myPosts;
-
-  /// Trạng thái kết bạn hiện tại (friendAction code)
   final int friendAction;
 
   const UserProfileInfomationScreen({
@@ -35,19 +32,20 @@ class _UserProfileInfoScreenState extends State<UserProfileInfomationScreen> {
   int selectedIndex = 0;
   List<PostModel> savePosts = [];
   String? currentUserId;
+  int? currentFriendAction;
 
   @override
   void initState() {
     super.initState();
+    currentFriendAction = widget.friendAction;
+
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final loginVM = Provider.of<LoginViewModel>(context, listen: false);
       final friendVM = Provider.of<FriendRequestViewModel>(context, listen: false);
 
-      // Lấy ID người dùng hiện tại
       final id = await loginVM.getCurrentUserId();
       setState(() => currentUserId = id);
 
-      // Lấy danh sách lời mời đã gửi & đã nhận
       await friendVM.fetchSentRequests();
       await friendVM.fetchReceivedRequests();
     });
@@ -71,7 +69,6 @@ class _UserProfileInfoScreenState extends State<UserProfileInfomationScreen> {
     );
   }
 
-  /// Header logo + back
   Widget buildHeader() {
     return SliverToBoxAdapter(
       child: Padding(
@@ -100,7 +97,6 @@ class _UserProfileInfoScreenState extends State<UserProfileInfomationScreen> {
     );
   }
 
-  /// Thông tin cá nhân + avatar + nickname + bio + thông số
   Widget buildProfileInfo(UserResponseModel user) {
     return SliverToBoxAdapter(
       child: Container(
@@ -116,7 +112,8 @@ class _UserProfileInfoScreenState extends State<UserProfileInfomationScreen> {
             const SizedBox(height: 16),
             Text(user.displayName, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
             const SizedBox(height: 6),
-            if (user.nickname?.isNotEmpty == true) Text(user.nickname!, style: const TextStyle(color: Colors.black87)),
+            if (user.nickname?.isNotEmpty == true)
+              Text(user.nickname!, style: const TextStyle(color: Colors.black87)),
             const SizedBox(height: 8),
             if (user.bio?.isNotEmpty == true)
               Text(user.bio!, style: const TextStyle(color: Colors.black54), textAlign: TextAlign.center),
@@ -130,7 +127,8 @@ class _UserProfileInfoScreenState extends State<UserProfileInfomationScreen> {
               ],
             ),
             const SizedBox(height: 16),
-            if (currentUserId != null && widget.user.userId != currentUserId) buildFriendActionButton(widget.friendAction),
+            if (currentUserId != null && widget.user.userId != currentUserId)
+              buildFriendActionButton(currentFriendAction ?? widget.friendAction),
             const SizedBox(height: 16),
             const Divider(),
             buildBottomBar(),
@@ -140,7 +138,6 @@ class _UserProfileInfoScreenState extends State<UserProfileInfomationScreen> {
     );
   }
 
-  /// Box hiển thị thống kê (Post, Followers, Following)
   Widget buildStatBox(String count, String label) {
     return Column(
       children: [
@@ -150,7 +147,6 @@ class _UserProfileInfoScreenState extends State<UserProfileInfomationScreen> {
     );
   }
 
-  /// Thanh menu icon bên dưới avatar
   Widget buildBottomBar() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -162,7 +158,6 @@ class _UserProfileInfoScreenState extends State<UserProfileInfomationScreen> {
     );
   }
 
-  /// Nút icon trong thanh menu
   Widget buildIconButton(int index, IconData icon) {
     return IconButton(
       icon: Icon(icon, size: 20, color: selectedIndex == index ? Colors.blue : Colors.black54),
@@ -170,13 +165,12 @@ class _UserProfileInfoScreenState extends State<UserProfileInfomationScreen> {
     );
   }
 
-  /// Tab hiển thị bài viết, lưu trữ, cài đặt
   Widget buildView_3(int selectedIndex, List<PostModel> myPosts, List<PostModel> savePosts) {
     switch (selectedIndex) {
       case 0:
-        // return ListPost(posts: myPosts, showCommentButton: true);
+      // return ListPost(posts: myPosts, showCommentButton: true);
       case 1:
-        // return ListPost(posts: savePosts, showCommentButton: true);
+      // return ListPost(posts: savePosts, showCommentButton: true);
       case 2:
         return const SliverToBoxAdapter(child: UserSettingScreen());
       default:
@@ -184,12 +178,11 @@ class _UserProfileInfoScreenState extends State<UserProfileInfomationScreen> {
     }
   }
 
-  /// Hiển thị nút hành động kết bạn dựa vào friendAction
-  Widget buildFriendActionButton(int action) {
+  Widget buildFriendActionButton(int actionCode) {
     final friendVM = Provider.of<FriendRequestViewModel>(context, listen: false);
 
-    switch (action) {
-      case 1: // Gửi lời mời kết bạn
+    switch (actionCode) {
+      case 1:
         return ElevatedButton.icon(
           onPressed: () async {
             final senderId = await Provider.of<LoginViewModel>(context, listen: false).getCurrentUserId();
@@ -197,12 +190,12 @@ class _UserProfileInfoScreenState extends State<UserProfileInfomationScreen> {
               showErrorSnackBar(context, "Thiếu thông tin người dùng");
               return;
             }
-
             await friendVM.sendRequest(
               senderId: senderId,
               receiverId: widget.user.userId,
               context: context,
             );
+            setState(() => currentFriendAction = 2);
           },
           icon: const Icon(Icons.person_add),
           label: const Text("Kết bạn"),
@@ -212,92 +205,45 @@ class _UserProfileInfoScreenState extends State<UserProfileInfomationScreen> {
           ),
         );
 
-      case 3: // ACCEPT_REQUEST
+      case 2:
         return ElevatedButton.icon(
-          onPressed: () {
-            showDialog(
+          onPressed: () async {
+            final confirm = await showDialog<bool>(
               context: context,
-              builder: (_) => AlertDialog(
-                title: const Text("Lời mời kết bạn"),
-                content: const Text("Bạn muốn phản hồi lời mời kết bạn này?"),
+              builder: (context) => AlertDialog(
+                title: const Text("Thu hồi lời mời kết bạn"),
+                content: const Text("Bạn có chắc muốn thu hồi lời mời kết bạn?"),
                 actions: [
                   TextButton(
-                    onPressed: () async {
-                      Navigator.pop(context);
-                      await Provider.of<FriendRequestViewModel>(context, listen: false)
-                          .acceptRequest(widget.user.userId, context);
-                    },
-                    child: const Text("Chấp nhận"),
+                    onPressed: () => Navigator.pop(context, false),
+                    child: const Text("Hủy"),
                   ),
                   TextButton(
-                    onPressed: () async {
-                      Navigator.pop(context);
-                      await Provider.of<FriendRequestViewModel>(context, listen: false)
-                          .rejectRequest(widget.user.userId, context);
-                    },
-                    child: const Text("Từ chối"),
+                    onPressed: () => Navigator.pop(context, true),
+                    child: const Text("Thu hồi", style: TextStyle(color: Colors.redAccent)),
                   ),
                 ],
               ),
             );
-          },
-          icon: const Icon(Icons.person_add_alt),
-          label: const Text("Phản hồi"),
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.blue,
-            foregroundColor: Colors.white,
-          ),
-        );
 
-      case 4: // UNFRIEND
-        return ElevatedButton.icon(
-          onPressed: () {
-            showSuccessSnackBar(context, "Hủy kết bạn (chưa làm)");
+            if (confirm == true) {
+              await friendVM.cancelRequest(
+                receiverId: widget.user.userId,
+                context: context,
+              );
+              setState(() => currentFriendAction = 1);
+            }
           },
           icon: const Icon(Icons.person_remove),
-          label: const Text("Hủy kết bạn"),
+          label: const Text("Thu hồi lời mời"),
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.grey[300],
             foregroundColor: Colors.black87,
           ),
         );
 
-      case 5: // MESSAGE
-        return ElevatedButton.icon(
-          onPressed: () {
-            showSuccessSnackBar(context, "Chuyển sang chat (chưa làm)");
-          },
-          icon: const Icon(Icons.message),
-          label: const Text("Nhắn tin"),
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.green,
-            foregroundColor: Colors.white,
-          ),
-        );
-
-      case 0: // NONE (kết bạn)
       default:
-        return ElevatedButton.icon(
-          onPressed: () async {
-            final senderId = await Provider.of<LoginViewModel>(context, listen: false).getCurrentUserId();
-            if (senderId == null) {
-              showErrorSnackBar(context, "Thiếu thông tin người dùng");
-              return;
-            }
-
-            await Provider.of<FriendRequestViewModel>(context, listen: false).sendRequest(
-              senderId: senderId,
-              receiverId: widget.user.userId,
-              context: context,
-            );
-          },
-          icon: const Icon(Icons.person_add),
-          label: const Text("Kết bạn"),
-          style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(0xFF4B67D3),
-            foregroundColor: Colors.white,
-          ),
-        );
+        return const SizedBox.shrink();
     }
   }
 }

@@ -40,9 +40,16 @@ class FriendRequestViewModel extends ChangeNotifier {
     required String receiverId,
     required BuildContext context,
   }) async {
+    if (!sentRequestIds.contains(receiverId)) {
+      showErrorSnackBar(context, "Không tìm thấy lời mời đã gửi tới người này!, ${receiverId}");
+      return;
+    }
+
     isLoading = true;
     notifyListeners();
+
     final success = await _service.cancelFriendRequest(receiverId);
+
     isLoading = false;
 
     if (success) {
@@ -51,8 +58,10 @@ class FriendRequestViewModel extends ChangeNotifier {
     } else {
       showErrorSnackBar(context, "Hủy lời mời thất bại");
     }
+
     notifyListeners();
   }
+
 
   Future<void> fetchSentRequests() async {
     try {

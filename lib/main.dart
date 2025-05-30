@@ -49,6 +49,9 @@ void main() {
         ChangeNotifierProvider(create: (_) => FriendRequestViewModel()),
         ChangeNotifierProvider(create: (_) => PostCreateViewModel()),
         ChangeNotifierProvider(create: (_) => FeedViewModel()),
+        ChangeNotifierProvider(create: (_) => FriendRequestViewModel()),
+
+
         // ChangeNotifierProvider(create: (_) => GroupManagementViewModel()),
         // ChangeNotifierProvider(create: (_) => AddGroupMembersViewModel()),
         // ChangeNotifierProvider(create: (_) => GroupMembersViewModel()),

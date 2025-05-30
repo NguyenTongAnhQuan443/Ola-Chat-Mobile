@@ -3,6 +3,10 @@ import 'package:mime/mime.dart';
 import '../../../models/enum/message_type.dart';
 import '../../../models/message_model.dart';
 import '../../../services/file_opener_service.dart';
+import 'package:dio/dio.dart';
+import 'package:path_provider/path_provider.dart';
+import 'dart:io';
+import 'package:open_filex/open_filex.dart';
 
 class MessageBubble extends StatelessWidget {
   final MessageModel message;
@@ -13,9 +17,8 @@ class MessageBubble extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final mediaUrls = message.mediaUrls ?? [];
-    final time = message.createdAt != null
-        ? "${message.createdAt!.hour}:${message.createdAt!.minute.toString().padLeft(2, '0')}"
-        : "";
+    final time =
+        message.createdAt != null ? "${message.createdAt!.hour}:${message.createdAt!.minute.toString().padLeft(2, '0')}" : "";
 
     return Align(
       alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
@@ -23,19 +26,17 @@ class MessageBubble extends StatelessWidget {
         margin: const EdgeInsets.symmetric(vertical: 4),
         padding: const EdgeInsets.all(10),
         child: Column(
-          crossAxisAlignment:
-          isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+          crossAxisAlignment: isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
           children: [
             // ===== MEDIA (ẢNH, VIDEO, FILE, STICKER) =====
-            if (message.type == MessageType.MEDIA ||
-                message.type == MessageType.FILE ||
-                message.type == MessageType.STICKER)
+            if (message.type == MessageType.MEDIA || message.type == MessageType.FILE || message.type == MessageType.STICKER)
               ...mediaUrls.map((url) {
                 final isImage = _isImageUrl(url);
                 final isVideo = _isVideoUrl(url);
 
                 return GestureDetector(
                   onTap: () => FileOpenerService.openMedia(context, url),
+                  onLongPress: () => _downloadFile(context, url),
                   child: Padding(
                     padding: const EdgeInsets.only(bottom: 8),
                     child: isImage
@@ -46,8 +47,7 @@ class MessageBubble extends StatelessWidget {
               }),
 
             // ===== TEXT =====
-            if (message.type == MessageType.TEXT &&
-                message.content.isNotEmpty)
+            if (message.type == MessageType.TEXT && message.content.isNotEmpty)
               Text(message.content, style: const TextStyle(fontSize: 15)),
 
             const SizedBox(height: 4),
@@ -95,7 +95,7 @@ class MessageBubble extends StatelessWidget {
     }
   }
 
-  // Card file đẹp
+  // Card file
   Widget _buildFileCard(String url) {
     final fileName = url.split('/').last;
     final ext = fileName.split('.').last.toLowerCase();
@@ -123,4 +123,69 @@ class MessageBubble extends StatelessWidget {
       ),
     );
   }
+
+  // Show của sổ tải file
+  void _showExternalAppPrompt(BuildContext context, String url) {
+    final fileName = url.split('/').last;
+
+    showModalBottomSheet(
+      context: context,
+      builder: (ctx) => Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text("Không thể xem trực tiếp", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+            const SizedBox(height: 10),
+            Text("Bạn có muốn mở tệp \"$fileName\" bằng ứng dụng khác không?"),
+            const SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                TextButton(
+                  onPressed: () => Navigator.pop(ctx),
+                  child: const Text("Huỷ"),
+                ),
+                ElevatedButton.icon(
+                  onPressed: () async {
+                    Navigator.pop(ctx);
+                    await FileOpenerService.openMedia(context, url);
+                  },
+                  icon: const Icon(Icons.open_in_new),
+                  label: const Text("Mở bằng ứng dụng"),
+                )
+              ],
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  // Tải file nếu không mở được
+  void _downloadFile(BuildContext context, String url) async {
+    final fileName = url.split('/').last;
+    final tempDir = await getTemporaryDirectory();
+    final savePath = '${tempDir.path}/$fileName';
+
+    try {
+      await Dio().download(url, savePath);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('✅ Đã tải xuống: $fileName'),
+          action: SnackBarAction(
+            label: 'Mở',
+            onPressed: () => OpenFilex.open(savePath),
+          ),
+        ),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('❌ Tải xuống thất bại')),
+      );
+    }
+  }
+
 }

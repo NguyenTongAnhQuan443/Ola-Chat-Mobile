@@ -32,6 +32,8 @@ class _ChatScreenState extends State<ChatScreen> {
   List<MessageModel> messages = [];
   final MessageService _messageService = MessageService();
   String? currentUserName;
+  // Cuộn tin nhắn xuống cuối khi có tin nhắn mới
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
@@ -46,6 +48,16 @@ class _ChatScreenState extends State<ChatScreen> {
       final newMessage = MessageModel.fromJson(data);
       setState(() {
         messages.insert(0, newMessage); // Chèn tin mới vào đầu danh sách
+      });
+      // Scroll đến cuối
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (_scrollController.hasClients) {
+          _scrollController.animateTo(
+            _scrollController.position.maxScrollExtent,
+            duration: const Duration(milliseconds: 200),
+            curve: Curves.easeOut,
+          );
+        }
       });
     });
   }
@@ -93,6 +105,7 @@ class _ChatScreenState extends State<ChatScreen> {
           children: [
             Expanded(
               child: ListView.builder(
+                controller: _scrollController,
                 reverse: false, // Tin nhắn mới nằm dưới cùng
                 padding: const EdgeInsets.all(10),
                 itemCount: messages.length,

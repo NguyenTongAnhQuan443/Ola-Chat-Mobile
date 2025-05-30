@@ -3,6 +3,7 @@ import 'package:marquee/marquee.dart';
 import '../../models/enum/message_type.dart';
 import '../../models/message_model.dart';
 import '../../services/message_service.dart';
+import '../../services/token_service.dart';
 import '../widgets/chat_widgets/chat_app_bar.dart';
 import '../widgets/chat_widgets/message_bubble.dart';
 import '../widgets/chat_widgets/message_input_bar.dart';
@@ -12,7 +13,7 @@ class ChatScreen extends StatefulWidget {
   final String avatarUrl;
   final bool isOnline;
   final String userId;
-  final String conversationId; // ✅ Thêm conversationId
+  final String conversationId;
 
   const ChatScreen({
     super.key,
@@ -30,18 +31,28 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   List<MessageModel> messages = [];
   final MessageService _messageService = MessageService();
+  String? currentUserName;
+
 
   @override
   void initState() {
     super.initState();
     debugPrint("📩 ChatScreen mở với conversationId: ${widget.conversationId}");
     _loadMessages(); // Gọi API để load tin nhắn khi mở màn hình
+    _loadUserName(); // lấy tên người dùng
+  }
+
+  Future<void> _loadUserName() async {
+    final name = await TokenService.getCurrentUserName();
+    setState(() {
+      currentUserName = name ?? "Bạn";
+    });
   }
 
   Future<void> _loadMessages() async {
     try {
       final fetched = await _messageService.fetchMessages(
-        conversationId: widget.conversationId, // ✅ Dùng conversationId
+        conversationId: widget.conversationId,
         page: 0,
         size: 20,
       );
@@ -64,9 +75,9 @@ class _ChatScreenState extends State<ChatScreen> {
           isOnline: widget.isOnline,
           conversationId: widget.conversationId,
           currentUserId: widget.userId,
-          currentUserName:
-              'Tên của bạn', // Có thể lấy từ SharedPreferences nếu cần
+          currentUserName: currentUserName ?? 'Bạn',
         ),
+
         body: Column(
           children: [
             Expanded(

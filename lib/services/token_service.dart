@@ -54,4 +54,18 @@ class TokenService {
       return null;
     }
   }
+
+  static Future<String?> getCurrentUserName() async {
+    final userInfoJson = await getUserInfo();
+    if (userInfoJson == null) return null;
+
+    try {
+      final data = jsonDecode(userInfoJson);
+      return data['displayName'] ?? data['name'];
+    } catch (e) {
+      print("${AppStyles.failureIcon} Lỗi khi lấy tên người dùng: $e");
+      return null;
+    }
+  }
+
 }

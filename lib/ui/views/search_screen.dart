@@ -237,9 +237,8 @@ class _SearchScreenState extends State<SearchScreen> {
                         context,
                         MaterialPageRoute(
                           builder: (_) => UserProfileInfomationScreen(
-                            // user: viewModel.result!,
-                            user: user5,
-                            friendAction: user5.friendAction,
+                            user: viewModel.result!,
+                            friendAction: viewModel.result!.friendAction,
                             myPosts: [],
                           ),
                         ),

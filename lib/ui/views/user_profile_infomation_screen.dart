@@ -186,19 +186,30 @@ class _UserProfileInfoScreenState extends State<UserProfileInfomationScreen> {
 
   /// Hiển thị nút hành động kết bạn dựa vào friendAction
   Widget buildFriendActionButton(int action) {
+
+    final friendVM = Provider.of<FriendRequestViewModel>(context, listen: false);
+
     switch (action) {
-      case 1: // SEND_REQUEST
+      case 1: // Gửi lời mời kết bạn
         return ElevatedButton.icon(
           onPressed: () async {
-            await Provider.of<FriendRequestViewModel>(context, listen: false)
-                .cancelRequest(receiverId: widget.user.userId, context: context);
+            final senderId = await Provider.of<LoginViewModel>(context, listen: false).getCurrentUserId();
+            if (senderId == null) {
+              showErrorSnackBar(context, "Thiếu thông tin người dùng");
+              return;
+            }
+
+            await friendVM.sendRequest(
+              senderId: senderId,
+              receiverId: widget.user.userId,
+              context: context,
+            );
           },
-          icon: const Icon(Icons.cancel, color: Colors.white),
-          label: const Text("Hủy lời mời"),
+          icon: const Icon(Icons.person_add),
+          label: const Text("Kết bạn"),
           style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.red,
+            backgroundColor: const Color(0xFF4B67D3),
             foregroundColor: Colors.white,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           ),
         );
 

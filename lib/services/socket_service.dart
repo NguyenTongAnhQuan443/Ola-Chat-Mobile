@@ -7,98 +7,98 @@ import 'package:stomp_dart_client/stomp_dart_client.dart';
 import '../../main.dart';
 
 class SocketService {
-  // Singleton: đảm bảo chỉ tạo một instance duy nhất trong toàn app
   static final SocketService _instance = SocketService._internal();
-
-  // Factory constructor trả về instance sẵn có
   factory SocketService() => _instance;
-
-  // Constructor private
   SocketService._internal();
 
-  StompClient? _client; // Client dùng để kết nối WebSocket với STOMP
-  String? _accessToken; // Token xác thực cho kết nối WebSocket
+  StompClient? _client;
+  String? _accessToken;
 
-  // Hàm khởi tạo kết nối socket
   void init(String accessToken, {Function()? onConnectCallback}) {
     _accessToken = accessToken;
-
     final socketUrl = ApiConfig.socketUrl;
+
+    print("🔌 Đang khởi tạo kết nối STOMP tới: $socketUrl");
 
     _client = StompClient(
       config: StompConfig(
         url: socketUrl,
         onConnect: (frame) {
-          print('${AppStyles.successIcon} Socket connected');
-          if (onConnectCallback != null) onConnectCallback(); // Gọi callback khi kết nối xong
+          print('✅ [SOCKET] Kết nối STOMP thành công ✅');
+          if (onConnectCallback != null) onConnectCallback();
         },
         beforeConnect: () async {
-          await Future.delayed(const Duration(milliseconds: 200)); // Delay nhẹ trước khi kết nối
+          print("⏳ [SOCKET] Đang chờ kết nối...");
+          await Future.delayed(const Duration(milliseconds: 200));
         },
-        onWebSocketError: (dynamic error) =>
-            print('${AppStyles.successIcon}Socket Error: $error'), // Bắt lỗi kết nối
-
-        // Header gửi kèm khi kết nối socket (quan trọng với bảo mật JWT)
+        onWebSocketError: (dynamic error) {
+          print('❌ [SOCKET] Lỗi kết nối WebSocket: $error');
+        },
+        onDisconnect: (frame) {
+          print('🔌 [SOCKET] Đã ngắt kết nối');
+        },
         stompConnectHeaders: {
           'Authorization': 'Bearer $accessToken',
         },
         webSocketConnectHeaders: {
           'Authorization': 'Bearer $accessToken',
         },
-
-        heartbeatOutgoing: const Duration(seconds: 10), // Ping gửi đi
-        heartbeatIncoming: const Duration(seconds: 10), // Ping nhận vào
-        reconnectDelay: const Duration(seconds: 5), // Tự động reconnect nếu rớt mạng
+        heartbeatOutgoing: const Duration(seconds: 10),
+        heartbeatIncoming: const Duration(seconds: 10),
+        reconnectDelay: const Duration(seconds: 5),
       ),
     );
 
-    _client!.activate(); // Bắt đầu kết nối
+    _client!.activate();
   }
 
-  // Đăng ký lắng nghe một topic cụ thể từ server (dùng STOMP)
   void subscribe(String destination, Function(Map<String, dynamic>) callback) {
-    _client?.subscribe(
-      destination: destination, // Ví dụ: /user/{conversationId}/private
-      callback: (frame) {
-        final body = jsonDecode(frame.body!); // Parse JSON từ tin nhắn
-        callback(body); // Gọi callback ngoài truyền dữ liệu
+    print("🟢 [SOCKET] Đang đăng ký lắng nghe: $destination");
 
-        onMessageReceived(body); // Gọi xử lý nội bộ (update UI)
+    _client?.subscribe(
+      destination: destination,
+      callback: (frame) {
+        if (frame.body == null) {
+          print("⚠️ [SOCKET] Tin nhắn rỗng từ: $destination");
+          return;
+        }
+
+        print("📥 [SOCKET] Đã nhận tin nhắn từ $destination: ${frame.body}");
+
+        final body = jsonDecode(frame.body!);
+        callback(body);
+        onMessageReceived(body);
       },
     );
   }
 
-  // Gửi tin nhắn tới server qua socket (STOMP)
   void sendMessage(String destination, Map<String, dynamic> body) {
+    final encoded = jsonEncode(body);
+    print("📤 [SOCKET] Gửi tin nhắn tới $destination: $encoded");
+
     _client?.send(
       destination: destination,
-      body: jsonEncode(body), // Convert JSON trước khi gửi
+      body: encoded,
     );
   }
 
-  // Gọi khi nhận tin nhắn qua socket → cập nhật lại danh sách hội thoại
   void onMessageReceived(Map<String, dynamic> messageData) {
-    print("${AppStyles.successIcon}[SOCKET] Gọi onMessageReceived");
+    print("✅ [SOCKET] Đã nhận và xử lý tin nhắn");
 
-    final context = navigatorKey.currentContext; // Lấy context từ toàn app
+    final context = navigatorKey.currentContext;
 
     if (context != null) {
-      print("${AppStyles.successIcon}[SOCKET] Có context, chuẩn bị gọi fetchConversations");
-
-      // Lấy ViewModel để cập nhật lại danh sách hội thoại
       final vm = Provider.of<ListConversationViewModel>(context, listen: false);
-      vm.updateConversationFromMessage(messageData); // Chỉ update hội thoại liên quan
+      vm.updateConversationFromMessage(messageData);
     } else {
-      print("${AppStyles.failureIcon}[SOCKET] Không tìm thấy context để gọi fetchConversations");
+      print("❌ [SOCKET] Không tìm thấy context để cập nhật hội thoại");
     }
   }
 
-  // Ngắt kết nối socket
   void disconnect() {
     _client?.deactivate();
-    print('🔌 Socket disconnected');
+    print('🔌 [SOCKET] Ngắt kết nối thành công');
   }
 
-  // Kiểm tra socket có đang kết nối không
   bool get isConnected => _client?.connected ?? false;
 }

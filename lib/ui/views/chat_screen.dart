@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:olachat_mobile/utils/app_styles.dart';
 import '../../models/message_model.dart';
 import '../../services/message_service.dart';
+import '../../services/socket_service.dart';
 import '../../services/token_service.dart';
 import '../widgets/chat_widgets/chat_app_bar.dart';
 import '../widgets/chat_widgets/message_bubble.dart';
@@ -38,6 +39,15 @@ class _ChatScreenState extends State<ChatScreen> {
     debugPrint("[ChatScreen] mở với conversationId: ${widget.conversationId}");
     _loadMessages();
     _loadUserName();
+
+    // Lắng nghe tin nhắn realtime
+    final socket = SocketService();
+    socket.subscribe("/user/${widget.conversationId}/private", (data) {
+      final newMessage = MessageModel.fromJson(data);
+      setState(() {
+        messages.insert(0, newMessage); // Chèn tin mới vào đầu danh sách
+      });
+    });
   }
 
   // Hàm bất đồng bộ để lấy tên người dùng từ local (token)
@@ -98,9 +108,11 @@ class _ChatScreenState extends State<ChatScreen> {
                 },
               ),
             ),
-
             const Divider(height: 1),
-            const MessageInputBar(), // Thanh nhập tin nhắn
+            MessageInputBar(
+              conversationId: widget.conversationId,
+              currentUserId: widget.userId,
+            ),
           ],
         ),
       ),

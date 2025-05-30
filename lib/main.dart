@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:olachat_mobile/view_models/list_conversation_view_model.dart';
 import 'package:olachat_mobile/view_models/friend_request_view_model.dart';
+import 'package:olachat_mobile/view_models/message_conversation_view_model.dart';
 import 'package:olachat_mobile/view_models/notification_view_model.dart';
 import 'package:olachat_mobile/view_models/phone_verification_view_model.dart';
 import 'package:olachat_mobile/view_models/socket_view_model.dart';
@@ -43,6 +44,7 @@ void main() {
         ChangeNotifierProvider(create: (_) => FriendRequestViewModel()),
         ChangeNotifierProvider(create: (_) => NotificationViewModel()),
         ChangeNotifierProvider(create: (_) => ListConversationViewModel()),
+  ChangeNotifierProvider(create: (_) => MessageConversationViewModel()),
         // ChangeNotifierProvider(create: (_) => CreateGroupViewModel()),
         // ChangeNotifierProvider(create: (_) => GroupManagementViewModel()),
         // ChangeNotifierProvider(create: (_) => AddGroupMembersViewModel()),
@@ -57,7 +59,6 @@ void main() {
         //     avatarUrl: "...",
         //   ),
         // )
-        // ChangeNotifierProvider(create: (_) => MessageConversationViewModel()),
       ],
       child: const MyApp(),
     ),

@@ -38,7 +38,7 @@ class MessageBubble extends StatelessWidget {
               : CrossAxisAlignment.start, // Căn nội dung theo hướng phù hợp
           children: [
             // Nếu là tin nhắn sticker và có ảnh → hiển thị ảnh
-            if (message.type == MessageType.STICKER && image != null)
+            if (message.type == MessageType.STICKER && image != null || message.type == MessageType.MEDIA && image != null)
               Image.network(image, height: 100),
 
             // Nếu là tin nhắn dạng text và có nội dung → hiển thị text

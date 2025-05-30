@@ -5,6 +5,7 @@ import 'package:olachat_mobile/ui/widgets/custom_sliver_to_box_adapter.dart';
 import 'package:olachat_mobile/ui/widgets/list_post.dart';
 import 'package:olachat_mobile/ui/widgets/app_logo_header_two.dart';
 
+import '../../services/token_service.dart';
 import 'form_post_screen.dart';
 
 class FeedScreen extends StatefulWidget {
@@ -15,11 +16,25 @@ class FeedScreen extends StatefulWidget {
 }
 
 class _FeedScreenState extends State<FeedScreen> {
+  String? _avatarUrl;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadAvatar();
+  }
+
+  Future<void> _loadAvatar() async {
+    final avatar = await TokenService.getCurrentUserAvatar();
+    setState(() {
+      _avatarUrl = avatar;
+    });
+  }
+
   List<PostModel> posts = [
     PostModel(
       user: UserModel(
-        avatarUrl:
-            "https://netizenturkey.net/wp-content/uploads/2023/12/1703066681-20231220-gdragon.jpg",
+        avatarUrl: "https://netizenturkey.net/wp-content/uploads/2023/12/1703066681-20231220-gdragon.jpg",
         userName: "G-Dragon",
         nickName: "Anh Long !!!",
       ),
@@ -30,8 +45,7 @@ class _FeedScreenState extends State<FeedScreen> {
     ),
     PostModel(
       user: UserModel(
-        avatarUrl:
-            "https://netizenturkey.net/wp-content/uploads/2023/12/1703066681-20231220-gdragon.jpg",
+        avatarUrl: "https://netizenturkey.net/wp-content/uploads/2023/12/1703066681-20231220-gdragon.jpg",
         userName: "G-Dragon",
         nickName: "Anh Long !!!",
       ),
@@ -42,8 +56,7 @@ class _FeedScreenState extends State<FeedScreen> {
     ),
     PostModel(
       user: UserModel(
-        avatarUrl:
-            "https://netizenturkey.net/wp-content/uploads/2023/12/1703066681-20231220-gdragon.jpg",
+        avatarUrl: "https://netizenturkey.net/wp-content/uploads/2023/12/1703066681-20231220-gdragon.jpg",
         userName: "G-Dragon",
         nickName: "Anh Long !!!",
       ),
@@ -54,8 +67,7 @@ class _FeedScreenState extends State<FeedScreen> {
     ),
     PostModel(
       user: UserModel(
-        avatarUrl:
-            "https://netizenturkey.net/wp-content/uploads/2023/12/1703066681-20231220-gdragon.jpg",
+        avatarUrl: "https://netizenturkey.net/wp-content/uploads/2023/12/1703066681-20231220-gdragon.jpg",
         userName: "G-Dragon",
         nickName: "Anh Long !!!",
       ),
@@ -66,8 +78,7 @@ class _FeedScreenState extends State<FeedScreen> {
     ),
     PostModel(
       user: UserModel(
-        avatarUrl:
-            "https://netizenturkey.net/wp-content/uploads/2023/12/1703066681-20231220-gdragon.jpg",
+        avatarUrl: "https://netizenturkey.net/wp-content/uploads/2023/12/1703066681-20231220-gdragon.jpg",
         userName: "G-Dragon",
         nickName: "Anh Long !!!",
       ),
@@ -91,7 +102,7 @@ class _FeedScreenState extends State<FeedScreen> {
           //   View 2 - Post
           SliverToBoxAdapter(
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
+              padding: const EdgeInsets.symmetric(horizontal: 35, vertical: 16),
               color: Colors.white,
               child: GestureDetector(
                 onTap: () {
@@ -102,11 +113,11 @@ class _FeedScreenState extends State<FeedScreen> {
                 },
                 child: Row(
                   children: [
-                    const CircleAvatar(
+                    CircleAvatar(
                       radius: 20,
-                      backgroundImage: NetworkImage(
-                        "https://netizenturkey.net/wp-content/uploads/2023/12/1703066681-20231220-gdragon.jpg",
-                      ),
+                      backgroundImage: _avatarUrl != null
+                          ? NetworkImage(_avatarUrl!)
+                          : const AssetImage('assets/images/default_avatar.png') as ImageProvider,
                     ),
                     const SizedBox(width: 12),
                     Expanded(

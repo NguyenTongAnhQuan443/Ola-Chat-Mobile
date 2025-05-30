@@ -15,6 +15,7 @@ class ChatScreen extends StatefulWidget {
   final bool isOnline;
   final String userId;
   final String conversationId;
+  final String conversationType;
 
   const ChatScreen({
     super.key,
@@ -23,6 +24,7 @@ class ChatScreen extends StatefulWidget {
     required this.isOnline,
     required this.userId,
     required this.conversationId,
+    required this.conversationType,
   });
 
   @override
@@ -117,6 +119,7 @@ class _ChatScreenState extends State<ChatScreen> {
           conversationId: widget.conversationId,
           currentUserId: widget.userId,
           currentUserName: currentUserName ?? 'Bạn',
+          conversationType: widget.conversationType,
         ),
 
         // Giao diện chính: danh sách tin nhắn + input bar

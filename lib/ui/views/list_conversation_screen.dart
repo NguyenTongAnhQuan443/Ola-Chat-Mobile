@@ -184,6 +184,7 @@ class _ListConversationScreenState extends State<ListConversationScreen>
                                         isOnline: message.isOnline ?? false,
                                         userId: currentUserId,
                                         conversationId: message.id,
+                                        conversationType: message.type,
                                       ),
                                     ),
                                   ),

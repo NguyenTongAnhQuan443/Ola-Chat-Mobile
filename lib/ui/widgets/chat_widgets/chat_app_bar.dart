@@ -13,6 +13,7 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String conversationId;
   final String currentUserId;
   final String currentUserName;
+  final String conversationType;
 
   const ChatAppBar({
     super.key,
@@ -22,6 +23,7 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
     required this.conversationId,
     required this.currentUserId,
     required this.currentUserName,
+    required this.conversationType,
   });
 
   @override
@@ -159,10 +161,19 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
               }
             }
           },
-          itemBuilder: (context) => const [
-            PopupMenuItem(value: 'xoa', child: Text('Xoá đoạn chat')),
-            PopupMenuItem(value: 'chan', child: Text('Thiết lập')),
-          ],
+          itemBuilder: (context) {
+            if (conversationType == 'GROUP') {
+              return const [
+                PopupMenuItem(value: 'xoa', child: Text('Xoá đoạn chat')),
+                PopupMenuItem(value: 'group_setting', child: Text('Thiết lập nhóm')),
+              ];
+            } else {
+              return const [
+                PopupMenuItem(value: 'xoa', child: Text('Xoá đoạn chat')),
+                PopupMenuItem(value: 'private_setting', child: Text('Thiết lập')),
+              ];
+            }
+          },
         )
       ],
     );

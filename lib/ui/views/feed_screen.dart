@@ -5,6 +5,8 @@ import 'package:olachat_mobile/ui/widgets/custom_sliver_to_box_adapter.dart';
 import 'package:olachat_mobile/ui/widgets/list_post.dart';
 import 'package:olachat_mobile/ui/widgets/app_logo_header_two.dart';
 
+import 'form_post_screen.dart';
+
 class FeedScreen extends StatefulWidget {
   const FeedScreen({super.key});
 
@@ -89,74 +91,43 @@ class _FeedScreenState extends State<FeedScreen> {
           //   View 2 - Post
           SliverToBoxAdapter(
             child: Container(
-              height: 154,
+              padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
               color: Colors.white,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        CircleAvatar(
-                          radius: 20,
-                          backgroundImage: NetworkImage(
-                              "https://netizenturkey.net/wp-content/uploads/2023/12/1703066681-20231220-gdragon.jpg"),
-                          onBackgroundImageError: (_, __) =>
-                              Icon(Icons.person_outline),
-                        ),
-                        const SizedBox(
-                          width: 30,
-                        ),
-                        Expanded(
-                            child: TextField(
-                          decoration: InputDecoration(
-                              hintText: "What's on your mind?",
-                              // border: InputBorder.none,
-                              hintStyle:
-                                  TextStyle(color: Colors.grey.shade600)),
-                        )),
-                      ],
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const FormPostScreen()),
+                  );
+                },
+                child: Row(
+                  children: [
+                    const CircleAvatar(
+                      radius: 20,
+                      backgroundImage: NetworkImage(
+                        "https://netizenturkey.net/wp-content/uploads/2023/12/1703066681-20231220-gdragon.jpg",
+                      ),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(60, 0, 0, 0),
-                          child: TextButton.icon(
-                            onPressed: () {},
-                            label: Text(
-                              "Add Media",
-                              style:
-                                  TextStyle(color: Colors.black, fontSize: 14),
-                            ),
-                            icon: const Icon(
-                              Icons.image_outlined,
-                              color: Colors.black,
-                              size: 20,
-                            ),
-                          ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                        decoration: BoxDecoration(
+                          color: Colors.grey[200],
+                          borderRadius: BorderRadius.circular(20),
                         ),
-                        ElevatedButton(
-                          onPressed: () {},
-                          style: ElevatedButton.styleFrom(
-                              backgroundColor: Color(0xff4C68D5)),
-                          child: const Text(
-                            "Post",
-                            style: TextStyle(fontSize: 14, color: Colors.white),
-                          ),
-                        )
-                      ],
+                        child: Text(
+                          "Bạn đang nghĩ gì, chia sẻ ngay?",
+                          style: TextStyle(color: Colors.grey[600]),
+                        ),
+                      ),
                     ),
-                  )
-                ],
+                  ],
+                ),
               ),
             ),
           ),
+
           CustomSliverToBoxAdapter(),
 
           // View 3 - List Post

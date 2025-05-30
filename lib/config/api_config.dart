@@ -111,4 +111,8 @@ class ApiConfig {
 
   // Sound
   static String get uploadAudio => "$base/files/upload/audio";
+
+  // Feed
+  static String get createPost => "$base/api/posts";
+
 }

@@ -5,6 +5,7 @@ import 'package:olachat_mobile/view_models/friend_request_view_model.dart';
 import 'package:olachat_mobile/view_models/message_conversation_view_model.dart';
 import 'package:olachat_mobile/view_models/notification_view_model.dart';
 import 'package:olachat_mobile/view_models/phone_verification_view_model.dart';
+import 'package:olachat_mobile/view_models/post_create_view_model.dart';
 import 'package:olachat_mobile/view_models/socket_view_model.dart';
 import 'package:olachat_mobile/view_models/update_email_view_model.dart';
 import 'package:olachat_mobile/view_models/update_password_view_model.dart';
@@ -45,6 +46,8 @@ void main() {
         ChangeNotifierProvider(create: (_) => MessageConversationViewModel()),
         ChangeNotifierProvider(create: (_) => CreateGroupViewModel()),
         ChangeNotifierProvider(create: (_) => FriendRequestViewModel()),
+        ChangeNotifierProvider(create: (_) => PostCreateViewModel()),
+
         // ChangeNotifierProvider(create: (_) => GroupManagementViewModel()),
         // ChangeNotifierProvider(create: (_) => AddGroupMembersViewModel()),
         // ChangeNotifierProvider(create: (_) => GroupMembersViewModel()),

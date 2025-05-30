@@ -25,4 +25,5 @@ class AppStyles {
   static const String connectIcon = "🔌- ";
   static const String wattingIcon = "⏳- ";
   static const String receiveIcon = "📥- ";
+  static const String CongratulationsIcon = "🎉 ";
 }

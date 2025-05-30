@@ -70,13 +70,9 @@ class AllNotificationsScreen extends StatelessWidget {
                                   child: Icon(Icons.notifications,
                                       color: Color(0xFF6A1B9A)),
                                 ),
-                                title: Text(
-                                  utf8.decode(item.title.codeUnits),
-                                  style: const TextStyle(
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                subtitle:
-                                    Text(utf8.decode(item.body.codeUnits)),
+                                title: Text(item.title, style: const TextStyle(fontWeight: FontWeight.bold)),
+                                subtitle: Text(item.body),
+
                                 trailing: Text(
                                   _formatTime(item.createdAt),
                                   style: const TextStyle(

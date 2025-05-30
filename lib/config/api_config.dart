@@ -114,5 +114,6 @@ class ApiConfig {
 
   // Feed
   static String get createPost => "$base/api/posts";
+  static String feedPosts = "$base/api/posts/feed";
 
 }

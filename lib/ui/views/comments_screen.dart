@@ -14,19 +14,6 @@ class CommentsScreen extends StatefulWidget {
 
 class _CommentsScreenState extends State<CommentsScreen> {
   List<PostModel> posts = [
-    PostModel(
-      user: UserModel(
-        avatarUrl:
-            "https://netizenturkey.net/wp-content/uploads/2023/12/1703066681-20231220-gdragon.jpg",
-        userName: "G-Dragon",
-        nickName: "Anh Long !!!",
-      ),
-      postTime: "7 hours ago",
-      postContent:
-          "À, cái hôm đó mà bảo mình rap dis MAMA, thật ra là mình chỉ muốn nói: ‘Chắc các bạn không hiểu đâu, nhưng tôi chỉ đang... cho các bạn thấy một chút 'tình yêu' thôi mà!’ 사실, 나는 그냥 사랑을 보여주고 싶었어 😎🎤",
-      likeCount: 270,
-      dislikeCount: 15,
-    ),
   ];
 
   final List<Map<String, String>> comments = [
@@ -73,7 +60,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
                 CustomSliverToBoxAdapter(),
 
                 // View - Post
-                ListPost(posts: posts, showCommentButton: false),
+                // ListPost(posts: posts, showCommentButton: false),
                 CustomSliverToBoxAdapter(),
 
                 // View - Comment

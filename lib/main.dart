@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:olachat_mobile/view_models/create_group_view_model.dart';
+import 'package:olachat_mobile/view_models/feed_view_model.dart';
 import 'package:olachat_mobile/view_models/list_conversation_view_model.dart';
 import 'package:olachat_mobile/view_models/friend_request_view_model.dart';
 import 'package:olachat_mobile/view_models/message_conversation_view_model.dart';
@@ -47,7 +48,7 @@ void main() {
         ChangeNotifierProvider(create: (_) => CreateGroupViewModel()),
         ChangeNotifierProvider(create: (_) => FriendRequestViewModel()),
         ChangeNotifierProvider(create: (_) => PostCreateViewModel()),
-
+        ChangeNotifierProvider(create: (_) => FeedViewModel()),
         // ChangeNotifierProvider(create: (_) => GroupManagementViewModel()),
         // ChangeNotifierProvider(create: (_) => AddGroupMembersViewModel()),
         // ChangeNotifierProvider(create: (_) => GroupMembersViewModel()),

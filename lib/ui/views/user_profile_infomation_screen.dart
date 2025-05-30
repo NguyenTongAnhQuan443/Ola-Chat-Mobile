@@ -174,9 +174,9 @@ class _UserProfileInfoScreenState extends State<UserProfileInfomationScreen> {
   Widget buildView_3(int selectedIndex, List<PostModel> myPosts, List<PostModel> savePosts) {
     switch (selectedIndex) {
       case 0:
-        return ListPost(posts: myPosts, showCommentButton: true);
+        // return ListPost(posts: myPosts, showCommentButton: true);
       case 1:
-        return ListPost(posts: savePosts, showCommentButton: true);
+        // return ListPost(posts: savePosts, showCommentButton: true);
       case 2:
         return const SliverToBoxAdapter(child: UserSettingScreen());
       default:
@@ -186,7 +186,6 @@ class _UserProfileInfoScreenState extends State<UserProfileInfomationScreen> {
 
   /// Hiển thị nút hành động kết bạn dựa vào friendAction
   Widget buildFriendActionButton(int action) {
-
     final friendVM = Provider.of<FriendRequestViewModel>(context, listen: false);
 
     switch (action) {

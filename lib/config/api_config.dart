@@ -95,6 +95,10 @@ class ApiConfig {
   static String getUsersInConversation(String conversationId) =>
       "$base/api/conversations/$conversationId/users";
 
+  static String deleteConversation(String conversationId) =>
+      "$base/api/conversations/$conversationId";
+
+
   // File
   static String get uploadFileMobile => "$base/files/upload_v2";
 

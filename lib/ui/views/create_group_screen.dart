@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:file_picker/file_picker.dart';
 import '../../view_models/create_group_view_model.dart';
 import '../widgets/app_logo_header_one.dart';
+import '../widgets/show_snack_bar.dart';
 
 class CreateGroupScreen extends StatefulWidget {
   const CreateGroupScreen({super.key});
@@ -79,13 +80,15 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
     if (mounted) {
       setState(() => _isCreating = false);
       if (success) {
-        Navigator.pop(context, true); // trigger reload từ list screen
+        showSuccessSnackBar(context, "🎉 Tạo nhóm thành công!");
+        Future.delayed(const Duration(milliseconds: 400), () {
+          Navigator.pop(context, true);
+        });
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('❌ Tạo nhóm thất bại')),
-        );
+        showErrorSnackBar(context, "Tạo nhóm thất bại");
       }
     }
+
   }
 
 

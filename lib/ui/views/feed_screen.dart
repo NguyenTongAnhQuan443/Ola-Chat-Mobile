@@ -50,7 +50,7 @@ class _FeedScreenState extends State<FeedScreen> {
             CustomSliverToBoxAdapter(),
             SliverToBoxAdapter(
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 35, vertical: 16),
+                padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 16),
                 child: _buildPostInputBar(), // gọi hàm bên dưới
               ),
             ),

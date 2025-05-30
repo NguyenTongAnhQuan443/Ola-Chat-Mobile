@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:marquee/marquee.dart';
+import 'package:olachat_mobile/utils/app_styles.dart';
+import 'package:provider/provider.dart';
 
+import '../../../view_models/conversation_view_model.dart';
 import '../../views/zego_call_screen.dart';
 
 class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -122,11 +125,45 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
         // Nút mở menu 3 chấm (popup menu)
         PopupMenuButton<String>(
           icon: const Icon(Icons.more_vert, color: Colors.indigo),
+          onSelected: (value) async {
+            if (value == 'xoa') {
+              final confirm = await showDialog<bool>(
+                context: context,
+                builder: (_) => AlertDialog(
+                  title: const Text("Xác nhận xoá"),
+                  content: const Text("Bạn có chắc muốn xoá đoạn chat này?"),
+                  actions: [
+                    TextButton(onPressed: () => Navigator.pop(context, false), child: const Text("Hủy")),
+                    TextButton(
+                      onPressed: () => Navigator.pop(context, true),
+                      child: const Text("Xoá", style: TextStyle(color: Colors.red)),
+                    ),
+                  ],
+                ),
+              );
+
+              if (confirm == true) {
+                final result =
+                    await Provider.of<ConversationViewModel>(context, listen: false).deleteConversation(conversationId);
+
+                if (result && context.mounted) {
+                  Navigator.pop(context); // Thoát khỏi màn hình chat
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text("${AppStyles.successIcon}Đã xoá cuộc trò chuyện")),
+                  );
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text("${AppStyles.failureIcon} Xoá thất bại")),
+                  );
+                }
+              }
+            }
+          },
           itemBuilder: (context) => const [
             PopupMenuItem(value: 'xoa', child: Text('Xoá đoạn chat')),
             PopupMenuItem(value: 'chan', child: Text('Thiết lập')),
           ],
-        ),
+        )
       ],
     );
   }

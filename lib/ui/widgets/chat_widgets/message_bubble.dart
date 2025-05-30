@@ -29,7 +29,7 @@ class MessageBubble extends StatelessWidget {
   Widget build(BuildContext context) {
     final mediaUrls = message.mediaUrls ?? [];
     final time =
-    message.createdAt != null ? "${message.createdAt!.hour}:${message.createdAt!.minute.toString().padLeft(2, '0')}" : "";
+        message.createdAt != null ? "${message.createdAt!.hour}:${message.createdAt!.minute.toString().padLeft(2, '0')}" : "";
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
@@ -43,7 +43,9 @@ class MessageBubble extends StatelessWidget {
               padding: const EdgeInsets.only(right: 8),
               child: CircleAvatar(
                 radius: 16,
-                backgroundImage: NetworkImage(currentUserAvatar),
+                backgroundImage: (currentUserAvatar.isNotEmpty)
+                    ? NetworkImage(currentUserAvatar)
+                    : const AssetImage('assets/images/default_avatar.png') as ImageProvider,
               ),
             ),
 
@@ -72,9 +74,7 @@ class MessageBubble extends StatelessWidget {
                             onLongPress: isMe ? () => _showRecallOptions(context, message) : null,
                             child: Padding(
                               padding: const EdgeInsets.only(bottom: 8),
-                              child: isImage
-                                  ? Image.network(url, height: 200)
-                                  : _buildFileCard(url),
+                              child: isImage ? Image.network(url, height: 200) : _buildFileCard(url),
                             ),
                           );
                         }),
@@ -119,12 +119,13 @@ class MessageBubble extends StatelessWidget {
           // Avatar của bạn
           if (isMe)
             Padding(
-              padding: const EdgeInsets.only(left: 8),
-              child: CircleAvatar(
-                radius: 16,
-                backgroundImage: NetworkImage(myAvatar),
-              ),
-            ),
+                padding: const EdgeInsets.only(left: 8),
+                child: CircleAvatar(
+                  radius: 16,
+                  backgroundImage: (myAvatar.isNotEmpty)
+                      ? NetworkImage(myAvatar)
+                      : const AssetImage('assets/images/default_avatar.png') as ImageProvider,
+                ))
         ],
       ),
     );

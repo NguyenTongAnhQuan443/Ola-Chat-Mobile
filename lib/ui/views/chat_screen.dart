@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:marquee/marquee.dart';
+import 'package:olachat_mobile/utils/app_styles.dart';
 import '../../models/enum/message_type.dart';
 import '../../models/message_model.dart';
 import '../../services/message_service.dart';
@@ -37,7 +38,7 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   void initState() {
     super.initState();
-    debugPrint("📩 ChatScreen mở với conversationId: ${widget.conversationId}");
+    debugPrint("[ChatScreen] mở với conversationId: ${widget.conversationId}");
     _loadMessages(); // Gọi API để load tin nhắn khi mở màn hình
     _loadUserName(); // lấy tên người dùng
   }
@@ -61,7 +62,7 @@ class _ChatScreenState extends State<ChatScreen> {
         messages = fetched;
       });
     } catch (e) {
-      debugPrint("❌ Error loading messages: $e");
+      debugPrint("${AppStyles.redPointIcon}Error loading messages: $e");
     }
   }
 

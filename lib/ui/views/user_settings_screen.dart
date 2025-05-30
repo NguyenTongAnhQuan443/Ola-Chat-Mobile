@@ -12,8 +12,7 @@ class UserSettingScreen extends StatefulWidget {
   SettingsScreenState createState() => SettingsScreenState();
 }
 
-class SettingsScreenState extends State<UserSettingScreen>
-    with SingleTickerProviderStateMixin {
+class SettingsScreenState extends State<UserSettingScreen> with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
   @override

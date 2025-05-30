@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
+import 'package:olachat_mobile/utils/app_styles.dart';
 import '../services/dio_client.dart';
 
 class LoginQrViewModel extends ChangeNotifier {
@@ -10,22 +11,18 @@ class LoginQrViewModel extends ChangeNotifier {
   Future<void> fetchDeviceInfo(String sessionId, String confirmUrl) async {
     isLoading = true;
     notifyListeners();
-    print('🚀 Đang gọi API lấy thông tin thiết bị với URL: $confirmUrl');
+    print('${AppStyles.wattingIcon} Đang gọi API lấy thông tin thiết bị với URL: $confirmUrl');
 
     try {
       final response = await DioClient().dio.post(confirmUrl);
-
       deviceInfo = response.data['data'];
-
-// ✅ Tự xây dựng confirmUrl đúng
       final sessionId = response.data['data']['sessionId'];
       final confirmBase = confirmUrl.replaceFirst("/scan", "/confirm");
       deviceInfo!['confirmUrl'] = confirmBase;
 
-      print('🔗 Confirm URL: $confirmBase'); // 👈 in ra để kiểm tra
-
+      print('${AppStyles.connectIcon} Confirm URL: $confirmBase');
     } catch (e) {
-      print('❌ Lỗi khi fetchDeviceInfo: $e');
+      print('${AppStyles.failureIcon}Lỗi khi fetchDeviceInfo: $e');
       deviceInfo = null;
     }
 
@@ -33,20 +30,17 @@ class LoginQrViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-
   Future<bool> confirmLogin(String confirmUrl) async {
     try {
-      print('🔐 Gửi request confirmLogin: $confirmUrl');
+      print('${AppStyles.wattingIcon}Gửi request confirmLogin: $confirmUrl');
       final response = await DioClient().dio.post(confirmUrl);
-      print('✅ Đăng nhập thành công: ${response.statusCode}');
+      print('${AppStyles.successIcon}Đăng nhập thành công: ${response.statusCode}');
       isConfirmed = true;
       notifyListeners();
       return response.statusCode == 200;
     } catch (e) {
-      print('❌ Lỗi confirmLogin: $e');
+      print('${AppStyles.failureIcon}Lỗi confirmLogin: $e');
       return false;
     }
   }
-
-
 }

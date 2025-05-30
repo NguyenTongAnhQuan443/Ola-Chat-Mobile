@@ -9,8 +9,7 @@ class BottomNavigationBarScreen extends StatefulWidget {
   const BottomNavigationBarScreen({super.key});
 
   @override
-  State<BottomNavigationBarScreen> createState() =>
-      _BottomNavigationBarScreenState();
+  State<BottomNavigationBarScreen> createState() => _BottomNavigationBarScreenState();
 }
 
 class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen> {
@@ -18,11 +17,9 @@ class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen> {
   final List<Widget> screens = [
     FeedScreen(),
     SearchScreen(),
-    // NotificationsScreen(),
-    LoginQrScreen(),
+    NotificationsScreen(),
     MyUserScreen(),
-
-
+    LoginQrScreen(),
   ];
 
   final PageStorageBucket bucket = PageStorageBucket();
@@ -57,6 +54,10 @@ class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person_outline),
+            label: "",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.qr_code),
             label: "",
           ),
         ],

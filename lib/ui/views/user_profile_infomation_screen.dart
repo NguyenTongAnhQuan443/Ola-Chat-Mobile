@@ -62,7 +62,7 @@ class _UserProfileInfoScreenState extends State<UserProfileInfomationScreen> {
             buildHeader(),
             buildProfileInfo(user),
             CustomSliverToBoxAdapter(),
-            buildView_3(selectedIndex, widget.myPosts, savePosts),
+            // buildView_3(selectedIndex, widget.myPosts, savePosts),
           ],
         ),
       ),

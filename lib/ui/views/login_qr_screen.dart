@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:provider/provider.dart';
 import '../../view_models/login_qr_view_model.dart';
+import '../widgets/app_logo_header_one.dart';
 
 class LoginQrScreen extends StatefulWidget {
   final void Function()? onConfirmSuccess;
@@ -23,64 +24,65 @@ class _LoginQrScreenState extends State<LoginQrScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Quét mã QR")),
+      // appBar đã được thay bằng AppLogoHeaderOne bên trong body
       body: SafeArea(
-        child: Consumer<LoginQrViewModel>(
-          builder: (context, vm, _) {
-            if (vm.deviceInfo != null) {
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    ListTile(
-                      leading: const Icon(Icons.devices),
-                      title: const Text('Thiết bị'),
-                      subtitle:
-                      Text(vm.deviceInfo!['deviceName'] ?? 'Không rõ'),
-                    ),
-                    ListTile(
-                      leading: const Icon(Icons.wifi),
-                      title: const Text('IP'),
-                      subtitle:
-                      Text(vm.deviceInfo!['ipAddress'] ?? 'Không rõ'),
-                    ),
-                    const SizedBox(height: 20),
-                    ElevatedButton(
-                      onPressed: () async {
-                        final success = await vm.confirmLogin(
-                            vm.deviceInfo!['confirmUrl']);
-                        if (success && context.mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('✅ Đã xác nhận đăng nhập')),
-                          );
+        child: Column(
+          children: [
+            const AppLogoHeaderOne(showBackButton: true), // ✅ header nằm trên cùng
 
-                          await cameraController.stop();
-                          await Future.delayed(const Duration(milliseconds: 300));
+            Expanded(
+              child: Consumer<LoginQrViewModel>(
+                builder: (context, vm, _) {
+                  if (vm.deviceInfo != null) {
+                    return Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          ListTile(
+                            leading: const Icon(Icons.devices),
+                            title: const Text('Thiết bị'),
+                            subtitle: Text(vm.deviceInfo!['deviceName'] ?? 'Không rõ'),
+                          ),
+                          ListTile(
+                            leading: const Icon(Icons.wifi),
+                            title: const Text('IP'),
+                            subtitle: Text(vm.deviceInfo!['ipAddress'] ?? 'Không rõ'),
+                          ),
+                          const SizedBox(height: 20),
+                          ElevatedButton(
+                            onPressed: () async {
+                              final success = await vm.confirmLogin(vm.deviceInfo!['confirmUrl']);
+                              if (success && context.mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(content: Text('✅ Đã xác nhận đăng nhập')),
+                                );
 
-                          vm.deviceInfo = null;   // 👈 reset lại
-                          hasScanned = false;     // 👈 cho phép quét lại
-                          vm.notifyListeners();   // 👈 update UI
-                        }
-                        else {
-                          if (context.mounted) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                  content: Text('❌ Xác nhận thất bại')),
-                            );
-                          }
-                        }
-                      },
-                      child: const Text("Xác nhận đăng nhập"),
-                    ),
-                  ],
-                ),
-              );
-            }
+                                await cameraController.stop();
+                                await Future.delayed(const Duration(milliseconds: 300));
 
-            return Column(
-              children: [
-                Expanded(
-                  child: MobileScanner(
+                                // 👉 Reset lại trạng thái để cho phép quét lại
+                                vm.deviceInfo = null;
+                                hasScanned = false;
+                                vm.notifyListeners();
+
+                                // 👉 Gọi callback nếu có
+                                widget.onConfirmSuccess?.call();
+                              } else {
+                                if (context.mounted) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(content: Text('❌ Xác nhận thất bại')),
+                                  );
+                                }
+                              }
+                            },
+                            child: const Text("Xác nhận đăng nhập"),
+                          ),
+                        ],
+                      ),
+                    );
+                  }
+
+                  return MobileScanner(
                     fit: BoxFit.cover,
                     controller: cameraController,
                     onDetect: (capture) async {
@@ -105,11 +107,11 @@ class _LoginQrScreenState extends State<LoginQrScreen> {
                         }
                       }
                     },
-                  ),
-                ),
-              ],
-            );
-          },
+                  );
+                },
+              ),
+            ),
+          ],
         ),
       ),
     );

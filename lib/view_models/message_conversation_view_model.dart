@@ -35,4 +35,32 @@ class MessageConversationViewModel extends ChangeNotifier {
     _socketService.sendMessage("/app/private-message", message);
     print("${AppStyles.successIcon} Đã gửi tin nhắn TEXT: $message");
   }
+
+  // Gửi Sticker
+  void sendStickerMessage({
+    required String mediaUrl,
+    required String conversationId,
+    required String senderId,
+  }) {
+    final now = DateTime.now().toIso8601String();
+
+    final message = {
+      "senderId": senderId,
+      "conversationId": conversationId,
+      "content": "",
+      "type": MessageType.STICKER.name,
+      "createdAt": now,
+      "mediaUrls": [mediaUrl],
+      "mentions": [],
+      "recalled": false,
+      "deletedStatus": [],
+      "emojiTypes": [],
+      "totalReactionCount": 0,
+      "lastUserReaction": null
+    };
+
+    _socketService.sendMessage("/app/private-message", message);
+    print("${AppStyles.successIcon} Đã gửi STICKER: $message");
+  }
+
 }

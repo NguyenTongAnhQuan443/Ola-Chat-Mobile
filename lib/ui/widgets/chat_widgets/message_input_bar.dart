@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:giphy_get/giphy_get.dart';
 import 'package:provider/provider.dart';
 import '../../../view_models/message_conversation_view_model.dart';
 
@@ -19,6 +20,7 @@ class MessageInputBar extends StatefulWidget {
 class _MessageInputBarState extends State<MessageInputBar> {
   final TextEditingController _controller = TextEditingController();
 
+  // Xử lý gửi tin nhắn
   void _handleSend() {
     final text = _controller.text.trim();
     if (text.isEmpty) return;
@@ -32,6 +34,25 @@ class _MessageInputBarState extends State<MessageInputBar> {
     _controller.clear();
   }
 
+  // Gửi sticker/GIF
+  Future<void> _handleSticker() async {
+    final gif = await GiphyGet.getGif(
+      context: context,
+      apiKey: 'sniETMI61J0tfBMaFQHAcHURYG1Jn02N',
+      lang: GiphyLanguage.vietnamese,
+      searchText: "Tìm sticker hoặc GIF",
+      modal: true,
+    );
+
+    if (gif != null) {
+      Provider.of<MessageConversationViewModel>(context, listen: false).sendStickerMessage(
+        mediaUrl: gif.images!.original!.url!,
+        conversationId: widget.conversationId,
+        senderId: widget.currentUserId,
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -40,7 +61,11 @@ class _MessageInputBarState extends State<MessageInputBar> {
       child: SafeArea(
         child: Row(
           children: [
-            IconButton(icon: const Icon(Icons.emoji_emotions_outlined), onPressed: () {}),
+            // Gửi sticker/GIF
+            IconButton(
+              icon: const Icon(Icons.emoji_emotions_outlined),
+              onPressed: _handleSticker,
+            ),
             IconButton(icon: const Icon(Icons.image_outlined), onPressed: () {}),
             IconButton(icon: const Icon(Icons.mic, color: Colors.deepPurple), onPressed: () {}),
 

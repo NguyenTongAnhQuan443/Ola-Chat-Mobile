@@ -108,4 +108,7 @@ class ApiConfig {
 
   static String removeMemberFromGroup(String groupId, String userId) =>
       "$base/api/groups/$groupId/remove/$userId";
+
+  // Sound
+  static String get uploadAudio => "$base/files/upload/audio";
 }

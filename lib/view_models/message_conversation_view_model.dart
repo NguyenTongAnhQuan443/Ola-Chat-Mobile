@@ -116,4 +116,31 @@ class MessageConversationViewModel extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  // Gửi Audio
+  void sendAudioMessage({
+    required String audioUrl,
+    required String conversationId,
+    required String senderId,
+  }) {
+    final now = DateTime.now().toIso8601String();
+
+    final message = {
+      "senderId": senderId,
+      "conversationId": conversationId,
+      "content": "",
+      "type": MessageType.VOICE.name,
+      "createdAt": now,
+      "mediaUrls": [audioUrl],
+      "mentions": [],
+      "recalled": false,
+      "deletedStatus": [],
+      "emojiTypes": [],
+      "totalReactionCount": 0,
+      "lastUserReaction": null
+    };
+
+    _socketService.sendMessage("/app/private-message", message);
+  }
+
 }

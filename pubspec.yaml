@@ -43,6 +43,8 @@ dependencies:
   awesome_dialog: ^3.2.1
   permission_handler: ^11.3.1
   zego_uikit_prebuilt_call: ^4.17.1
+#  Sound
+  flutter_sound: ^9.28.0
 
 #  Local Notification
   flutter_local_notifications: ^19.2.1

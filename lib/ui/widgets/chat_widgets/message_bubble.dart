@@ -10,6 +10,7 @@ import 'dart:io';
 import 'package:open_filex/open_filex.dart';
 
 import '../../../services/socket_service.dart';
+import '../../views/video_player_screen.dart';
 
 class MessageBubble extends StatelessWidget {
   final MessageModel message;
@@ -48,12 +49,28 @@ class MessageBubble extends StatelessWidget {
               }),
 
             // ===== TEXT =====
+            // Tin nhắn đã thu hồi
             if (message.content == '[Tin nhắn đã được thu hồi]')
               Text(message.content, style: TextStyle(fontStyle: FontStyle.italic, color: Colors.grey)),
+            // Tin nhắn bình thường
             if (message.type == MessageType.TEXT && message.content.isNotEmpty)
               GestureDetector(
                 onLongPress: isMe ? () => _showRecallOptions(context, message) : null,
                 child: Text(message.content, style: const TextStyle(fontSize: 15)),
+              ),
+
+            // Voice
+            if (message.type == MessageType.VOICE && mediaUrls.isNotEmpty)
+              IconButton(
+                icon: const Icon(Icons.play_circle_fill),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => VideoPlayerScreen(videoUrl: mediaUrls.first),
+                    ),
+                  );
+                },
               ),
 
             const SizedBox(height: 4),

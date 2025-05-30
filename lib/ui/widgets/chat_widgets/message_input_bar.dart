@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:giphy_get/giphy_get.dart';
 import 'package:provider/provider.dart';
-import '../../../services/file_upload_service.dart';
-import '../../../view_models/message_conversation_view_model.dart';
-import 'dart:io';
 import 'package:file_picker/file_picker.dart';
+import 'dart:io';
+
+import 'package:flutter_sound/flutter_sound.dart';
+import 'package:path_provider/path_provider.dart';
+
+import '../../../services/file_upload_service.dart';
+import '../../../services/voice_recorder_service.dart';
+import '../../../utils/app_styles.dart';
+import '../../../view_models/message_conversation_view_model.dart';
 
 class MessageInputBar extends StatefulWidget {
   final String conversationId;
@@ -22,8 +28,9 @@ class MessageInputBar extends StatefulWidget {
 
 class _MessageInputBarState extends State<MessageInputBar> {
   final TextEditingController _controller = TextEditingController();
+  String? recordingPath;
 
-  // Xử lý gửi tin nhắn
+  // Gửi tin nhắn text
   void _handleSend() {
     final text = _controller.text.trim();
     if (text.isEmpty) return;
@@ -37,7 +44,7 @@ class _MessageInputBarState extends State<MessageInputBar> {
     _controller.clear();
   }
 
-  // Gửi sticker/GIF
+  // Gửi sticker hoặc GIF
   Future<void> _handleSticker() async {
     final gif = await GiphyGet.getGif(
       context: context,
@@ -56,7 +63,7 @@ class _MessageInputBarState extends State<MessageInputBar> {
     }
   }
 
-  // Xử lý gửi file
+  // Gửi file
   void _handleFileUpload() async {
     final result = await FilePicker.platform.pickFiles(
       allowMultiple: true,
@@ -79,6 +86,32 @@ class _MessageInputBarState extends State<MessageInputBar> {
     }
   }
 
+  // Ghi âm voice
+  void _startRecording() async {
+    recordingPath = await VoiceRecorderService.startRecording();
+  }
+
+  void _stopRecording() async {
+    final path = await VoiceRecorderService.stopRecording();
+    if (path != null) {
+      final file = File(path);
+
+      if (!await file.exists() || await file.length() == 0) {
+        print("${AppStyles.failureIcon} Voice file không tồn tại hoặc rỗng");
+        return;
+      }
+
+      final audioUrl = await FileUploadService().uploadAudioFile(file);
+      if (audioUrl != null) {
+        Provider.of<MessageConversationViewModel>(context, listen: false).sendAudioMessage(
+          audioUrl: audioUrl,
+          conversationId: widget.conversationId,
+          senderId: widget.currentUserId,
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -87,7 +120,6 @@ class _MessageInputBarState extends State<MessageInputBar> {
       child: SafeArea(
         child: Row(
           children: [
-            // Gửi sticker/GIF
             IconButton(
               icon: const Icon(Icons.emoji_emotions_outlined),
               onPressed: _handleSticker,
@@ -96,10 +128,11 @@ class _MessageInputBarState extends State<MessageInputBar> {
               icon: const Icon(Icons.attach_file),
               onPressed: _handleFileUpload,
             ),
-
-            IconButton(icon: const Icon(Icons.mic, color: Colors.deepPurple), onPressed: () {}),
-
-            // Ô nhập tin nhắn
+            GestureDetector(
+              onLongPressStart: (_) => _startRecording(),
+              onLongPressEnd: (_) => _stopRecording(),
+              child: const Icon(Icons.mic, color: Colors.deepPurple),
+            ),
             Expanded(
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -116,8 +149,6 @@ class _MessageInputBarState extends State<MessageInputBar> {
                 ),
               ),
             ),
-
-            // Nút gửi tin nhắn
             IconButton(
               icon: const Icon(Icons.send, color: Colors.deepPurple),
               onPressed: _handleSend,

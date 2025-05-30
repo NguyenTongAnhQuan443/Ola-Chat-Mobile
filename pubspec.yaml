@@ -39,6 +39,9 @@ dependencies:
   giphy_get: ^3.0.0
   marquee: ^2.3.0
 
+#  qr
+  mobile_scanner: ^3.3.0
+
 #  Call Vieo
   awesome_dialog: ^3.2.1
   permission_handler: ^11.3.1

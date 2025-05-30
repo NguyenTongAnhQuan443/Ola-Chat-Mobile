@@ -3,10 +3,12 @@ import 'package:olachat_mobile/models/post_model.dart';
 import 'package:olachat_mobile/models/user_model.dart';
 import 'package:olachat_mobile/ui/views/user_settings_screen.dart';
 import 'package:provider/provider.dart';
+import '../../view_models/login_qr_view_model.dart';
 import '../../view_models/login_view_model.dart';
 import '../widgets/custom_sliver_to_box_adapter.dart';
 import '../widgets/list_post.dart';
 import '../widgets/app_logo_header_two.dart';
+import 'login_qr_screen.dart';
 
 class MyUserScreen extends StatefulWidget {
   const MyUserScreen({super.key});
@@ -18,8 +20,7 @@ class MyUserScreen extends StatefulWidget {
 class _MyUserScreenState extends State<MyUserScreen> {
   int selectedIndex = 0;
 
-  List<PostModel> myPosts = [
-  ];
+  List<PostModel> myPosts = [];
 
   @override
   void didChangeDependencies() {
@@ -57,16 +58,13 @@ class _MyUserScreenState extends State<MyUserScreen> {
                               radius: 40,
                               backgroundImage: userInfo?['avatar'] != null
                                   ? NetworkImage(userInfo!['avatar'])
-                                  : const AssetImage(
-                                          "assets/images/default_avatar.png")
-                                      as ImageProvider,
+                                  : const AssetImage("assets/images/default_avatar.png") as ImageProvider,
                             ),
                             SizedBox(
                               width: 187,
                               height: 45,
                               child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
+                                mainAxisAlignment: MainAxisAlignment.spaceAround,
                                 children: [
                                   buildStatBox("12", "Posts"),
                                   buildStatBox("207", "Followers"),
@@ -86,15 +84,12 @@ class _MyUserScreenState extends State<MyUserScreen> {
                               children: [
                                 Text(
                                   userInfo?['displayName'] ?? "Tên người dùng",
-                                  style: const TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold),
+                                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                                 ),
                                 const SizedBox(width: 10),
                                 Text(
                                   userInfo?['nickname'] ?? "Biệt danh",
-                                  style: const TextStyle(
-                                      fontSize: 12, color: Colors.grey),
+                                  style: const TextStyle(fontSize: 12, color: Colors.grey),
                                 ),
                               ],
                             ),
@@ -102,8 +97,7 @@ class _MyUserScreenState extends State<MyUserScreen> {
                               padding: const EdgeInsets.fromLTRB(0, 18, 0, 0),
                               child: Text(
                                 userInfo?['bio'] ?? "",
-                                style: const TextStyle(
-                                    fontSize: 12, color: Colors.grey),
+                                style: const TextStyle(fontSize: 12, color: Colors.grey),
                               ),
                             )
                           ],
@@ -113,17 +107,13 @@ class _MyUserScreenState extends State<MyUserScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
-                          buildIconButton(
-                              0, Icons.grid_view_outlined, selectedIndex,
-                              (index) {
+                          buildIconButton(0, Icons.grid_view_outlined, selectedIndex, (index) {
                             setState(() => selectedIndex = index);
                           }),
-                          buildIconButton(
-                              1, Icons.bookmark_border, selectedIndex, (index) {
+                          buildIconButton(1, Icons.bookmark_border, selectedIndex, (index) {
                             setState(() => selectedIndex = index);
                           }),
-                          buildIconButton(2, Icons.settings, selectedIndex,
-                              (index) {
+                          buildIconButton(2, Icons.settings, selectedIndex, (index) {
                             setState(() => selectedIndex = index);
                           }),
                         ],
@@ -145,29 +135,27 @@ class _MyUserScreenState extends State<MyUserScreen> {
 Widget buildStatBox(String count, String label) {
   return Column(
     children: [
-      Text(count,
-          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+      Text(count, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
       Text(label, style: const TextStyle(fontSize: 12, color: Colors.grey)),
     ],
   );
 }
 
-Widget buildIconButton(
-    int index, IconData icon, int selectedIndex, Function(int) onTap) {
+Widget buildIconButton(int index, IconData icon, int selectedIndex, Function(int) onTap) {
   return IconButton(
-    icon: Icon(icon,
-        size: 20, color: selectedIndex == index ? Colors.blue : Colors.black54),
+    icon: Icon(icon, size: 20, color: selectedIndex == index ? Colors.blue : Colors.black54),
     onPressed: () => onTap(index),
   );
 }
 
-Widget buildView_3(
-    int selectedIndex, List<PostModel> myPosts, List<PostModel> savePosts) {
+Widget buildView_3(int selectedIndex, List<PostModel> myPosts, List<PostModel> savePosts) {
   switch (selectedIndex) {
     case 0:
-      // return ListPost(posts: myPosts, showCommentButton: true);
+    // return ListPost(posts: myPosts, showCommentButton: true);
+    //
+
     case 1:
-      // return ListPost(posts: savePosts, showCommentButton: true);
+    // return ListPost(posts: savePosts, showCommentButton: true);
     case 2:
       return const SliverToBoxAdapter(child: UserSettingScreen());
     default:

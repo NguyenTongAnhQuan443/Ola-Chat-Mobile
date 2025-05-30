@@ -120,4 +120,7 @@ class ApiConfig {
   static String get createPost => "$base/api/posts";
   static String feedPosts = "$base/api/posts/feed";
 
+  // qr
+  static String qrPreviewDevice = '$base/api/auth/qr-preview-device';
+
 }

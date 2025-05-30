@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:olachat_mobile/view_models/add_group_members_view_model.dart';
 import 'package:olachat_mobile/view_models/create_group_view_model.dart';
 import 'package:olachat_mobile/view_models/feed_view_model.dart';
+import 'package:olachat_mobile/view_models/group_management_view_model.dart';
+import 'package:olachat_mobile/view_models/group_members_role_view_model.dart';
 import 'package:olachat_mobile/view_models/list_conversation_view_model.dart';
 import 'package:olachat_mobile/view_models/friend_request_view_model.dart';
 import 'package:olachat_mobile/view_models/message_conversation_view_model.dart';
@@ -53,9 +55,12 @@ void main() {
         ChangeNotifierProvider(create: (_) => FriendRequestViewModel()),
 
         ChangeNotifierProvider(create: (_) => AddGroupMembersViewModel()),
-
-        // ChangeNotifierProvider(create: (_) => GroupManagementViewModel()),
-        // ChangeNotifierProvider(create: (_) => GroupMembersViewModel()),
+        ChangeNotifierProvider(
+          create: (_) => GroupMembersRoleViewModel(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => GroupManagementViewModel(),
+        ),
         // ChangeNotifierProvider(create: (_) => GroupMembersRoleViewModel()),
 
         // ChangeNotifierProvider(

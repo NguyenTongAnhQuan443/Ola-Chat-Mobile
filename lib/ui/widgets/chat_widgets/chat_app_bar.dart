@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import '../../../view_models/add_group_members_view_model.dart';
 import '../../../view_models/conversation_view_model.dart';
 import '../../views/add_group_members_screen.dart';
+import '../../views/group_management_screen.dart';
 import '../../views/zego_call_screen.dart';
 
 class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -162,15 +163,16 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
                 }
               }
             } else if (value == 'group_setting') {
-              // ✅ Không tạo lại Provider ở đây nữa vì đã tạo ở main.dart
-              Future.microtask(() {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => AddGroupMembersScreen(groupId: conversationId),
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => GroupManagementScreen(
+                    conversationId: conversationId,
+                    groupName: name,
+                    groupAvatar: avatarUrl.isNotEmpty ? avatarUrl : '',
                   ),
-                );
-              });
+                ),
+              );
             } else if (value == 'private_setting') {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(content: Text("⚙️ Tính năng đang phát triển...")),

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:olachat_mobile/ui/views/user_profile_infomation.dart';
+import 'package:olachat_mobile/ui/views/user_profile_infomation_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:olachat_mobile/ui/widgets/custom_sliver_to_box_adapter.dart';
 import 'package:olachat_mobile/ui/widgets/app_logo_header_two.dart';
+import '../../models/user_response_model.dart';
 import '../../view_models/search_view_model.dart';
 import 'dart:async';
 
@@ -17,6 +18,71 @@ class SearchScreen extends StatefulWidget {
 class _SearchScreenState extends State<SearchScreen> {
   final TextEditingController _controller = TextEditingController();
   Timer? _debounce;
+
+  //
+  final user0 = UserResponseModel(
+    userId: "u001",
+    email: "a@example.com",
+    displayName: "Người lạ 0",
+    nickname: "none_0",
+    avatar: "",
+    bio: "Chưa quen biết ai",
+    dob: "2000-01-01",
+    friendAction: 0,
+  );
+
+  final user1 = UserResponseModel(
+    userId: "u002",
+    email: "a@example.com",
+    displayName: "Người đã gửi lời mời",
+    nickname: "sent_1",
+    avatar: "",
+    bio: "Đã gửi lời mời kết bạn",
+    dob: "2000-01-02",
+    friendAction: 1,
+  );
+  final user2 = UserResponseModel(
+    userId: "u002",
+    email: "a@example.com",
+    displayName: "Người có trạng thái 2",
+    nickname: "cancel_2",
+    avatar: "",
+    bio: "Hủy lời mời đã gửi",
+    dob: "2000-01-02",
+    friendAction: 2,
+  );
+
+  final user3 = UserResponseModel(
+    userId: "u003",
+    email: "a@example.com",
+    displayName: "Người gửi lời mời đến bạn",
+    nickname: "accept_3",
+    avatar: "",
+    bio: "Bạn nhận lời mời từ người này",
+    dob: "2000-01-03",
+    friendAction: 3,
+  );
+  final user4 = UserResponseModel(
+    userId: "u004",
+    email: "a@example.com",
+    displayName: "Bạn bè hiện tại",
+    nickname: "friend_4",
+    avatar: "",
+    bio: "Đã là bạn",
+    dob: "2000-01-04",
+    friendAction: 4,
+  );
+  final user5 = UserResponseModel(
+    userId: "u005",
+    email: "a@example.com",
+    displayName: "Bạn bè có thể nhắn tin",
+    nickname: "msg_5",
+    avatar: "",
+    bio: "Bạn bè lâu năm",
+    dob: "2000-01-05",
+    friendAction: 5,
+  );
+  //
 
   @override
   void dispose() {
@@ -95,10 +161,7 @@ class _SearchScreenState extends State<SearchScreen> {
           CustomSliverToBoxAdapter(),
 
           // Nếu chưa nhập gì thì show hình mặc định chờ tìm kiếm
-          if (_controller.text.isEmpty &&
-              !viewModel.isLoading &&
-              viewModel.result == null &&
-              viewModel.error == null)
+          if (_controller.text.isEmpty && !viewModel.isLoading && viewModel.result == null && viewModel.error == null)
             SliverFillRemaining(
               hasScrollBody: false,
               child: Center(
@@ -136,8 +199,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   height: 40,
                   child: CircularProgressIndicator(
                     strokeWidth: 3,
-                    valueColor:
-                        AlwaysStoppedAnimation<Color>(Color(0xFF2B4FE1)),
+                    valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF2B4FE1)),
                   ),
                 ),
               ),
@@ -153,24 +215,20 @@ class _SearchScreenState extends State<SearchScreen> {
                   child: ListTile(
                     leading: CircleAvatar(
                       radius: 20,
-                      backgroundImage: (viewModel.result?.avatar != null &&
-                              viewModel.result!.avatar.isNotEmpty)
+                      backgroundImage: (viewModel.result?.avatar != null && viewModel.result!.avatar.isNotEmpty)
                           ? NetworkImage(viewModel.result!.avatar)
-                          : const AssetImage("assets/images/default_avatar.png")
-                              as ImageProvider,
+                          : const AssetImage("assets/images/default_avatar.png") as ImageProvider,
                     ),
                     title: Text(
                       viewModel.result!.displayName,
-                      style:
-                          TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
                     ),
                     subtitle: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(viewModel.result!.nickname ?? ''),
                         SizedBox(height: 4),
-                        Text(viewModel.result!.bio ?? '',
-                            style: TextStyle(fontSize: 12, color: Colors.grey)),
+                        Text(viewModel.result!.bio ?? '', style: TextStyle(fontSize: 12, color: Colors.grey)),
                       ],
                     ),
                     trailing: Icon(Icons.arrow_forward_outlined),
@@ -179,7 +237,11 @@ class _SearchScreenState extends State<SearchScreen> {
                         context,
                         MaterialPageRoute(
                           builder: (_) => UserProfileInfomationScreen(
-                              user: viewModel.result!),
+                            // user: viewModel.result!,
+                            user: user5,
+                            friendAction: user5.friendAction,
+                            myPosts: [],
+                          ),
                         ),
                       );
                     },
@@ -192,8 +254,7 @@ class _SearchScreenState extends State<SearchScreen> {
           if (viewModel.error != null)
             SliverToBoxAdapter(
               child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 24, vertical: 40),
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 40),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [

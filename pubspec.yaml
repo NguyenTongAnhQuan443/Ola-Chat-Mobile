@@ -80,7 +80,8 @@ dev_dependencies:
   photo_view: ^0.15.0
   open_filex: ^4.7.0
   path_provider: ^2.1.5
-
+#  live stream
+  zego_uikit_prebuilt_live_streaming: ^3.14.1
 flutter_icons:
   android: true
   ios: true

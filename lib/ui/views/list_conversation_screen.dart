@@ -8,6 +8,7 @@ import '../../view_models/list_conversation_view_model.dart';
 import '../widgets/custom_sliver_to_box_adapter.dart';
 import '../widgets/app_logo_header_two.dart';
 import 'create_group_screen.dart';
+import 'join_live_screen.dart';
 
 // Màn hình danh sách cuộc trò chuyện
 class ListConversationScreen extends StatefulWidget {
@@ -100,6 +101,33 @@ class _ListConversationScreenState extends State<ListConversationScreen>
                             Text('Tạo nhóm chat',
                                 style: TextStyle(
                                     fontSize: 14, color: Colors.black54)),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  CustomSliverToBoxAdapter(),
+                  SliverToBoxAdapter(
+                    child: Container(
+                      height: 54,
+                      color: Colors.white,
+                      child: TextButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (_) => const JoinLiveScreen()),
+                          );
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: const [
+                            Icon(Icons.live_tv_outlined, size: 20, color: Colors.redAccent),
+                            SizedBox(width: 10),
+                            Text(
+                              'Xem livestream',
+                              style: TextStyle(fontSize: 14, color: Colors.redAccent),
+                            ),
                           ],
                         ),
                       ),

@@ -120,9 +120,9 @@ class _UserProfileInfoScreenState extends State<UserProfileInfomationScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                buildStatBox("12", "Posts"),
-                buildStatBox("207", "Followers"),
-                buildStatBox("64", "Following"),
+                buildStatBox("1", "Bài viết"),
+                buildStatBox("3", "Người theo dõi"),
+                buildStatBox("2", "Theo dõi"),
               ],
             ),
             const SizedBox(height: 16),
@@ -140,8 +140,8 @@ class _UserProfileInfoScreenState extends State<UserProfileInfomationScreen> {
   Widget buildStatBox(String count, String label) {
     return Column(
       children: [
-        Text(count, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-        Text(label, style: const TextStyle(fontSize: 12, color: Colors.grey)),
+        Text(count, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+        Text(label, style: const TextStyle(fontSize: 8, color: Colors.grey)),
       ],
     );
   }
